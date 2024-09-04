@@ -60,7 +60,6 @@ public class PermissionsFragment extends Fragment {
 
     private void navigateToCamera() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_emotion, new EmotionFragment())
                 .commit();

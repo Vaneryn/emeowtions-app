@@ -1,9 +1,8 @@
 package com.example.emeowtions.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.hardware.camera2.CameraCaptureSession;
+import android.graphics.Matrix;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,6 @@ import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
@@ -23,31 +21,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.emeowtions.ObjectDetectorHelper;
+import com.example.emeowtions.BoundingBox;
+import com.example.emeowtions.ObjectDetector;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentEmotionBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import org.tensorflow.lite.task.vision.detector.Detection;
-
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EmotionFragment extends Fragment implements ObjectDetectorHelper.DetectorListener {
-
-    private static final String TAG = "ObjectDetection";
+public class EmotionFragment extends Fragment implements ObjectDetector.DetectorListener {
 
     private FragmentEmotionBinding fragmentEmotionBinding;
+    private boolean isFrontCamera = false;
 
-    private ObjectDetectorHelper objectDetectorHelper;
-    private Bitmap bitmapBuffer;
     private Preview preview;
     private ImageAnalysis imageAnalyzer;
     private Camera camera;
     private ProcessCameraProvider cameraProvider;
+    private ObjectDetector objectDetector;
 
     private ExecutorService cameraExecutor;
 
@@ -71,14 +66,107 @@ public class EmotionFragment extends Fragment implements ObjectDetectorHelper.De
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        objectDetectorHelper = new ObjectDetectorHelper(requireContext(), this);
-
         // Initialize background executor
         cameraExecutor = Executors.newSingleThreadExecutor();
 
-        fragmentEmotionBinding.viewFinder.post(() -> setUpCamera());
+        cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), MODEL_PATH, LABELS_PATH, this));
 
-        //initBottomSheetControls();
+        if (PermissionsFragment.hasPermissions(requireContext())) {
+            startCamera();
+        } else {
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new PermissionsFragment())
+                    .commit();
+        }
+
+        bindListeners();
+    }
+
+    private void bindListeners() {
+        // TODO
+    }
+
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
+        cameraProviderFuture.addListener(() -> {
+            try {
+                cameraProvider = cameraProviderFuture.get();
+                bindCameraUseCases();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    private void bindCameraUseCases() {
+        if (cameraProvider == null) {
+            throw new IllegalStateException("Camera initialization failed.");
+        }
+
+        int rotation = fragmentEmotionBinding.viewFinder.getDisplay().getRotation();
+
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build();
+
+        preview = new Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetRotation(rotation)
+                .build();
+
+        imageAnalyzer = new ImageAnalysis.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setTargetRotation(fragmentEmotionBinding.viewFinder.getDisplay().getRotation())
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                .build();
+
+        imageAnalyzer.setAnalyzer(cameraExecutor, imageProxy -> {
+            Bitmap bitmapBuffer = Bitmap.createBitmap(
+                    imageProxy.getWidth(),
+                    imageProxy.getHeight(),
+                    Bitmap.Config.ARGB_8888
+            );
+
+            try {
+                bitmapBuffer.copyPixelsFromBuffer(imageProxy.getPlanes()[0].getBuffer());
+            } finally {
+                imageProxy.close();
+            }
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(imageProxy.getImageInfo().getRotationDegrees());
+
+            if (isFrontCamera) {
+                matrix.postScale(-1f, 1f, imageProxy.getWidth(), imageProxy.getHeight());
+            }
+
+            Bitmap rotatedBitmap = Bitmap.createBitmap(
+                    bitmapBuffer, 0, 0, bitmapBuffer.getWidth(), bitmapBuffer.getHeight(),
+                    matrix, true
+            );
+
+            objectDetector.detect(rotatedBitmap);
+        });
+
+        cameraProvider.unbindAll();
+
+        try {
+            camera = cameraProvider.bindToLifecycle(
+                    this,
+                    cameraSelector,
+                    preview,
+                    imageAnalyzer
+            );
+
+            preview.setSurfaceProvider(fragmentEmotionBinding.viewFinder.getSurfaceProvider());;
+        } catch (Exception e) {
+            Log.e(TAG, "Use case binding failed", e);
+        }
     }
 
     @Override
@@ -88,7 +176,6 @@ public class EmotionFragment extends Fragment implements ObjectDetectorHelper.De
         // Make sure all permissions are still present
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, new PermissionsFragment())
                     .commit();
@@ -96,126 +183,30 @@ public class EmotionFragment extends Fragment implements ObjectDetectorHelper.De
     }
 
     @Override
-    public void onDestroyView() {
-        fragmentEmotionBinding = null;
-        super.onDestroyView();
-
-        // Shut down background executor
+    public void onDestroy() {
+        super.onDestroy();
+        objectDetector.close();
         cameraExecutor.shutdown();
     }
 
-    private void updateControlsUi() {
-        objectDetectorHelper.clearObjectDetector();
-    }
-
-    private void setUpCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
-        cameraProviderFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    cameraProvider = cameraProviderFuture.get();
-                    bindCameraUseCases();
-                } catch (Exception e) {
-                    Log.e(TAG, "Camera initialization failed", e);
-                }
-            }
-        }, ContextCompat.getMainExecutor(requireContext()));
-    }
-
-    @SuppressLint("UnsafeOptInUsageError")
-    private void bindCameraUseCases() {
-        ProcessCameraProvider cameraProvider = this.cameraProvider;
-        if (cameraProvider == null) {
-            throw new IllegalStateException("Camera initialization failed.");
-        }
-
-        // Use back camera
-        CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build();
-
-        // Build Preview
-        preview = new Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                .setTargetRotation(fragmentEmotionBinding.viewFinder.getDisplay().getRotation())
-                .build();
-
-        // Build ImageAnalyzer
-        imageAnalyzer = new ImageAnalysis.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                .setTargetRotation(fragmentEmotionBinding.viewFinder.getDisplay().getRotation())
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-                .build();
-
-        imageAnalyzer.setAnalyzer(cameraExecutor, new ImageAnalysis.Analyzer() {
-            @Override
-            public void analyze(@NonNull ImageProxy image) {
-                if (bitmapBuffer == null) {
-                    bitmapBuffer = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
-                }
-
-                detectObjects(image);
-            }
+    @Override
+    public void onEmptyDetect() {
+        getActivity().runOnUiThread(() -> {
+            fragmentEmotionBinding.overlay.clear();
         });
-
-        cameraProvider.unbindAll();
-
-        try {
-            // A variety of use cases can be passed here
-            camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer);
-
-            // Attach viewfinder's surface provider to preview use case
-            if (preview != null) {
-                preview.setSurfaceProvider(fragmentEmotionBinding.viewFinder.getSurfaceProvider());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Use case binding failed", e);
-        }
-    }
-
-    private void detectObjects(@NonNull ImageProxy image) {
-        try {
-            // Copy RGB bits out to the shared bitmap buffer
-            if (bitmapBuffer == null) {
-                bitmapBuffer = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
-            }
-
-            bitmapBuffer.copyPixelsFromBuffer(image.getPlanes()[0].getBuffer());
-            int imageRotation = image.getImageInfo().getRotationDegrees();
-
-            // Pass Bitmap and rotation to the object detector helper for processing and detection
-            objectDetectorHelper.detect(bitmapBuffer, imageRotation);
-        } finally {
-            image.close();
-        }
     }
 
     @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        if (imageAnalyzer != null) {
-            imageAnalyzer.setTargetRotation(fragmentEmotionBinding.viewFinder.getDisplay().getRotation());
-        }
+    public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
+        getActivity().runOnUiThread(() -> {
+            fragmentEmotionBinding.inferenceTime.setText(inferenceTime + "ms");
+            fragmentEmotionBinding.overlay.setResults(boundingBoxes);
+            fragmentEmotionBinding.overlay.invalidate();
+        });
     }
 
-    @Override
-    public void onError(String error) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
-
-    @Override
-    public void onResults(List<Detection> results, long inferenceTime, int imageHeight, int imageWidth) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                // todo
-            });
-        }
-    }
+    // Constants
+    private static final String TAG = "EmotionFragment";
+    private static final String MODEL_PATH = "yolov8n.tflite";
+    private static final String LABELS_PATH = "yolov8n_labels.txt";
 }
