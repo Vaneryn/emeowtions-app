@@ -40,7 +40,7 @@ public class OverlayView extends View {
         textPaint.setTextSize(50f);
 
         boxPaint = new Paint();
-        boxPaint.setColor(ContextCompat.getColor(context, R.color.white));
+        boxPaint.setColor(Color.GREEN);
         boxPaint.setStrokeWidth(8F);
         boxPaint.setStyle(Paint.Style.STROKE);
 

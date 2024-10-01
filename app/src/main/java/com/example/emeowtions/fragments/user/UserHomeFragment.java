@@ -1,6 +1,5 @@
-package com.example.emeowtions.fragments;
+package com.example.emeowtions.fragments.user;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentUserHomeBinding;
-
-import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.

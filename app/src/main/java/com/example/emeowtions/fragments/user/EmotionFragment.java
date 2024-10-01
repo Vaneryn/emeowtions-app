@@ -1,4 +1,4 @@
-package com.example.emeowtions.fragments;
+package com.example.emeowtions.fragments.user;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -26,6 +26,7 @@ import com.example.emeowtions.BoundingBox;
 import com.example.emeowtions.ObjectDetector;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentEmotionBinding;
+import com.example.emeowtions.fragments.PermissionsFragment;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
