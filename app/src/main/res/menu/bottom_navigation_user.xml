@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_home_filled_24"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/emotions_item"
+        android:enabled="true"
+        android:icon="@drawable/outline_happy_cat"
+        android:title="@string/emotions" />
+    <item
+        android:id="@+id/clinics_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_veterinary_care"
+        android:title="@string/clinics" />
+    <item
+        android:id="@+id/chat_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_chat_24"
+        android:title="@string/chat" />
+    <item
+        android:id="@+id/my_cats_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_cat_full"
+        android:title="@string/my_cats" />
+</menu>

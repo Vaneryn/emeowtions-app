@@ -1,9 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Emeowtions" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary color -->
+        <item name="colorPrimary">@color/primary_400</item>
+        <item name="colorPrimaryVariant">@color/primary_600</item>
+        <item name="colorOnPrimary">@color/primary_100</item>
+        <!-- Secondary color -->
+        <item name="colorSecondary">@color/secondary_400</item>
+        <!-- Accent color -->
+        <item name="colorAccent">@color/color3_400</item>
+        <!-- Semantic color -->
+        <item name="colorError">@color/error_2</item>
+        <!-- Other colors -->
+        <item name="colorSecondaryContainer">@color/primary_200</item>
+        <!-- TextAppearance -->
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.App.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
+        <!-- Other -->
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.Emeowtions" parent="Base.Theme.Emeowtions" />
+
+    <!-- Splash Screen -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_400</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_emeowtions</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.Emeowtions</item>
+    </style>
+
+    <!-- TextAppearance -->
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/archivo_semibold</item>
+        <item name="android:fontFamily">@font/archivo_semibold</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/archivo_semibold</item>
+        <item name="android:fontFamily">@font/archivo_semibold</item>
+    </style>
+
+    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">4dp</item>
+    </style>
 </resources>

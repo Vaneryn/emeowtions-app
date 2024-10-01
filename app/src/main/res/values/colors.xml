@@ -1,5 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colour Palette -->
+    <!-- Primary Color -->
+    <color name="primary_100">#EAEAFC</color>
+    <color name="primary_200">#BDBFF6</color>
+    <color name="primary_300">#9195F0</color>
+    <color name="primary_400">#636AE8</color>
+    <color name="primary_500">#303EDA</color>
+    <color name="primary_600">#1B258D</color>
+    <color name="primary_700">#090E48</color>
+    <!-- Secondary Color -->
+    <color name="secondary_100">#F8D9E6</color>
+    <color name="secondary_200">#EFA2C8</color>
+    <color name="secondary_300">#E863AC</color>
+    <color name="secondary_400">#BD3886</color>
+    <color name="secondary_500">#85275D</color>
+    <color name="secondary_600">#511437</color>
+    <color name="secondary_700">#240517</color>
+    <!-- Color 3 -->
+    <color name="color3_100">#E8E163</color>
+    <color name="color3_200">#BEB950</color>
+    <color name="color3_300">#97923E</color>
+    <color name="color3_400">#716D2C</color>
+    <color name="color3_500">#4D4A1C</color>
+    <color name="color3_600">#2C2A0C</color>
+    <color name="color3_700">#121103</color>
+    <!-- Color 4 -->
+    <color name="color4_100">#CBFCDD</color>
+    <color name="color4_200">#63E89F</color>
+    <color name="color4_300">#4FBD80</color>
+    <color name="color4_400">#3C9363</color>
+    <color name="color4_500">#2A6B47</color>
+    <color name="color4_600">#19462D</color>
+    <color name="color4_700">#092415</color>
+    <!-- Gray -->
+    <color name="gray_100">#EBEBEC</color>
+    <color name="gray_200">#C3C3C6</color>
+    <color name="gray_300">#9C9CA2</color>
+    <color name="gray_400">#77777F</color>
+    <color name="gray_500">#54545D</color>
+    <color name="gray_600">#33333A</color>
+    <color name="gray_700">#16161A</color>
+
+    <!-- Semantics -->
+    <!-- Danger/Error -->
+    <color name="error_1">#B9181D</color>
+    <color name="error_2">#DE3B40</color>
+    <color name="error_3">#F22128</color>
+    <color name="error_4">#F27D81</color>
+    <!-- Warning -->
+    <color name="warning_1">#DD980E</color>
+    <color name="warning_2">#EFB034</color>
+    <color name="warning_3">#FCB831</color>
+    <color name="warning_4">#F6CE7E</color>
+    <!-- Success -->
+    <color name="success_1">#0EAA42</color>
+    <color name="success_2">#1DD75B</color>
+    <color name="success_3">#18EC5F</color>
+    <color name="success_4">#6EED98</color>
+    <!-- Info -->
+    <color name="info_1">#0D78C9</color>
+    <color name="info_2">#379AE6</color>
+    <color name="info_3">#1091F4</color>
+    <color name="info_4">#60B2F0</color>
+
+    <!-- Other -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

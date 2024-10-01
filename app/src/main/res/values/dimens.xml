@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Margins -->
+    <dimen name="margin_small_1">5dp</dimen>
+    <dimen name="margin_small_2">10dp</dimen>
+    <dimen name="margin_medium_1">15dp</dimen>
+    <dimen name="margin_medium_2">20dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <!-- Paddings -->
+    <dimen name="padding_small_1">5dp</dimen>
+    <dimen name="padding_small_2">10dp</dimen>
+    <dimen name="padding_medium_1">15dp</dimen>
+    <dimen name="padding_medium_2">20dp</dimen>
+    <dimen name="padding_large">30dp</dimen>
+    <dimen name="padding_screen_edge">20dp</dimen>
+    <!-- Text Sizes -->
+    <dimen name="text_small_1">8sp</dimen>
+    <dimen name="text_small_2">10sp</dimen>
+    <dimen name="text_small_3">12sp</dimen>
+    <dimen name="text_medium_1">14sp</dimen>
+    <dimen name="text_medium_2">16sp</dimen>
+    <dimen name="text_medium_3">18sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+</resources>

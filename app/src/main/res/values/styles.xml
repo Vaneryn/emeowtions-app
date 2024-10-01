@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text -->
+    <style name="HeadingText1" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/archivo_semibold</item>
+        <item name="android:textColor">@color/gray_700</item>
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+    <style name="HeadingText2" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/archivo_semibold</item>
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textSize">@dimen/text_medium_2</item>
+    </style>
+    <style name="BodyText1" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textColor">@color/gray_500</item>
+        <item name="android:textSize">@dimen/text_medium_1</item>
+    </style>
+    <style name="BodyTextEmphasized" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="android:textColor">@color/gray_500</item>
+        <item name="android:textSize">@dimen/text_medium_1</item>
+    </style>
+
+    <!-- Button -->
+    <style name="PrimaryButton" parent="TextAppearance.AppCompat">
+        <item name="android:backgroundTint">@color/primary_400</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:fontFamily">@font/inter_tight_semibold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="SecondaryButton" parent="TextAppearance.AppCompat">
+        <item name="android:backgroundTint">@android:color/transparent</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:fontFamily">@font/inter_tight_semibold</item>
+        <item name="strokeColor">@color/secondary_button_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textColor">@color/clickable_text</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Image -->
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

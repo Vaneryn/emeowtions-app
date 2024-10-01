@@ -2,4 +2,34 @@
     <string name="app_name">emeowtions</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="emeowtions">Emeowtions</string>
+    <string name="emeowtions_logo">Emeowtions Logo</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="log_in">Log in</string>
+    <string name="log_in_with_google">Log in with Google</string>
+    <string name="email">Email</string>
+    <string name="sign_up_with_google">Sign Up with Google</string>
+    <string name="sign_up">Sign up</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="password">Password</string>
+    <string name="home">Home</string>
+    <string name="my_cats">My Cats</string>
+    <string name="clinics">Clinics</string>
+    <string name="emotions">Emotions</string>
+    <string name="chat">Chat</string>
+    <string name="discover">Discover</string>
+    <string name="features">Features</string>
+    <string name="top_clinics">Top Clinics</string>
+    <string name="messages">Messages</string>
+    <string name="profile">Profile</string>
+    <string name="navigation_drawer_profile_item">Navigation drawer profile item</string>
+    <string name="log_out">Log out</string>
+    <string name="analysis_history">Analysis History</string>
+    <string name="navigation_drawer_analysis_history_item">Navigation drawer analysis history item</string>
+    <string name="feedback">Feedback</string>
+    <string name="navigation_drawer_feedback_item">Navigation drawer feedback item</string>
 </resources>
