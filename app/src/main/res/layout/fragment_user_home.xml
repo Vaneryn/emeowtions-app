@@ -1,14 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.UserHomeFragment">
+    android:orientation="vertical"
+    tools:context=".fragments.user.UserHomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent" >
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_screen_edge">
+
+            <!-- Discover -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_hdr_discover"
+                    style="@style/HeadingText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:text="@string/discover" />
+
+                <com.google.android.material.carousel.MaskableFrameLayout
+                    android:id="@+id/carousel_discover"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
+
+                    <ImageView
+                        android:id="@+id/img_discover"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+
+                </com.google.android.material.carousel.MaskableFrameLayout>
+
+            </LinearLayout>
+
+            <!-- Features -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_medium_1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_hdr_features"
+                    style="@style/HeadingText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:text="@string/features" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/margin_small_2"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <!-- Emotions Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_feature_emotions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_1"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/primary_400"
+                                android:padding="@dimen/padding_small_2"
+                                android:scaleType="center"
+                                android:src="@drawable/outline_happy_cat"
+                                app:tint="@color/white" />
+
+                            <TextView
+                                style="@style/BodyTextEmphasized"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:text="@string/emotions" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Clinics Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_feature_clinics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small_1"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/primary_400"
+                                android:padding="@dimen/padding_small_2"
+                                android:scaleType="center"
+                                android:src="@drawable/baseline_veterinary_care"
+                                app:tint="@color/white" />
+
+                            <TextView
+                                style="@style/BodyTextEmphasized"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:text="@string/clinics" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <!-- Chat Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_feature_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_1"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/primary_400"
+                                android:padding="@dimen/padding_small_2"
+                                android:scaleType="center"
+                                android:src="@drawable/baseline_chat_24"
+                                app:tint="@color/white" />
+
+                            <TextView
+                                style="@style/BodyTextEmphasized"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:text="@string/chat" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Clinics Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_feature_my_cats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small_1"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/primary_400"
+                                android:padding="@dimen/padding_small_2"
+                                android:scaleType="center"
+                                android:src="@drawable/baseline_cat_full"
+                                app:tint="@color/white" />
+
+                            <TextView
+                                style="@style/BodyTextEmphasized"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:text="@string/my_cats" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Top Clinics -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_medium_1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_hdr_top_clinics"
+                    style="@style/HeadingText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/top_clinics" />
+
+            </LinearLayout>
+
+            <!-- Messages -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_medium_1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_hdr_messages"
+                    style="@style/HeadingText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/messages" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
