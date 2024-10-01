@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -15,30 +16,40 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
+        <!-- Common Activities -->
         <activity
-            android:name=".activities.AdminMainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.VetMainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.UserMainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.common.LaunchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.common.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.common.RegisterActivity"
+            android:exported="false" />
+        <!-- User Activities -->
+        <activity
+            android:name=".activities.user.UserMainActivity"
+            android:exported="false" />
+        <!-- Veterinary Clinic Activities -->
+        <activity
+            android:name=".activities.veterinary.VetMainActivity"
+            android:exported="false" />
+        <!-- Admin Activities -->
+        <activity
+            android:name=".activities.admin.AdminMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

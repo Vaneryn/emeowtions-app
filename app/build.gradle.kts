@@ -42,18 +42,21 @@ dependencies {
     implementation(libs.constraintlayout)
 
     // Tensorflow Lite dependencies
-    implementation("org.tensorflow:tensorflow-lite:2.16.1")
-    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
-    implementation("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4")
-    implementation("org.tensorflow:tensorflow-lite-gpu-api:2.16.1")
-    implementation("org.tensorflow:tensorflow-lite-api:2.16.1")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.16.1")
-    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.16.1")
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support.v044)
+    implementation(libs.tensorflow.lite.gpu.delegate.plugin)
+    implementation(libs.tensorflow.lite.gpu.api)
+    implementation(libs.tensorflow.lite.api)
+    implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.tensorflow.lite.select.tf.ops)
 
+    // Camera API
     implementation(libs.camera.camera2)
     implementation(libs.camera.core)
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
+
+    implementation(libs.core.splashscreen)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
