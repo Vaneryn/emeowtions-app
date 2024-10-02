@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,7 +42,14 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    // Tensorflow Lite dependencies
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+
+    // Tensorflow Lite
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.lite.support.v044)
     implementation(libs.tensorflow.lite.gpu.delegate.plugin)
