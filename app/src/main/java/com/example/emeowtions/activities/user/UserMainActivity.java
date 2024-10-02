@@ -1,5 +1,6 @@
 package com.example.emeowtions.activities.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,6 +15,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.common.FeedbackActivity;
+import com.example.emeowtions.activities.common.LoginActivity;
+import com.example.emeowtions.activities.common.ProfileActivity;
 import com.example.emeowtions.databinding.ActivityUserMainBinding;
 import com.example.emeowtions.fragments.user.EmotionFragment;
 import com.example.emeowtions.fragments.user.UserChatListFragment;
@@ -55,6 +59,10 @@ public class UserMainActivity extends AppCompatActivity {
         //region onClick listeners
         // topAppBar navigationIcon: open navigation drawer
         userMainBinding.topAppBar.setNavigationOnClickListener(view -> userMainBinding.drawerLayout.open());
+
+        userMainBinding.txtLogout.setOnClickListener(view -> {
+            startActivity(new Intent(this, LoginActivity.class));
+        });
         //endregion
 
         //region Other listeners
@@ -94,9 +102,18 @@ public class UserMainActivity extends AppCompatActivity {
 
         // drawerNavigationView item: redirect to selected screen
         userMainBinding.drawerNavigationView.setNavigationItemSelectedListener(item -> {
-            item.setChecked(true);
+            int itemId = item.getItemId();
             userMainBinding.drawerLayout.close();
-            return true;
+
+            if (itemId == R.id.profile_item) {
+                startActivity(new Intent(this, ProfileActivity.class));
+            } else if (itemId == R.id.analysis_history_item) {
+                startActivity(new Intent(this, AnalysisHistoryActivity.class));
+            } else if (itemId == R.id.feedback_item) {
+                startActivity(new Intent(this, FeedbackActivity.class));
+            }
+
+            return false;
         });
         //endregion
     }

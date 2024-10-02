@@ -16,12 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
-        <!-- Common Activities -->
+        <activity
+            android:name=".activities.user.AnalysisHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.common.FeedbackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.common.ProfileActivity"
+            android:exported="false" /> <!-- Common Activities -->
         <activity
             android:name=".activities.common.LaunchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,16 +39,13 @@
             android:exported="false" />
         <activity
             android:name=".activities.common.RegisterActivity"
-            android:exported="false" />
-        <!-- User Activities -->
+            android:exported="false" /> <!-- User Activities -->
         <activity
             android:name=".activities.user.UserMainActivity"
-            android:exported="false" />
-        <!-- Veterinary Clinic Activities -->
+            android:exported="false" /> <!-- Veterinary Clinic Activities -->
         <activity
             android:name=".activities.veterinary.VetMainActivity"
-            android:exported="false" />
-        <!-- Admin Activities -->
+            android:exported="false" /> <!-- Admin Activities -->
         <activity
             android:name=".activities.admin.AdminMainActivity"
             android:exported="false" />
