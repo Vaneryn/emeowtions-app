@@ -32,4 +32,8 @@
     <string name="navigation_drawer_analysis_history_item">Navigation drawer analysis history item</string>
     <string name="feedback">Feedback</string>
     <string name="navigation_drawer_feedback_item">Navigation drawer feedback item</string>
+    <string name="rate_your_experience">Rate your experience</string>
+    <string name="rate_your_experience_description">We would like to hear from you. How was your experience with Emeowtions?</string>
+    <string name="describe_your_experience">Describe your experience</string>
+    <string name="submit">Submit</string>
 </resources>

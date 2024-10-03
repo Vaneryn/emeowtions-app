@@ -8,7 +8,7 @@
         <!-- Secondary color -->
         <item name="colorSecondary">@color/secondary_400</item>
         <!-- Accent color -->
-        <item name="colorAccent">@color/color3_400</item>
+        <item name="colorAccent">@color/tertiary_400</item>
         <!-- Semantic color -->
         <item name="colorError">@color/error_2</item>
         <!-- Other colors -->

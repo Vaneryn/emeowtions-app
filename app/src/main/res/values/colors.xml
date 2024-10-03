@@ -17,22 +17,22 @@
     <color name="secondary_500">#85275D</color>
     <color name="secondary_600">#511437</color>
     <color name="secondary_700">#240517</color>
-    <!-- Color 3 -->
-    <color name="color3_100">#E8E163</color>
-    <color name="color3_200">#BEB950</color>
-    <color name="color3_300">#97923E</color>
-    <color name="color3_400">#716D2C</color>
-    <color name="color3_500">#4D4A1C</color>
-    <color name="color3_600">#2C2A0C</color>
-    <color name="color3_700">#121103</color>
-    <!-- Color 4 -->
-    <color name="color4_100">#CBFCDD</color>
-    <color name="color4_200">#63E89F</color>
-    <color name="color4_300">#4FBD80</color>
-    <color name="color4_400">#3C9363</color>
-    <color name="color4_500">#2A6B47</color>
-    <color name="color4_600">#19462D</color>
-    <color name="color4_700">#092415</color>
+    <!-- Tertiary -->
+    <color name="tertiary_100">#E8E163</color>
+    <color name="tertiary_200">#BEB950</color>
+    <color name="tertiary_300">#97923E</color>
+    <color name="tertiary_400">#716D2C</color>
+    <color name="tertiary_500">#4D4A1C</color>
+    <color name="tertiary_600">#2C2A0C</color>
+    <color name="tertiary_700">#121103</color>
+    <!-- Quaternary 4 -->
+    <color name="quaternary_100">#CBFCDD</color>
+    <color name="quaternary_200">#63E89F</color>
+    <color name="quaternary_300">#4FBD80</color>
+    <color name="quaternary_400">#3C9363</color>
+    <color name="quaternary_500">#2A6B47</color>
+    <color name="quaternary_600">#19462D</color>
+    <color name="quaternary_700">#092415</color>
     <!-- Gray -->
     <color name="gray_100">#EBEBEC</color>
     <color name="gray_200">#C3C3C6</color>
