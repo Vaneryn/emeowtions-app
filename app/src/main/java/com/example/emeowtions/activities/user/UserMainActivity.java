@@ -3,11 +3,9 @@ package com.example.emeowtions.activities.user;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,17 +22,29 @@ import com.example.emeowtions.fragments.user.UserChatListFragment;
 import com.example.emeowtions.fragments.user.UserClinicsFragment;
 import com.example.emeowtions.fragments.user.UserHomeFragment;
 import com.example.emeowtions.fragments.user.UserMyCatsFragment;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserMainActivity extends AppCompatActivity {
 
     private static final String TAG = "UserMainActivity";
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private CollectionReference usersRef;
+
     private ActivityUserMainBinding userMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase service instances
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        // Initialize Firestore references
+        usersRef = db.collection("users");
 
         // Get ViewBinding and set content view
         userMainBinding = ActivityUserMainBinding.inflate(getLayoutInflater());
@@ -60,7 +70,10 @@ public class UserMainActivity extends AppCompatActivity {
         // topAppBar navigationIcon: open navigation drawer
         userMainBinding.topAppBar.setNavigationOnClickListener(view -> userMainBinding.drawerLayout.open());
 
+        // txtLogout: sign out and redirect to login screen
         userMainBinding.txtLogout.setOnClickListener(view -> {
+            mAuth.signOut();
+            Toast.makeText(this, "Successfully signed out.", Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, LoginActivity.class));
         });
         //endregion

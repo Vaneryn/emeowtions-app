@@ -9,18 +9,31 @@ import androidx.core.splashscreen.SplashScreen;
 import com.example.emeowtions.activities.admin.AdminMainActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.activities.veterinary.VetMainActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LaunchActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Handle splash screen transition
-        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
-
         super.onCreate(savedInstanceState);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        // Handle splash screen transition
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         // Check if the user is authenticated
-        boolean isAuthenticated = false;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        boolean isAuthenticated = currentUser != null;
 
         if (!isAuthenticated) {
             // Redirect to LoginActivity if not authenticated
