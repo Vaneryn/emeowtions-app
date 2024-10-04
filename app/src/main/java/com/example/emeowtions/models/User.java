@@ -8,7 +8,6 @@ import java.util.Date;
 
 public class User {
 
-    private String authId;
     private String displayName;
     private String email;
     private String gender;
@@ -20,8 +19,7 @@ public class User {
 
     public User() {}
 
-    public User(String authId, String displayName, String email, String gender, String role, String profilePicture, Date dateOfBirth, Timestamp createdAt, Timestamp updatedAt) {
-        this.authId = authId;
+    public User(String displayName, String email, String gender, String role, String profilePicture, Date dateOfBirth, Timestamp createdAt, Timestamp updatedAt) {
         this.displayName = displayName;
         this.email = email;
         this.gender = gender;
@@ -30,10 +28,6 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public String getAuthId() {
-        return authId;
     }
 
     public String getDisplayName() {
@@ -66,10 +60,6 @@ public class User {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setAuthId(String authId) {
-        this.authId = authId;
     }
 
     public void setDisplayName(String displayName) {
@@ -108,7 +98,6 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "authId='" + authId + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +

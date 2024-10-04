@@ -9,6 +9,7 @@ import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,6 +19,9 @@ import com.example.emeowtions.R;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.databinding.ActivityRegisterBinding;
 import com.example.emeowtions.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -203,7 +207,6 @@ public class RegisterActivity extends AppCompatActivity {
                             try {
                                 // Add to users collection
                                 User newUser = new User(
-                                        currentUser.getUid(),
                                         email.split("@")[0],
                                         email,
                                         null,
@@ -213,10 +216,16 @@ public class RegisterActivity extends AppCompatActivity {
                                         Timestamp.now(),
                                         Timestamp.now()
                                 );
-                                usersRef.add(newUser);
-
-                                // Redirect to user home screen
-                                startActivity(new Intent(this, UserMainActivity.class));
+                                usersRef.document(currentUser.getUid())
+                                        .set(newUser)
+                                        .addOnCompleteListener(task1 -> {
+                                            // Redirect to user home screen
+                                            Toast.makeText(this, "Successfully created your account.", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(RegisterActivity.this, UserMainActivity.class));
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(this, "Error occurred while creating your account. Please try again.", Toast.LENGTH_SHORT).show();
+                                        });
                             } catch (Exception e) {
                                 Log.e(TAG, "createUserWithEmail:success but failed to create user document", task.getException());
                             }
