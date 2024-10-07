@@ -18,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.emeowtions.R;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.databinding.ActivityRegisterBinding;
+import com.example.emeowtions.enums.Gender;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,26 +33,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
+    private ActivityRegisterBinding registerBinding;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
 
-    private ActivityRegisterBinding registerBinding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get ViewBinding and set content view
+        registerBinding = ActivityRegisterBinding.inflate(getLayoutInflater());
+        setContentView(registerBinding.getRoot());
 
         // Initialize Firebase service instances
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
-
-        // Get ViewBinding and set content view
-        registerBinding = ActivityRegisterBinding.inflate(getLayoutInflater());
-        setContentView(registerBinding.getRoot());
 
         // Enable edge-to-edge layout
         EdgeToEdge.enable(this);
@@ -131,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Validate email
         // Empty input
-        if (email.isEmpty()) {
+        if (email.isBlank()) {
             registerBinding.txtfieldEmail.setError("Email is required");
             registerBinding.txtfieldEmail.requestFocus();
             return false;
@@ -159,7 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Validate password
         // Empty input
         if (password.isEmpty()) {
-            registerBinding.txtfieldPassword.setError("Password is required");
+            registerBinding.txtfieldPassword.setError(getString(R.string.password_is_required));
             registerBinding.txtfieldPassword.requestFocus();
             return false;
         }
@@ -209,19 +210,29 @@ public class RegisterActivity extends AppCompatActivity {
                                 User newUser = new User(
                                         email.split("@")[0],
                                         email,
+                                        Gender.UNSPECIFIED.getTitle(),
+                                        Role.USER.getTitle(),
                                         null,
-                                        "user",
                                         null,
-                                        null,
+                                        false,
                                         Timestamp.now(),
                                         Timestamp.now()
                                 );
                                 usersRef.document(currentUser.getUid())
                                         .set(newUser)
                                         .addOnCompleteListener(task1 -> {
-                                            // Redirect to user home screen
-                                            Toast.makeText(this, "Successfully created your account.", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(RegisterActivity.this, UserMainActivity.class));
+                                            currentUser.sendEmailVerification()
+                                                    .addOnCompleteListener(sendVerificationTask -> {
+                                                        if (sendVerificationTask.isSuccessful()) {
+                                                            // Email verification sent
+                                                            // Redirect to Login screen
+                                                            Toast.makeText(this, "Successfully signed up. Please check your inbox and verify your email address.", Toast.LENGTH_LONG).show();
+                                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                                        } else {
+                                                            // Error occurred
+                                                            Log.e("EmailVerification", "Failed to send verification email.", task.getException());
+                                                        }
+                                                    });
                                         })
                                         .addOnFailureListener(e -> {
                                             Toast.makeText(this, "Error occurred while creating your account. Please try again.", Toast.LENGTH_SHORT).show();

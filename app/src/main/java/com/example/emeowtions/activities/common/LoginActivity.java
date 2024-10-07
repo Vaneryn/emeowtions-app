@@ -2,6 +2,8 @@ package com.example.emeowtions.activities.common;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
@@ -18,8 +20,11 @@ import com.example.emeowtions.activities.admin.AdminMainActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.activities.veterinary.VetMainActivity;
 import com.example.emeowtions.databinding.ActivityLoginBinding;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -74,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             // Validate inputs
             boolean isValid = validateInputs(email, password);
 
-            // Log the user in if inputs are valid
+            // Log in if inputs are valid
             if (isValid) {
                 login(email, password);
             }
@@ -84,6 +90,34 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.txtSignup.setOnClickListener(view -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
+
+        //region Other listeners
+        loginBinding.edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                loginBinding.txtfieldEmail.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        loginBinding.edtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                loginBinding.txtfieldPassword.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+        //endregion
     }
 
     private boolean validateInputs(String email, String password) {
@@ -108,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         // Validate password
         // Empty input
         if (password.isEmpty()) {
-            loginBinding.txtfieldPassword.setError("Password is required");
+            loginBinding.txtfieldPassword.setError(getString(R.string.password_is_required));
             loginBinding.txtfieldPassword.requestFocus();
             return false;
         }
@@ -120,9 +154,23 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, redirect to role-based home screen
-                        Log.d(TAG, "signInWithEmail:success");
-                        redirectToHome();
+                        // Check if email is verified
+                        if (mAuth.getCurrentUser().isEmailVerified()) {
+                            // Sign in success, redirect to role-based home screen
+                            Log.d(TAG, "signInWithEmail:success");
+
+                            usersRef.document(mAuth.getUid())
+                                    .update("verified", true)
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        redirectToHome();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e(TAG, "Failed to update verification status", e);
+                                    });
+                        } else {
+                            mAuth.signOut();
+                            Toast.makeText(this, "You must verify your email address before you are permitted to log in.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         // Sign in failed
                         if (task.getException() instanceof FirebaseAuthInvalidUserException) {
@@ -145,38 +193,34 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser == null) {
             Log.w(TAG, "signInWithEmail:success but FirebaseUser returned null");
         } else {
-            usersRef.whereEqualTo("authId", currentUser.getUid())
+            usersRef.document(currentUser.getUid())
                     .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                // Get user's role
-                                User user = doc.toObject(User.class);
-                                String role = user.getRole();
+                    .addOnSuccessListener(documentSnapshot -> {
+                        User user = documentSnapshot.toObject(User.class);
+                        String role = user.getRole();
 
-                                // Redirect to appropriate MainActivity based on role
-                                Intent redirectRoleIntent;
-                                switch (role) {
-                                    case "user":
-                                        redirectRoleIntent = new Intent(this, UserMainActivity.class);
-                                        break;
-                                    case "veterinary_staff":
-                                        redirectRoleIntent = new Intent(this, VetMainActivity.class);
-                                        break;
-                                    case "admin":
-                                        redirectRoleIntent = new Intent(this, AdminMainActivity.class);
-                                        break;
-                                    default:
-                                        // Handle unknown roles or errors
-                                        redirectRoleIntent = new Intent(this, LoginActivity.class);
-                                        break;
-                                }
-                                Toast.makeText(this, "Successfully logged in.", Toast.LENGTH_SHORT).show();
-                                startActivity(redirectRoleIntent);
-                            }
+                        // Redirect to appropriate MainActivity based on role
+                        Intent redirectRoleIntent;
+
+                        if (role.equals(Role.ADMIN.getTitle())) {
+                            redirectRoleIntent = new Intent(this, AdminMainActivity.class);
+                        } else if (role.equals(Role.VETERINARY_STAFF.getTitle())) {
+                            redirectRoleIntent = new Intent(this, VetMainActivity.class);
+                        } else if (role.equals(Role.VETERINARIAN.getTitle())) {
+                            redirectRoleIntent = new Intent(this, VetMainActivity.class);
+                        } else if (role.equals(Role.USER.getTitle())) {
+                            redirectRoleIntent = new Intent(this, UserMainActivity.class);
                         } else {
-                            Toast.makeText(this, "Error checking role: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            // Handle unknown roles or errors
+                            redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
+
+                        Toast.makeText(this, "Successfully logged in.", Toast.LENGTH_SHORT).show();
+                        startActivity(redirectRoleIntent);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "signInWithEmail:success but unable to retrieve User document");
+                        Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
                     });
         }
     }
