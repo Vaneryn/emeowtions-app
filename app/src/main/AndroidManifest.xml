@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.user.AddCatActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.user.AnalysisHistoryActivity"
             android:exported="false" />
         <activity
