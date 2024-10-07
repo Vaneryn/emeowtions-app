@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/txt_welcome_back"
-                style="@style/HeadingText1"
+                style="@style/HeadingText1.SemiBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -67,7 +67,8 @@
                 android:hint="@string/password"
                 android:textColorHint="@color/gray_400"
                 app:hintTextColor="@color/primary_400"
-                app:startIconDrawable="@drawable/baseline_lock_24">
+                app:startIconDrawable="@drawable/baseline_lock_24"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_password"
@@ -100,7 +101,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login_with_google"
-                style="@style/SecondaryButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"

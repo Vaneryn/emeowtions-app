@@ -32,7 +32,7 @@
 
             <TextView
                 android:id="@+id/txt_create_account"
-                style="@style/HeadingText1"
+                style="@style/HeadingText1.SemiBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -114,7 +114,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_signup_with_google"
-                style="@style/SecondaryButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"

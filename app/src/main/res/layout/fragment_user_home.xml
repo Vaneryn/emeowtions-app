@@ -26,7 +26,7 @@
 
                 <TextView
                     android:id="@+id/txt_hdr_discover"
-                    style="@style/HeadingText2"
+                    style="@style/HeadingText2.SemiBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_1"
@@ -59,7 +59,7 @@
 
                 <TextView
                     android:id="@+id/txt_hdr_features"
-                    style="@style/HeadingText2"
+                    style="@style/HeadingText2.SemiBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_1"
@@ -68,17 +68,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/margin_small_2"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:paddingEnd="@dimen/padding_small_1"
+                    android:paddingVertical="@dimen/padding_small_1"
                     android:weightSum="2">
 
                     <!-- Emotions Card -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_feature_emotions"
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_small_1"
-                        android:layout_weight="1">
+                        android:layout_marginEnd="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -89,13 +94,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:background="@color/primary_400"
+                                android:contentDescription="@string/emotions_icon_under_features_section"
                                 android:padding="@dimen/padding_small_2"
                                 android:scaleType="center"
                                 android:src="@drawable/outline_happy_cat"
                                 app:tint="@color/white" />
 
                             <TextView
-                                style="@style/BodyTextEmphasized"
+                                style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
@@ -109,10 +115,12 @@
                     <!-- Clinics Card -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_feature_clinics"
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_small_1"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -123,13 +131,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:background="@color/primary_400"
+                                android:contentDescription="@string/clinics_icon_under_features_section"
                                 android:padding="@dimen/padding_small_2"
                                 android:scaleType="center"
                                 android:src="@drawable/baseline_veterinary_care"
                                 app:tint="@color/white" />
 
                             <TextView
-                                style="@style/BodyTextEmphasized"
+                                style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
@@ -145,16 +154,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:paddingEnd="@dimen/padding_small_1"
+                    android:paddingVertical="@dimen/padding_small_1"
                     android:weightSum="2">
 
                     <!-- Chat Card -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_feature_chat"
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_small_1"
-                        android:layout_weight="1">
+                        android:layout_marginEnd="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -165,13 +179,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:background="@color/primary_400"
+                                android:contentDescription="@string/chat_icon_under_features_section"
                                 android:padding="@dimen/padding_small_2"
                                 android:scaleType="center"
                                 android:src="@drawable/baseline_chat_24"
                                 app:tint="@color/white" />
 
                             <TextView
-                                style="@style/BodyTextEmphasized"
+                                style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
@@ -185,10 +200,12 @@
                     <!-- Clinics Card -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_feature_my_cats"
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_small_1"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -199,13 +216,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:background="@color/primary_400"
+                                android:contentDescription="@string/my_cats_icon_under_features_section"
                                 android:padding="@dimen/padding_small_2"
                                 android:scaleType="center"
                                 android:src="@drawable/baseline_cat_full"
                                 app:tint="@color/white" />
 
                             <TextView
-                                style="@style/BodyTextEmphasized"
+                                style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
@@ -229,7 +247,7 @@
 
                 <TextView
                     android:id="@+id/txt_hdr_top_clinics"
-                    style="@style/HeadingText2"
+                    style="@style/HeadingText2.SemiBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/top_clinics" />
@@ -245,7 +263,7 @@
 
                 <TextView
                     android:id="@+id/txt_hdr_messages"
-                    style="@style/HeadingText2"
+                    style="@style/HeadingText2.SemiBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/messages" />

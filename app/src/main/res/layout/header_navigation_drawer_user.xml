@@ -15,13 +15,13 @@
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView"
+            android:id="@+id/img_profile_picture"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_margin="@dimen/margin_small_2"
             app:shapeAppearanceOverlay="@style/circleImageView"
-            app:srcCompat="@drawable/baseline_person_24"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            app:srcCompat="@drawable/baseline_person_24" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,13 +33,13 @@
 
             <TextView
                 android:id="@+id/txt_drawer_username"
-                style="@style/HeadingText2"
+                style="@style/HeadingText2.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="John Smith"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:text="John Smith" />
 
             <TextView
                 android:id="@+id/txt_drawer_email"
@@ -48,8 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small_1"
                 android:layout_weight="1"
-                android:text="john.smith@gmail.com"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:text="john.smith@gmail.com" />
 
         </LinearLayout>
 
