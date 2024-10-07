@@ -13,19 +13,21 @@ public class User {
     private String gender;
     private String role;
     private String profilePicture;
-    private Date dateOfBirth;
+    private Timestamp dateOfBirth;
+    private boolean verified;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public User() {}
 
-    public User(String displayName, String email, String gender, String role, String profilePicture, Date dateOfBirth, Timestamp createdAt, Timestamp updatedAt) {
+    public User(String displayName, String email, String gender, String role, String profilePicture, Timestamp dateOfBirth, boolean verified, Timestamp createdAt, Timestamp updatedAt) {
         this.displayName = displayName;
         this.email = email;
         this.gender = gender;
         this.role = role;
         this.profilePicture = profilePicture;
         this.dateOfBirth = dateOfBirth;
+        this.verified = verified;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -50,8 +52,12 @@ public class User {
         return profilePicture;
     }
 
-    public Date getDateOfBirth() {
+    public Timestamp getDateOfBirth() {
         return dateOfBirth;
+    }
+
+    public boolean isVerified() {
+        return verified;
     }
 
     public Timestamp getCreatedAt() {
@@ -82,8 +88,12 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(Timestamp dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
@@ -92,20 +102,5 @@ public class User {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "User{" +
-                ", displayName='" + displayName + '\'' +
-                ", email='" + email + '\'' +
-                ", gender='" + gender + '\'' +
-                ", role='" + role + '\'' +
-                ", profilePicture='" + profilePicture + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }
