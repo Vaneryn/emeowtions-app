@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
 
+    implementation(libs.glide)
+
     implementation(libs.core.splashscreen)
 
     testImplementation(libs.junit)
