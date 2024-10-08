@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.activities.common.FeedbackActivity;
 import com.example.emeowtions.activities.common.LoginActivity;
@@ -167,6 +168,8 @@ public class UserMainActivity extends AppCompatActivity {
                     }
                     if (value != null && value.exists()) {
                         User user = value.toObject(User.class);
+
+                        loadProfilePicture(user.getProfilePicture(), imgDrawerProfilePicture);
                         txtDrawerDisplayName.setText(user.getDisplayName());
                         txtDrawerEmail.setText(firebaseAuthUtils.getFirebaseEmail());
                     }
@@ -217,5 +220,19 @@ public class UserMainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         firebaseAuthUtils.refreshVerification(this);
+    }
+
+    private void loadProfilePicture(String profilePictureUrl, ImageView imageView) {
+        if (profilePictureUrl == null) {
+            // Load default picture if no profile picture exists
+            Glide.with(this)
+                    .load(R.drawable.baseline_person_24)
+                    .into(imageView);
+        } else {
+            // Load original profile picture
+            Glide.with(this)
+                    .load(profilePictureUrl)
+                    .into(imageView);
+        }
     }
 }
