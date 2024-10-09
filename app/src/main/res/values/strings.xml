@@ -83,4 +83,10 @@
     <string name="description">Description</string>
     <string name="delete_cat">Delete Cat</string>
     <string name="delete_cat_message">Are you sure you want to delete %s?</string>
+    <string name="results_not_found">Results not found</string>
+    <string name="reset">Reset</string>
+    <string name="no_cats_found_message">No cats found. Try another name!</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="no_cats">No Cats</string>
+    <string name="no_cats_message">You have no cats yet.</string>
 </resources>

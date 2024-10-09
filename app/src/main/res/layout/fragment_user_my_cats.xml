@@ -84,4 +84,84 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />
 
+    <!-- No maidens? -->
+    <LinearLayout
+        android:id="@+id/layout_no_cats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_emeowtions_24"
+            app:tint="@color/gray_400" />
+
+        <TextView
+            style="@style/HeadingText1.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/no_cats" />
+
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_cats_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_cat_secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/add_cat" />
+
+    </LinearLayout>
+
+    <!-- No results -->
+    <LinearLayout
+        android:id="@+id/layout_no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_search_off_24"
+            app:tint="@color/gray_400" />
+
+        <TextView
+            style="@style/HeadingText1.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/results_not_found" />
+
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_cats_found_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_clear_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/clear_search" />
+
+    </LinearLayout>
+
 </LinearLayout>
