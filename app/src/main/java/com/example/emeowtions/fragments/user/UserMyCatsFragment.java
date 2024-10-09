@@ -104,31 +104,23 @@ public class UserMyCatsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "UserMyCatsFragment onViewCreated");
 
+        LifecycleOwner lifecycleOwner = this;
+
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         catsRef = db.collection("cats");
 
-        //region Listeners
-        myCatsBinding.btnAddCatSecondary.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), AddCatActivity.class));
-        });
-
-        myCatsBinding.btnClearSearch.setOnClickListener(view2 -> {
-            myCatsBinding.edtSearchbar.getText().clear();
-        });
-        //endregion
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        LifecycleOwner lifecycleOwner = this;
-
         //region UI setups
+        // Hide no results views
         myCatsBinding.layoutNoCats.setVisibility(View.GONE);
         myCatsBinding.layoutNoResults.setVisibility(View.GONE);
+
+        // Add equal spacing between items
+        int spanCount = 2;
+        int spacing = 25;
+        boolean includeEdge = false;
+        myCatsBinding.recyclerviewCatResults.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
         //endregion
 
         //region Load data
@@ -139,81 +131,83 @@ public class UserMyCatsFragment extends Fragment {
                         .orderBy("updatedAt", Query.Direction.DESCENDING);
 
         // Check if user has any existing cats
-        catsQuery.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.isEmpty()) {
-                        updateResultsView(true);
-                    } else {
-                        // Query data into RecyclerView
-                        FirestoreRecyclerOptions<Cat> options = new FirestoreRecyclerOptions.Builder<Cat>()
-                                .setQuery(catsQuery, Cat.class)
-                                .setLifecycleOwner(lifecycleOwner)
-                                .build();
+        catsQuery.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.w(TAG, "Failed to listen on user's cat changes", error);
+                return;
+            }
+            if (value.getDocuments().isEmpty()) {
+                updateResultsView(true);
+            } else {
+                // Query data into RecyclerView
+                FirestoreRecyclerOptions<Cat> options = new FirestoreRecyclerOptions.Builder<Cat>()
+                        .setQuery(catsQuery, Cat.class)
+                        .setLifecycleOwner(lifecycleOwner)
+                        .build();
 
-                        // Create and set adapter to RecyclerView
-                        catAdapter = new CatAdapter(options, requireContext());
-                        myCatsBinding.recyclerviewCatResults.setAdapter(catAdapter);
+                // Create and set adapter to RecyclerView
+                catAdapter = new CatAdapter(options, getContext());
+                myCatsBinding.recyclerviewCatResults.setAdapter(catAdapter);
 
-                        catAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                            @Override
-                            public void onChanged() {
-                                super.onChanged();
-                                updateResultsView(false);
-                            }
-                        });
-
-                        // Add equal spacing between items
-                        int spanCount = 2;
-                        int spacing = 25;
-                        boolean includeEdge = false;
-                        myCatsBinding.recyclerviewCatResults.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
-
-                        // Only allow searching if the user has any existing cats
-                        myCatsBinding.edtSearchbar.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                String queryText = myCatsBinding.edtSearchbar.getText().toString();
-
-                                if (queryText.isBlank()) {
-                                    // Revert to initial results
-                                    catAdapter.updateOptions(options);
-                                    myCatsBinding.layoutNoResults.setVisibility(View.GONE);
-                                } else {
-                                    // Queries for names that are either EXACT matches or START WITH the queryText
-                                    Query catsSearchQuery =
-                                            catsRef.whereEqualTo("ownerId", firebaseAuthUtils.getUid())
-                                                    .whereEqualTo("deleted", false)
-                                                    .where(Filter.or(
-                                                            Filter.equalTo("name", queryText),
-                                                            Filter.and(
-                                                                    Filter.greaterThanOrEqualTo("name", queryText),
-                                                                    Filter.lessThanOrEqualTo("name", queryText + "\uf8ff")
-                                                            )
-                                                    ))
-                                                    .orderBy("updatedAt", Query.Direction.DESCENDING);
-
-                                    FirestoreRecyclerOptions<Cat> searchOptions = new FirestoreRecyclerOptions.Builder<Cat>()
-                                            .setQuery(catsSearchQuery, Cat.class)
-                                            .setLifecycleOwner(lifecycleOwner)
-                                            .build();
-
-                                    catAdapter.updateOptions(searchOptions);
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                            }
-                        });
+                catAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        super.onChanged();
+                        updateResultsView(false);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Failed to retrieve user's cats", e);
                 });
+
+                // Only allow searching if the user has any existing cats
+                myCatsBinding.edtSearchbar.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        String queryText = myCatsBinding.edtSearchbar.getText().toString();
+
+                        if (queryText.isBlank()) {
+                            // Revert to initial results
+                            catAdapter.updateOptions(options);
+                            myCatsBinding.layoutNoResults.setVisibility(View.GONE);
+                        } else {
+                            // Queries for names that are either EXACT matches or START WITH the queryText
+                            Query catsSearchQuery =
+                                    catsRef.whereEqualTo("ownerId", firebaseAuthUtils.getUid())
+                                            .whereEqualTo("deleted", false)
+                                            .where(Filter.or(
+                                                    Filter.equalTo("name", queryText),
+                                                    Filter.and(
+                                                            Filter.greaterThanOrEqualTo("name", queryText),
+                                                            Filter.lessThanOrEqualTo("name", queryText + "\uf8ff")
+                                                    )
+                                            ))
+                                            .orderBy("updatedAt", Query.Direction.DESCENDING);
+
+                            FirestoreRecyclerOptions<Cat> searchOptions = new FirestoreRecyclerOptions.Builder<Cat>()
+                                    .setQuery(catsSearchQuery, Cat.class)
+                                    .setLifecycleOwner(lifecycleOwner)
+                                    .build();
+
+                            catAdapter.updateOptions(searchOptions);
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {}
+                });
+            }
+        });
+        //endregion
+
+        //region Listeners
+        myCatsBinding.btnAddCatSecondary.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), AddCatActivity.class));
+        });
+
+        myCatsBinding.btnClearSearch.setOnClickListener(view2 -> {
+            myCatsBinding.edtSearchbar.getText().clear();
+        });
         //endregion
     }
 
