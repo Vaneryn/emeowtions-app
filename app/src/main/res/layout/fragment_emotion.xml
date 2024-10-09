@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.5"
         app:scaleType="fillStart" />
 
-    <com.example.emeowtions.OverlayView
+    <com.example.emeowtions.utils.OverlayView
         android:id="@+id/overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"

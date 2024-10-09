@@ -22,11 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.emeowtions.BoundingBox;
-import com.example.emeowtions.ObjectDetector;
+import com.example.emeowtions.utils.BoundingBox;
+import com.example.emeowtions.utils.ObjectDetector;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentEmotionBinding;
-import com.example.emeowtions.fragments.PermissionsFragment;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
@@ -72,12 +71,12 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
 
         cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), MODEL_PATH, LABELS_PATH, this));
 
-        if (PermissionsFragment.hasPermissions(requireContext())) {
+        if (CameraPermissionsFragment.hasPermissions(requireContext())) {
             startCamera();
         } else {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new PermissionsFragment())
+                    .replace(R.id.fragment_container, new CameraPermissionsFragment())
                     .commit();
         }
 
@@ -175,10 +174,10 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         super.onResume();
 
         // Make sure all permissions are still present
-        if (!PermissionsFragment.hasPermissions(requireContext())) {
+        if (!CameraPermissionsFragment.hasPermissions(requireContext())) {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new PermissionsFragment())
+                    .replace(R.id.fragment_container, new CameraPermissionsFragment())
                     .commit();
         }
     }
@@ -186,8 +185,12 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     @Override
     public void onDestroy() {
         super.onDestroy();
-        objectDetector.close();
-        cameraExecutor.shutdown();
+
+        if (objectDetector != null)
+            objectDetector.close();
+
+        if (cameraExecutor != null)
+            cameraExecutor.shutdown();
     }
 
     @Override

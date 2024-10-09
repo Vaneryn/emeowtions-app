@@ -1,4 +1,4 @@
-package com.example.emeowtions.fragments;
+package com.example.emeowtions.fragments.user;
 
 import android.Manifest;
 import android.content.Context;
@@ -17,9 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.emeowtions.R;
-import com.example.emeowtions.fragments.user.EmotionFragment;
 
-public class PermissionsFragment extends Fragment {
+public class CameraPermissionsFragment extends Fragment {
 
     private static final String TAG = "PermissionsFragment";
 
@@ -36,7 +35,7 @@ public class PermissionsFragment extends Fragment {
                         }
                     });
 
-    public PermissionsFragment() {
+    public CameraPermissionsFragment() {
         super(R.layout.fragment_permissions);
     }
 
