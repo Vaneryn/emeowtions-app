@@ -36,22 +36,66 @@
             android:padding="@dimen/padding_small_2"
             android:orientation="horizontal">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_cat_profile_picture"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:background="@color/white"
-                android:contentDescription="@string/cat_profile_picture_upload_field"
-                android:padding="@dimen/padding_small_1"
-                app:shapeAppearanceOverlay="@style/circleImageView"
-                app:srcCompat="@drawable/ic_emeowtions"
-                app:strokeColor="@color/white"
-                app:strokeWidth="2dp"
-                app:tint="@color/gray_500" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_cat_profile_picture"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/white"
+                    android:contentDescription="@string/cat_profile_picture_upload_field"
+                    android:padding="@dimen/padding_small_1"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:srcCompat="@drawable/baseline_emeowtions_24"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="2dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_revert_profile_pic"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:padding="0dp"
+                        app:cornerRadius="4dp"
+                        app:icon="@drawable/baseline_settings_backup_restore_24"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconSize="@dimen/text_large" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_edit_profile_pic"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:padding="0dp"
+                        app:cornerRadius="4dp"
+                        app:icon="@drawable/baseline_upload_24"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconSize="@dimen/text_large"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_small_2"
                 android:orientation="vertical"
                 android:padding="@dimen/padding_small_2">
 
@@ -61,16 +105,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/name"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white" />
 
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/margin_small_2"
+                    android:layout_marginTop="@dimen/margin_small_1"
                     android:fadeScrollbars="false">
+
                     <TextView
                         android:id="@+id/txt_cat_description"
-                        style="@style/BodyText1"
+                        style="@style/BodyText2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/no_description"

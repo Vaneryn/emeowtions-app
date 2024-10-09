@@ -70,9 +70,26 @@ public class UserMainActivity extends AppCompatActivity {
             return insets;
         });
 
+        //region UI setups
         // Fix bottom navigation broken padding
         userMainBinding.userBottomNavigation.setOnApplyWindowInsetsListener(null);
         userMainBinding.userBottomNavigation.setPadding(0,0,0,0);
+
+        // Logout dialog
+        MaterialAlertDialogBuilder logoutDialog =
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.log_out)
+                        .setMessage(R.string.logout_dialog_message)
+                        .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {
+                            // Unused
+                        })
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            // Return to Login screen
+                            mAuth.signOut();
+                            Toast.makeText(this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(this, LoginActivity.class));
+                        });
+        //endregion
 
         //region onClick listeners
         // topAppBar navigationIcon: open navigation drawer
@@ -80,9 +97,7 @@ public class UserMainActivity extends AppCompatActivity {
 
         // txtLogout: sign out and redirect to login screen
         userMainBinding.txtLogout.setOnClickListener(view -> {
-            mAuth.signOut();
-            Toast.makeText(this, "Successfully signed out.", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, LoginActivity.class));
+            logoutDialog.show();
         });
         //endregion
 
@@ -225,12 +240,12 @@ public class UserMainActivity extends AppCompatActivity {
     private void loadProfilePicture(String profilePictureUrl, ImageView imageView) {
         if (profilePictureUrl == null) {
             // Load default picture if no profile picture exists
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .load(R.drawable.baseline_person_24)
                     .into(imageView);
         } else {
             // Load original profile picture
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .load(profilePictureUrl)
                     .into(imageView);
         }

@@ -7,7 +7,7 @@
     </string-array>
     <string-array name="breed_items">
         <item>Abyssinian</item>
-        <item>American Tail</item>
+        <item>American Bobtail</item>
         <item>American Bobtail Shorthair</item>
         <item>British Shorthair</item>
         <item>Siamese</item>
@@ -23,5 +23,22 @@
         <item>Yes</item>
         <item>No</item>
         <item>Unspecified</item>
+    </string-array>
+    <string-array name="sort_cats_items">
+        <item>Name (Asc.)</item>
+        <item>Name (Desc.)</item>
+        <item>Breed (Asc.)</item>
+        <item>Breed (Desc.)</item>
+        <item>Age (Asc.)</item>
+        <item>Age (Desc.)</item>
+        <item>Created (Asc.)</item>
+        <item>Created (Desc.)</item>
+        <item>Updated (Asc.)</item>
+        <item>Updated (Desc.)</item>
+    </string-array>
+    <string-array name="filter_cats_items">
+        <item>Gender (Male)</item>
+        <item>Gender (Female)</item>
+        <item>Gender (Unspecified)</item>
     </string-array>
 </resources>

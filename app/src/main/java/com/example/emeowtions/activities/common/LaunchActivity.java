@@ -72,6 +72,7 @@ public class LaunchActivity extends AppCompatActivity {
                             redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
 
+                        finish();
                         startActivity(redirectRoleIntent);
                     })
                     .addOnFailureListener(e -> {

@@ -67,6 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String originalGender;
     private Timestamp originalDateOfBirth;
     private String originalEmail;
+
     private Date selectedDateOfBirth;
     private boolean isProfilePictureChanged;
 
@@ -105,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity {
         ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
                 registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                     if (uri != null) {
-                        Glide.with(this)
+                        Glide.with(getApplicationContext())
                                 .load(uri)
                                 .into(profileBinding.imgProfilePicture);
                         isProfilePictureChanged = true;
@@ -121,10 +122,10 @@ public class ProfileActivity extends AppCompatActivity {
                         .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                         .build();
 
-        // Cancel profile edit dialog
+        // Cancel edit profile dialog
         MaterialAlertDialogBuilder cancelDialog =
                 new MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.edit_profile)
+                        .setTitle(R.string.unsaved_changes)
                         .setMessage(R.string.edit_profile_cancel_message)
                         .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {
                             // Do nothing
@@ -237,6 +238,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // btnConfirmEditProfile: update profile
         profileBinding.btnConfirmEditProfile.setOnClickListener(view -> {
+            // Get inputs
             byte[] profilePictureData = null;
             if (isProfilePictureChanged) {
                 profileBinding.imgProfilePicture.setDrawingCacheEnabled(true);
@@ -320,7 +322,6 @@ public class ProfileActivity extends AppCompatActivity {
                         // Profile Fields
                         profileBinding.edtDisplayName.setText(user.getDisplayName());
                         profileBinding.edmGender.setText(user.getGender(), false);
-                        profileBinding.txtfieldDateofbirth.setEndIconVisible(false);
                         profileBinding.edtDateofbirth.setText(user.getDateOfBirth() == null ? getString(R.string.not_set) : sdf.format(user.getDateOfBirth().toDate()));
                         profileBinding.edtEmail.setText(firebaseAuthUtils.getFirebaseEmail());
                     }
@@ -344,12 +345,12 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadProfilePicture(String profilePictureUrl) {
         if (profilePictureUrl == null) {
             // Load default picture if no profile picture exists
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .load(R.drawable.baseline_person_24)
                     .into(profileBinding.imgProfilePicture);
         } else {
             // Load original profile picture
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .load(profilePictureUrl)
                     .into(profileBinding.imgProfilePicture);
         }
@@ -550,6 +551,7 @@ public class ProfileActivity extends AppCompatActivity {
         profileBinding.txtfieldGender.setEnabled(enabled);
         profileBinding.txtfieldDateofbirth.setEnabled(enabled);
         profileBinding.txtfieldEmail.setEnabled(enabled);
+
         profileBinding.edtDisplayName.setTextColor(textColor);
         profileBinding.edmGender.setTextColor(textColor);
         profileBinding.edtDateofbirth.setTextColor(textColor);
@@ -566,7 +568,8 @@ public class ProfileActivity extends AppCompatActivity {
         profileBinding.edtDisplayName.setText(originalDisplayName);
         profileBinding.edmGender.setText(originalGender, false);
         profileBinding.edtDateofbirth.setText(originalDateOfBirth == null ? getString(R.string.not_set) : sdf.format(originalDateOfBirth.toDate()));
-        selectedDateOfBirth = null;
         profileBinding.edtEmail.setText(originalEmail);
+
+        selectedDateOfBirth = null;
     }
 }

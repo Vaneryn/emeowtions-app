@@ -72,4 +72,15 @@
     <string name="enter_password">Enter password</string>
     <string name="dialog_password_message">Provide your password to update email address</string>
     <string name="password_is_required">Password is required</string>
+    <string name="cancel_dialog_generic_message">Are you sure you want to cancel?</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="cancel_cat_creation">Cancel Cat Creation</string>
+    <string name="logout_dialog_message">Are you sure you want to log out?</string>
+    <string name="cat_profile">Cat Profile</string>
+    <string name="edit_cat_profile">Edit Cat Profile</string>
+    <string name="cat_profile_picture">Cat profile picture</string>
+    <string name="cat_placeholder_name">Nekomata Okayu</string>
+    <string name="description">Description</string>
+    <string name="delete_cat">Delete Cat</string>
+    <string name="delete_cat_message">Are you sure you want to delete %s?</string>
 </resources>

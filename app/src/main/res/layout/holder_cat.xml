@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="1dp"
+    android:clipToPadding="false">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cat_holder_body"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_cat_profile_picture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@color/secondary_100"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_emeowtions_24" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_name"
+                        style="@style/HeadingText3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        android:lines="2"
+                        tools:text="Nekomata Okayu" />
+
+                    <ImageView
+                        android:id="@+id/img_gender_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        tools:src="@drawable/baseline_female_24"
+                        tools:tint="@color/secondary_300"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_breed"
+                        style="@style/BodyText2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small_1"
+                        android:layout_marginEnd="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        android:lines="2"
+                        android:gravity="bottom"
+                        tools:text="Yokai" />
+
+                    <TextView
+                        android:id="@+id/txt_age"
+                        style="@style/BodyText3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/margin_small_1"
+                        android:gravity="bottom"
+                        tools:text="2 yo" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

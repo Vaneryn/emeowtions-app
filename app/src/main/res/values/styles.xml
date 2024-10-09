@@ -24,6 +24,17 @@
     <style name="HeadingText2.Bold" parent="HeadingText2">
         <item name="android:fontFamily">@font/archivo_bold</item>
     </style>
+    <style name="HeadingText3" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textSize">@dimen/text_medium_1</item>
+    </style>
+    <style name="HeadingText3.SemiBold" parent="HeadingText2">
+        <item name="android:fontFamily">@font/archivo_semibold</item>
+    </style>
+    <style name="HeadingText3.Bold" parent="HeadingText2">
+        <item name="android:fontFamily">@font/archivo_bold</item>
+    </style>
     <!-- BodyText -->
     <style name="BodyText1" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/inter</item>

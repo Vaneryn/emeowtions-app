@@ -9,27 +9,29 @@ public class Cat {
     private String breed;
     private Timestamp dateOfBirth;
     private String background;
-    private boolean hasMedicalConditions;
+    private String medicalConditions;
     private String description;
     private String profilePicture;
     private String ownerId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private boolean deleted;
 
     public Cat() {}
 
-    public Cat(String name, String gender, String breed, Timestamp dateOfBirth, String background, boolean hasMedicalConditions, String description, String profilePicture, String ownerId, Timestamp createdAt, Timestamp updatedAt) {
+    public Cat(String name, String gender, String breed, Timestamp dateOfBirth, String background, String medicalConditions, String description, String profilePicture, String ownerId, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.name = name;
         this.gender = gender;
         this.breed = breed;
         this.dateOfBirth = dateOfBirth;
         this.background = background;
-        this.hasMedicalConditions = hasMedicalConditions;
+        this.medicalConditions = medicalConditions;
         this.description = description;
         this.profilePicture = profilePicture;
         this.ownerId = ownerId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.deleted = deleted;
     }
 
     public String getName() {
@@ -52,8 +54,8 @@ public class Cat {
         return background;
     }
 
-    public boolean isHasMedicalConditions() {
-        return hasMedicalConditions;
+    public String getMedicalConditions() {
+        return medicalConditions;
     }
 
     public String getDescription() {
@@ -76,6 +78,10 @@ public class Cat {
         return updatedAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -96,8 +102,8 @@ public class Cat {
         this.background = background;
     }
 
-    public void setHasMedicalConditions(boolean hasMedicalConditions) {
-        this.hasMedicalConditions = hasMedicalConditions;
+    public void setMedicalConditions(String medicalConditions) {
+        this.medicalConditions = medicalConditions;
     }
 
     public void setDescription(String description) {
@@ -118,5 +124,9 @@ public class Cat {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

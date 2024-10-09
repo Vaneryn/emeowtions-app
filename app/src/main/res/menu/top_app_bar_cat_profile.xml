@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_delete_cat"
+        android:title="@string/delete_cat"
+        android:icon="@drawable/baseline_delete_outline_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/action_edit_cat_profile"
+        android:title="@string/edit_cat_profile"
+        android:icon="@drawable/baseline_edit_square_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom" />
+</menu>

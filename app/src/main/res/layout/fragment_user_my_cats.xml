@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="@dimen/padding_screen_edge"
-    android:paddingBottom="@dimen/padding_screen_edge"
     tools:context=".fragments.user.UserMyCatsFragment">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -14,7 +12,8 @@
         style="@style/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small_2"
+        android:layout_marginHorizontal="@dimen/padding_screen_edge"
+        android:layout_marginBottom="@dimen/margin_medium_2"
         android:hint="@string/enter_cat_name_to_search">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -25,53 +24,64 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_medium_2"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="2">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="@dimen/padding_screen_edge"-->
+<!--        android:layout_marginBottom="@dimen/margin_medium_2"-->
+<!--        android:baselineAligned="false"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:weightSum="2">-->
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtfield_menu_sort"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="@dimen/margin_large"
-            android:layout_weight="1"
-            android:hint="@string/sort">
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/txtfield_menu_sort"-->
+<!--            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="@dimen/margin_large"-->
+<!--            android:layout_weight="1"-->
+<!--            android:hint="@string/sort">-->
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textSize="@dimen/text_medium_1" />
+<!--            <AutoCompleteTextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:inputType="none"-->
+<!--                android:lines="1"-->
+<!--                android:textSize="@dimen/text_small_3"-->
+<!--                app:simpleItems="@array/sort_cats_items" />-->
 
-        </com.google.android.material.textfield.TextInputLayout>
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtfield_menu_filter"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:hint="@string/filter">
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/txtfield_menu_filter"-->
+<!--            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:hint="@string/filter">-->
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textSize="@dimen/text_medium_1" />
+<!--            <AutoCompleteTextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:inputType="none"-->
+<!--                android:lines="1"-->
+<!--                android:textSize="@dimen/text_small_3"-->
+<!--                app:simpleItems="@array/filter_cats_items"/>-->
 
-        </com.google.android.material.textfield.TextInputLayout>
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_cat_results"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false" />
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/padding_screen_edge"
+        android:paddingBottom="@dimen/padding_screen_edge"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideInset"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2" />
 
 </LinearLayout>

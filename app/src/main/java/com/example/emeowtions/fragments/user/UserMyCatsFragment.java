@@ -5,18 +5,28 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.CatAdapter;
 import com.example.emeowtions.databinding.FragmentUserMyCatsBinding;
-import com.google.android.material.appbar.MaterialToolbar;
+import com.example.emeowtions.models.Cat;
+import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.example.emeowtions.utils.GridSpacingItemDecoration;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +37,12 @@ public class UserMyCatsFragment extends Fragment {
 
     private static final String TAG = "UserMyCatsFragment";
 
-    private FragmentUserMyCatsBinding fragmentUserMyCatsBinding;
+    private FirebaseAuthUtils firebaseAuthUtils;
+    private FirebaseFirestore db;
+    private CollectionReference catsRef;
+
+    private FragmentUserMyCatsBinding myCatsBinding;
+    private CatAdapter catAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,13 +86,81 @@ public class UserMyCatsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentUserMyCatsBinding = FragmentUserMyCatsBinding.inflate(inflater, container, false);
-        return fragmentUserMyCatsBinding.getRoot();
+        myCatsBinding = FragmentUserMyCatsBinding.inflate(inflater, container, false);
+        return myCatsBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "UserMyCatsFragment onViewCreated");
+
+        LifecycleOwner lifecycleOwner = this;
+        // Initialize Firebase service instances
+        firebaseAuthUtils = new FirebaseAuthUtils();
+        db = FirebaseFirestore.getInstance();
+        catsRef = db.collection("cats");
+
+        //region Load data
+        // Query user's cats
+        Query catsQuery =
+                catsRef.whereEqualTo("ownerId", firebaseAuthUtils.getUid())
+                        .whereEqualTo("deleted", false)
+                        .orderBy("updatedAt", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<Cat> options = new FirestoreRecyclerOptions.Builder<Cat>()
+                .setQuery(catsQuery, Cat.class)
+                .setLifecycleOwner(lifecycleOwner)
+                .build();
+
+        // Create and set adapter to RecyclerView
+        catAdapter = new CatAdapter(options, requireContext());
+        myCatsBinding.recyclerviewCatResults.setAdapter(catAdapter);
+
+        // Add equal spacing between items
+        int spanCount = 2;
+        int spacing = 25;
+        boolean includeEdge = false;
+        myCatsBinding.recyclerviewCatResults.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        //endregion
+
+        //region Listeners
+        myCatsBinding.edtSearchbar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String queryText = myCatsBinding.edtSearchbar.getText().toString();
+
+                if (queryText.isBlank()) {
+                    catAdapter.updateOptions(options);
+                } else {
+                    // Queries for names that are either EXACT matches or START WITH the queryText
+                    Query catsSearchQuery =
+                            catsRef.whereEqualTo("ownerId", firebaseAuthUtils.getUid())
+                                    .whereEqualTo("deleted", false)
+                                    .where(Filter.or(
+                                            Filter.equalTo("name", queryText),
+                                            Filter.and(
+                                                    Filter.greaterThanOrEqualTo("name", queryText),
+                                                    Filter.lessThanOrEqualTo("name", queryText + "\uf8ff")
+                                            )
+                                    ))
+                                    .orderBy("updatedAt", Query.Direction.DESCENDING);
+
+                    FirestoreRecyclerOptions<Cat> searchOptions = new FirestoreRecyclerOptions.Builder<Cat>()
+                            .setQuery(catsSearchQuery, Cat.class)
+                            .setLifecycleOwner(lifecycleOwner)
+                            .build();
+
+                    catAdapter.updateOptions(searchOptions);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+        //endregion
     }
 }
