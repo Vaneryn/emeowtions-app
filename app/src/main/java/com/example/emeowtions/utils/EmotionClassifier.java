@@ -84,7 +84,6 @@ public class EmotionClassifier {
         // Initialize image processor
         imageProcessor = new ImageProcessor.Builder()
                 .add(new ResizeOp(tensorHeight, tensorWidth, ResizeOp.ResizeMethod.BILINEAR))
-                .add(new NormalizeOp(INPUT_MEAN, INPUT_STANDARD_DEVIATION))
                 .add(new CastOp(inputDataType))
                 .build();
 

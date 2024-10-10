@@ -327,6 +327,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         getActivity().runOnUiThread(() -> {
             toggleDetectionText(true);
             emotionBinding.overlay.clear();
+            isCatDetected = false;
         });
     }
 
