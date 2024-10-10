@@ -140,13 +140,13 @@ public class ObjectDetector {
         }
     }
 
-    public void close() {
+    public synchronized void close() {
         isClosed = true;
         interpreter.close();
     }
 
-    public void detect(Bitmap frame) {
-        if (isClosed) {
+    public synchronized void detect(Bitmap frame) {
+        if (interpreter == null || isClosed) {
             return;
         }
 
@@ -155,24 +155,26 @@ public class ObjectDetector {
         }
 
         try {
-            long inferenceTime = SystemClock.uptimeMillis();
+            if (interpreter != null) {
+                long inferenceTime = SystemClock.uptimeMillis();
 
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false);
 
-            TensorImage tensorImage = new TensorImage(INPUT_IMAGE_TYPE);
-            tensorImage.load(resizedBitmap);
-            TensorImage processedImage = imageProcessor.process(tensorImage);
-            TensorBuffer output = TensorBuffer.createFixedSize(new int[]{1, numChannel, numElements}, OUTPUT_IMAGE_TYPE);
+                TensorImage tensorImage = new TensorImage(INPUT_IMAGE_TYPE);
+                tensorImage.load(resizedBitmap);
+                TensorImage processedImage = imageProcessor.process(tensorImage);
+                TensorBuffer output = TensorBuffer.createFixedSize(new int[]{1, numChannel, numElements}, OUTPUT_IMAGE_TYPE);
 
-            interpreter.run(processedImage.getBuffer(), output.getBuffer());
+                interpreter.run(processedImage.getBuffer(), output.getBuffer());
 
-            List<BoundingBox> bestBoxes = bestBox(output.getFloatArray());
-            inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
+                List<BoundingBox> bestBoxes = bestBox(output.getFloatArray());
+                inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
 
-            if (bestBoxes == null || bestBoxes.isEmpty()) {
-                detectorListener.onEmptyDetect();
-            } else {
-                detectorListener.onDetect(bestBoxes, inferenceTime);
+                if (bestBoxes == null || bestBoxes.isEmpty()) {
+                    detectorListener.onEmptyDetect();
+                } else {
+                    detectorListener.onDetect(bestBoxes, inferenceTime);
+                }
             }
         } catch (IllegalStateException e) {
             Log.e(TAG, e.getMessage());

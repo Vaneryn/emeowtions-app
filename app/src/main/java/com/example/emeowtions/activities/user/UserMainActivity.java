@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +38,7 @@ public class UserMainActivity extends AppCompatActivity {
 
     private static final String TAG = "UserMainActivity";
     private ActivityUserMainBinding userMainBinding;
+    private Fragment selectedFragment;
 
     private FirebaseAuth mAuth;
     private FirebaseAuthUtils firebaseAuthUtils;
@@ -74,6 +76,20 @@ public class UserMainActivity extends AppCompatActivity {
         // Fix bottom navigation broken padding
         userMainBinding.userBottomNavigation.setOnApplyWindowInsetsListener(null);
         userMainBinding.userBottomNavigation.setPadding(0,0,0,0);
+
+        // Initialize Fragments
+        UserHomeFragment userHomeFragment = new UserHomeFragment();
+        UserClinicsFragment userClinicsFragment = new UserClinicsFragment();
+        UserChatListFragment userChatListFragment = new UserChatListFragment();
+        UserMyCatsFragment userMyCatsFragment = new UserMyCatsFragment();
+
+        createFragment(userHomeFragment);
+        createFragment(userClinicsFragment);
+        createFragment(userChatListFragment);
+        createFragment(userMyCatsFragment);
+
+        selectedFragment = userHomeFragment;
+        showFragment(selectedFragment);
 
         // Logout dialog
         MaterialAlertDialogBuilder logoutDialog =
@@ -135,27 +151,31 @@ public class UserMainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             userMainBinding.topAppBar.getMenu().clear();
 
+            // If current fragment is EmotionFragment, replace it to destroy it and prevent object detector from running in background
+            boolean toReplace = selectedFragment.getClass() == EmotionFragment.class;
+
             if (itemId == R.id.home_item) {
                 userMainBinding.topAppBar.setTitle(R.string.home);
-                fragmentManager.beginTransaction().replace(R.id.userScreenFragmentContainer, UserHomeFragment.class, null).commit();
+                changeFragment(userHomeFragment, toReplace);
                 return true;
             } else if (itemId == R.id.emotions_item) {
-                // TODO: Crashes if you leave this fragment
                 userMainBinding.topAppBar.setTitle(R.string.emotions);
-                fragmentManager.beginTransaction().replace(R.id.userScreenFragmentContainer, EmotionFragment.class, null).commit();
+                EmotionFragment emotionFragment = new EmotionFragment();
+                createFragment(emotionFragment);
+                changeFragment(emotionFragment, toReplace);
                 return true;
             } else if (itemId == R.id.clinics_item) {
                 userMainBinding.topAppBar.setTitle(R.string.clinics);
-                fragmentManager.beginTransaction().replace(R.id.userScreenFragmentContainer, UserClinicsFragment.class, null).commit();
+                changeFragment(userClinicsFragment, toReplace);
                 return true;
             } else if (itemId == R.id.chat_item) {
                 userMainBinding.topAppBar.setTitle(R.string.chat);
-                fragmentManager.beginTransaction().replace(R.id.userScreenFragmentContainer, UserChatListFragment.class, null).commit();
+                changeFragment(userChatListFragment, toReplace);
                 return true;
             } else if (itemId == R.id.my_cats_item) {
                 userMainBinding.topAppBar.setTitle(R.string.my_cats);
                 userMainBinding.topAppBar.inflateMenu(R.menu.top_app_bar_mycats);
-                fragmentManager.beginTransaction().replace(R.id.userScreenFragmentContainer, UserMyCatsFragment.class, null).commit();
+                changeFragment(userMyCatsFragment, toReplace);
                 return true;
             }
 
@@ -235,6 +255,41 @@ public class UserMainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         firebaseAuthUtils.refreshVerification(this);
+    }
+
+    private void createFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.userScreenFragmentContainer, fragment)
+                .hide(fragment)
+                .commit();
+    }
+
+    private void removeFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .remove(fragment)
+                .commit();
+    }
+
+    private void showFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .show(fragment)
+                .commit();
+    }
+
+    private void hideFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .hide(fragment)
+                .commit();
+    }
+
+    private void changeFragment(Fragment fragment, boolean replace) {
+        hideFragment(selectedFragment);
+
+        if (replace) {
+            removeFragment(selectedFragment);
+        }
+        selectedFragment = fragment;
+        showFragment(fragment);
     }
 
     private void loadProfilePicture(String profilePictureUrl, ImageView imageView) {

@@ -89,4 +89,10 @@
     <string name="clear_search">Clear Search</string>
     <string name="no_cats">No Cats</string>
     <string name="no_cats_message">You have no cats yet.</string>
+    <string name="settings">Settings</string>
+    <string name="mode">Mode</string>
+    <string name="cat">Cat</string>
+    <string name="generate_analysis">Generate Analysis</string>
+    <string name="upload">Upload</string>
+    <string name="clear">Clear</string>
 </resources>

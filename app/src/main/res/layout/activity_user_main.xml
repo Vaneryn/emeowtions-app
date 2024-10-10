@@ -29,7 +29,6 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/userScreenFragmentContainer"
-            android:name="com.example.emeowtions.fragments.user.UserHomeFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

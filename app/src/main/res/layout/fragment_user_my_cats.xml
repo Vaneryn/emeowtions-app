@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/padding_screen_edge"
         android:layout_marginBottom="@dimen/margin_medium_2"
-        android:hint="@string/enter_cat_name_to_search">
+        android:hint="@string/enter_cat_name_to_search"
+        app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_searchbar"
@@ -24,6 +25,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Sorting and Filter Options -->
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->

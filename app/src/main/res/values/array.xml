@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Data Model -->
     <string-array name="gender_items">
         <item>Male</item>
         <item>Female</item>
@@ -24,6 +25,7 @@
         <item>No</item>
         <item>Unspecified</item>
     </string-array>
+    <!-- Query -->
     <string-array name="sort_cats_items">
         <item>Name (Asc.)</item>
         <item>Name (Desc.)</item>
@@ -40,5 +42,10 @@
         <item>Gender (Male)</item>
         <item>Gender (Female)</item>
         <item>Gender (Unspecified)</item>
+    </string-array>
+    <!-- EmotionFragment -->
+    <string-array name="emotion_analysis_mode_items">
+        <item>Upload Image</item>
+        <item>Use Camera</item>
     </string-array>
 </resources>

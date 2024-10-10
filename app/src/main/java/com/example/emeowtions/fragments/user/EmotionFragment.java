@@ -1,6 +1,7 @@
 package com.example.emeowtions.fragments.user;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -21,12 +22,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
+import com.example.emeowtions.activities.user.EmotionAnalysisActivity;
 import com.example.emeowtions.utils.BoundingBox;
+import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.example.emeowtions.utils.ObjectDetector;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentEmotionBinding;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,9 +43,20 @@ import java.util.concurrent.Executors;
 
 public class EmotionFragment extends Fragment implements ObjectDetector.DetectorListener {
 
-    private FragmentEmotionBinding fragmentEmotionBinding;
-    private boolean isFrontCamera = false;
+    private FragmentEmotionBinding emotionBinding;
 
+    private FirebaseAuthUtils firebaseAuthUtils;
+    private FirebaseFirestore db;
+    private CollectionReference catsRef;
+
+    // Mode Control
+    private boolean isUploadMode;
+    private boolean isCameraMode;
+
+    // Upload Mode Variables
+
+    // Camera Mode Variables
+    private boolean isFrontCamera = false;
     private Preview preview;
     private ImageAnalysis imageAnalyzer;
     private Camera camera;
@@ -57,8 +76,8 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentEmotionBinding = FragmentEmotionBinding.inflate(inflater, container, false);
-        return fragmentEmotionBinding.getRoot();
+        emotionBinding = FragmentEmotionBinding.inflate(inflater, container, false);
+        return emotionBinding.getRoot();
     }
 
     @Override
@@ -66,25 +85,81 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize background executor
-        cameraExecutor = Executors.newSingleThreadExecutor();
+        // Initialize Firebase service instances
+        firebaseAuthUtils = new FirebaseAuthUtils();
+        db = FirebaseFirestore.getInstance();
+        // Initialize Firestore references
+        catsRef = db.collection("cats");
 
-        cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), MODEL_PATH, LABELS_PATH, this));
+        //region UI Setups
+        // Default mode
+        isUploadMode = true;
+        isCameraMode = !isUploadMode;
 
-        if (CameraPermissionsFragment.hasPermissions(requireContext())) {
-            startCamera();
-        } else {
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new CameraPermissionsFragment())
-                    .commit();
-        }
+        // Load default dropdown menu selections
+        emotionBinding.edmMode.setText(getResources().getStringArray(R.array.emotion_analysis_mode_items)[0], false);
+        emotionBinding.edmSelectedCat.setText(getString(R.string.unspecified), false);
 
+        toggleCameraExecutor(true);
+        //endregion
+
+        // Listeners
         bindListeners();
     }
 
     private void bindListeners() {
         // TODO
+
+        // edmMode: switch mode
+        emotionBinding.edmMode.setOnItemClickListener((adapterView, view, i, l) -> {
+            String selectedMode = adapterView.getItemAtPosition(i).toString();
+
+            if (selectedMode.equals(getResources().getStringArray(R.array.emotion_analysis_mode_items)[0])) {
+                // Upload Mode
+                isUploadMode = true;
+                isCameraMode = !isUploadMode;
+                emotionBinding.layoutUploadMode.setVisibility(View.VISIBLE);
+                emotionBinding.layoutCameraMode.setVisibility(View.GONE);
+            } else {
+                // Camera Mode
+                isCameraMode = true;
+                isUploadMode = !isCameraMode;
+                emotionBinding.layoutCameraMode.setVisibility(View.VISIBLE);
+                emotionBinding.layoutUploadMode.setVisibility(View.GONE);
+            }
+        });
+
+        // btnGenerateAnalysis: generate analysis report
+        emotionBinding.btnGenerateAnalysis.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), EmotionAnalysisActivity.class));
+        });
+    }
+
+    private void toggleCameraExecutor(boolean enabled) {
+        if (enabled) {
+            // Initialize background camera executor and detector
+            cameraExecutor = Executors.newSingleThreadExecutor();
+
+            cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), MODEL_PATH, LABELS_PATH, this));
+
+            if (CameraPermissionsFragment.hasPermissions(requireContext())) {
+                startCamera();
+            } else {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new CameraPermissionsFragment())
+                        .commit();
+            }
+        } else {
+            // Shut down background camera executor and object detector
+            cameraProvider.unbindAll();
+
+            if (objectDetector != null)
+                objectDetector.close();
+
+            if (cameraExecutor != null && !cameraExecutor.isShutdown())
+                cameraExecutor.shutdownNow();
+        }
     }
 
     private void startCamera() {
@@ -107,7 +182,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             throw new IllegalStateException("Camera initialization failed.");
         }
 
-        int rotation = fragmentEmotionBinding.viewFinder.getDisplay().getRotation();
+        int rotation = emotionBinding.viewFinder.getDisplay().getRotation();
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -121,7 +196,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         imageAnalyzer = new ImageAnalysis.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setTargetRotation(fragmentEmotionBinding.viewFinder.getDisplay().getRotation())
+                .setTargetRotation(emotionBinding.viewFinder.getDisplay().getRotation())
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build();
 
@@ -163,7 +238,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                     imageAnalyzer
             );
 
-            preview.setSurfaceProvider(fragmentEmotionBinding.viewFinder.getSurfaceProvider());;
+            preview.setSurfaceProvider(emotionBinding.viewFinder.getSurfaceProvider());;
         } catch (Exception e) {
             Log.e(TAG, "Use case binding failed", e);
         }
@@ -185,27 +260,22 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (objectDetector != null)
-            objectDetector.close();
-
-        if (cameraExecutor != null)
-            cameraExecutor.shutdown();
+        toggleCameraExecutor(false);
     }
 
     @Override
     public void onEmptyDetect() {
         getActivity().runOnUiThread(() -> {
-            fragmentEmotionBinding.overlay.clear();
+            emotionBinding.overlay.clear();
         });
     }
 
     @Override
     public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
         getActivity().runOnUiThread(() -> {
-            fragmentEmotionBinding.inferenceTime.setText(inferenceTime + "ms");
-            fragmentEmotionBinding.overlay.setResults(boundingBoxes);
-            fragmentEmotionBinding.overlay.invalidate();
+            emotionBinding.inferenceTime.setText(inferenceTime + "ms");
+            emotionBinding.overlay.setResults(boundingBoxes);
+            emotionBinding.overlay.invalidate();
         });
     }
 
