@@ -29,10 +29,10 @@
         <item name="android:textColor">@color/gray_600</item>
         <item name="android:textSize">@dimen/text_medium_1</item>
     </style>
-    <style name="HeadingText3.SemiBold" parent="HeadingText2">
+    <style name="HeadingText3.SemiBold" parent="HeadingText3">
         <item name="android:fontFamily">@font/archivo_semibold</item>
     </style>
-    <style name="HeadingText3.Bold" parent="HeadingText2">
+    <style name="HeadingText3.Bold" parent="HeadingText3">
         <item name="android:fontFamily">@font/archivo_bold</item>
     </style>
     <!-- BodyText -->

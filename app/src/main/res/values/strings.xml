@@ -95,4 +95,17 @@
     <string name="generate_analysis">Generate Analysis</string>
     <string name="upload">Upload</string>
     <string name="clear">Clear</string>
+    <string name="emotion_analysis">Emotion Analysis</string>
+    <string name="no_cat_detected">No cat detected</string>
+    <string name="body_language">Body Language</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="summary">Summary</string>
+    <string name="emotion">Emotion</string>
+    <string name="back">Back</string>
+    <string name="no_recommendations">No recommendations</string>
+    <string name="no_recommendations_message">No appropriate recommendations generated</string>
+    <string name="no_results">No Results</string>
+    <string name="no_body_language_detected">No body language detected</string>
+    <string name="save_analysis">Save Analysis</string>
+    <string name="rate_analysis">Rate Analysis</string>
 </resources>

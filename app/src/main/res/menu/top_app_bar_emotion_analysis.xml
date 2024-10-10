@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_rate_analysis"
+        android:title="@string/rate_analysis"
+        android:icon="@drawable/baseline_rate_review_24"
+        app:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/action_save_analysis"
+        android:title="@string/save_analysis"
+        android:icon="@drawable/baseline_save_24"
+        app:showAsAction="ifRoom">
+    </item>
+</menu>

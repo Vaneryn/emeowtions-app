@@ -6,8 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
@@ -15,6 +19,7 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -23,9 +28,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.emeowtions.activities.user.EmotionAnalysisActivity;
 import com.example.emeowtions.utils.BoundingBox;
+import com.example.emeowtions.utils.EmotionClassifier;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.example.emeowtions.utils.ObjectDetector;
 import com.example.emeowtions.R;
@@ -36,6 +45,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -54,16 +64,22 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     private boolean isCameraMode;
 
     // Upload Mode Variables
+    private boolean isImageUploaded;
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
-    // Camera Mode Variables
+    // Camera Mode + ObjectDetector Variables
     private boolean isFrontCamera = false;
     private Preview preview;
     private ImageAnalysis imageAnalyzer;
     private Camera camera;
     private ProcessCameraProvider cameraProvider;
     private ObjectDetector objectDetector;
-
     private ExecutorService cameraExecutor;
+
+    // EmotionClassifier Variables
+    EmotionClassifier emotionClassifier;
+    private ArrayList<String> predictedLabels;
+    private boolean isCatDetected;
 
     public EmotionFragment() {
         super(R.layout.fragment_emotion);
@@ -95,12 +111,30 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         // Default mode
         isUploadMode = true;
         isCameraMode = !isUploadMode;
+        isImageUploaded = false;
+        isCatDetected = false;
 
         // Load default dropdown menu selections
         emotionBinding.edmMode.setText(getResources().getStringArray(R.array.emotion_analysis_mode_items)[0], false);
         emotionBinding.edmSelectedCat.setText(getString(R.string.unspecified), false);
 
+        // Start emotion classifier, object detector, and camera executor
+        emotionClassifier = new EmotionClassifier(requireContext(), EMEOWTIONS_MODEL_PATH, EMEOWTIONS_LABELS_PATH);
         toggleCameraExecutor(true);
+
+        // Create photo picker
+        pickMedia =
+                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                    if (uri != null) {
+                        emotionBinding.imgUploadView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        Glide.with(getActivity().getApplicationContext())
+                                .load(uri)
+                                .into(emotionBinding.imgUploadView);
+                        isImageUploaded = true;
+                    } else {
+                        Log.d(TAG, "PhotoPicker - No media selected");
+                    }
+                });
         //endregion
 
         // Listeners
@@ -129,18 +163,39 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             }
         });
 
+        // btnClear: clear image
+        emotionBinding.btnClear.setOnClickListener(view -> {
+            emotionBinding.imgUploadView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            emotionBinding.imgUploadView.setImageDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(), R.drawable.baseline_emeowtions_24));
+            isImageUploaded = false;
+        });
+
+        // btnUpload: upload image
+        emotionBinding.btnUpload.setOnClickListener(view -> {
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
+
         // btnGenerateAnalysis: generate analysis report
         emotionBinding.btnGenerateAnalysis.setOnClickListener(view -> {
-            startActivity(new Intent(getContext(), EmotionAnalysisActivity.class));
+            if (isCatDetected) {
+                Intent intent = new Intent(getContext(), EmotionAnalysisActivity.class);
+                intent.putExtra(KEY_CAT_ID, "");
+                intent.putStringArrayListExtra(KEY_PREDICTED_LABELS, predictedLabels);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "No cat detected. Unable to generate analysis.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void toggleCameraExecutor(boolean enabled) {
         if (enabled) {
-            // Initialize background camera executor and detector
+            // Initialize background camera executor and object detector
             cameraExecutor = Executors.newSingleThreadExecutor();
 
-            cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), MODEL_PATH, LABELS_PATH, this));
+            cameraExecutor.execute(() -> objectDetector = new ObjectDetector(requireContext(), YOLOV8N_MODEL_PATH, YOLOV8N_LABELS_PATH, this));
 
             if (CameraPermissionsFragment.hasPermissions(requireContext())) {
                 startCamera();
@@ -151,7 +206,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                         .commit();
             }
         } else {
-            // Shut down background camera executor and object detector
+            // Shut down object detector and camera executor
             cameraProvider.unbindAll();
 
             if (objectDetector != null)
@@ -260,12 +315,17 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (emotionClassifier != null)
+            emotionClassifier.close();
+
         toggleCameraExecutor(false);
     }
 
     @Override
     public void onEmptyDetect() {
         getActivity().runOnUiThread(() -> {
+            toggleDetectionText(true);
             emotionBinding.overlay.clear();
         });
     }
@@ -273,14 +333,68 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     @Override
     public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
         getActivity().runOnUiThread(() -> {
+            // Set detection results in overlay
+            toggleDetectionText(false);
             emotionBinding.inferenceTime.setText(inferenceTime + "ms");
             emotionBinding.overlay.setResults(boundingBoxes);
             emotionBinding.overlay.invalidate();
+
+            // Classify cat emotion and body langauge
+            for (BoundingBox boundingBox : boundingBoxes) {
+                Bitmap sourceImage = emotionBinding.viewFinder.getBitmap();
+
+                if (sourceImage != null) {
+                    Bitmap croppedBitmap = cropBitmap(sourceImage, boundingBox);
+                    predictedLabels = emotionClassifier.predict(croppedBitmap);
+                }
+            }
+
+            isCatDetected = !boundingBoxes.isEmpty();
         });
+    }
+
+    private Bitmap cropBitmap(Bitmap sourceBitmap, BoundingBox boundingBox) {
+        // Get the width and height of the source image
+        int imageWidth = sourceBitmap.getWidth();
+        int imageHeight = sourceBitmap.getHeight();
+
+        // Convert normalized float coordinates to pixel values
+        int left = (int) (boundingBox.getX1() * imageWidth);
+        int top = (int) (boundingBox.getY1() * imageHeight);
+        int right = (int) (boundingBox.getX2() * imageWidth);
+        int bottom = (int) (boundingBox.getY2() * imageHeight);
+
+        // Ensure the crop coordinates are within the image bounds
+        left = Math.max(0, left);
+        top = Math.max(0, top);
+        right = Math.min(imageWidth, right);
+        bottom = Math.min(imageHeight, bottom);
+
+        // Calculate the width and height of the cropped area
+        int cropWidth = right - left;
+        int cropHeight = bottom - top;
+
+        // Create and return the cropped bitmap
+        return Bitmap.createBitmap(sourceBitmap, left, top, cropWidth, cropHeight);
+    }
+
+    // Toggles detection overlay text
+    private void toggleDetectionText(boolean enabled) {
+        if (enabled) {
+            emotionBinding.inferenceTime.setVisibility(View.VISIBLE);
+            emotionBinding.txtDetection.setVisibility(View.VISIBLE);
+        } else {
+            emotionBinding.inferenceTime.setVisibility(View.GONE);
+            emotionBinding.txtDetection.setVisibility(View.GONE);
+        }
     }
 
     // Constants
     private static final String TAG = "EmotionFragment";
-    private static final String MODEL_PATH = "yolov8n.tflite";
-    private static final String LABELS_PATH = "yolov8n_labels.txt";
+    public static final String KEY_CAT_ID = "catId";
+    public static final String KEY_PREDICTED_LABELS = "predictedLabels";
+    private static final String YOLOV8N_MODEL_PATH = "yolov8n.tflite";
+    private static final String YOLOV8N_LABELS_PATH = "yolov8n_labels.txt";
+    private static final String EMEOWTIONS_MODEL_PATH = "emeowtions.tflite";
+    private static final String EMEOWTIONS_LABELS_PATH = "emeowtions_labels.txt";
 }

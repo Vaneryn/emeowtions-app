@@ -192,7 +192,7 @@ public class CatProfileActivity extends AppCompatActivity {
         //endregion
 
         //region onClick listeners
-        // appBarCatProfile back button: return to Home screen
+        // appBarCatProfile back button: return to My Cats screen
         catProfileBinding.appBarCatProfile.setNavigationOnClickListener(view -> finish());
 
         // appBarCatProfile edit button: enable text fields

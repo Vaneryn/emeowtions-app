@@ -56,10 +56,10 @@ public class ObjectDetector {
         this.detectorListener = detectorListener;
         this.isClosed = false;
 
+        // Configure delegate hardware
         CompatibilityList compatibilityList = new CompatibilityList();
         Interpreter.Options options = new Interpreter.Options();
 
-        // Configure delegate hardware
         if (compatibilityList.isDelegateSupportedOnThisDevice()) {
             GpuDelegate.Options delegateOptions = compatibilityList.getBestOptionsForThisDevice();
             options.addDelegate(new GpuDelegate(delegateOptions));
@@ -202,6 +202,12 @@ public class ObjectDetector {
 
             if (maxConf > CONFIDENCE_THRESHOLD) {
                 String clsName = labels.get(maxIdx);
+
+                // Filter out anything that is not a cat
+                if (!clsName.equalsIgnoreCase("cat")) {
+                    continue;
+                }
+
                 float cx = array[i]; // 0
                 float cy = array[i + numElements]; // 1
                 float w = array[i + numElements * 2];
@@ -220,6 +226,7 @@ public class ObjectDetector {
             }
         }
 
+        // If no cat bounding boxes, return null
         if (boundingBoxes.isEmpty())
             return null;
 
