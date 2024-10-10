@@ -328,6 +328,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             toggleDetectionText(true);
             emotionBinding.overlay.clear();
             isCatDetected = false;
+            emotionBinding.btnGenerateAnalysis.setEnabled(false);
         });
     }
 
@@ -350,7 +351,8 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 }
             }
 
-            isCatDetected = !boundingBoxes.isEmpty();
+            isCatDetected = true;
+            emotionBinding.btnGenerateAnalysis.setEnabled(true);
         });
     }
 
