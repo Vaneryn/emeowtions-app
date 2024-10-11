@@ -3,7 +3,6 @@ package com.example.emeowtions.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.tensorflow.lite.DataType;
@@ -12,14 +11,12 @@ import org.tensorflow.lite.gpu.CompatibilityList;
 import org.tensorflow.lite.gpu.GpuDelegate;
 import org.tensorflow.lite.support.common.FileUtil;
 import org.tensorflow.lite.support.common.ops.CastOp;
-import org.tensorflow.lite.support.common.ops.NormalizeOp;
 import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,5 +146,5 @@ public class EmotionClassifier {
     private static final int INPUT_SIZE = 224;
     private static final float INPUT_MEAN = 0f;
     private static final float INPUT_STANDARD_DEVIATION = 255f;
-    private static final float THRESHOLD = 0.1f;
+    private static final float THRESHOLD = 0.5f;
 }

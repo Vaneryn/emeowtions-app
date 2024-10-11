@@ -108,4 +108,5 @@
     <string name="no_body_language_detected">No body language detected</string>
     <string name="save_analysis">Save Analysis</string>
     <string name="rate_analysis">Rate Analysis</string>
+    <string name="none">None</string>
 </resources>

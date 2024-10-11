@@ -122,7 +122,10 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         }
 
         // Set emotion
-        emotionAnalysisBinding.txtEmotion.setText(emotion.substring(0, 1).toUpperCase() + emotion.substring(1));
+        if (emotion != null)
+            emotionAnalysisBinding.txtEmotion.setText(emotion.substring(0, 1).toUpperCase() + emotion.substring(1));
+        else
+            emotionAnalysisBinding.txtEmotion.setText(R.string.none);
 
         // Load detected body language types
         if (bodyLanguageList.isEmpty()) {
