@@ -69,6 +69,7 @@ public class LaunchActivity extends AppCompatActivity {
                             redirectRoleIntent = new Intent(this, UserMainActivity.class);
                         } else {
                             // Handle unknown roles or errors
+                            Toast.makeText(this, "Unable to authenticate your account.", Toast.LENGTH_SHORT).show();
                             redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
 

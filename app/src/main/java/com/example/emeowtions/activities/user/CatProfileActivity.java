@@ -386,7 +386,7 @@ public class CatProfileActivity extends AppCompatActivity {
         // Validate name
         // Empty input
         if (name.isBlank()) {
-            catProfileBinding.txtfieldName.setError(getString(R.string.name_required));
+            catProfileBinding.txtfieldName.setError(getString(R.string.name_required_error));
             catProfileBinding.txtfieldName.requestFocus();
             return false;
         }

@@ -208,6 +208,7 @@ public class AddCatActivity extends AppCompatActivity {
             String background = addCatBinding.edmBackground.getText().toString();
             String medicalConditions = addCatBinding.edmMedicalConditions.getText().toString();
 
+            // Validate inputs
             boolean isValid = validateInputs(name);
 
             // Create new cat if inputs are valid
@@ -352,13 +353,13 @@ public class AddCatActivity extends AppCompatActivity {
                                     // Update Cat's profilePicture
                                     catsRef.document(documentReference.getId())
                                             .update("profilePicture", profilePictureUrl)
-                                                    .addOnCompleteListener(imageUpdateTask -> {
-                                                        Toast.makeText(this, "Successfully added new cat (" + name + ")." , Toast.LENGTH_LONG).show();
-                                                        finish();
-                                                    })
-                                                    .addOnFailureListener(e -> {
-                                                        Log.w(TAG, "Failed to update Cat profile picture", e);
-                                                    });
+                                            .addOnCompleteListener(imageUpdateTask -> {
+                                                Toast.makeText(this, "Successfully added new cat (" + name + ")." , Toast.LENGTH_LONG).show();
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.w(TAG, "Failed to update Cat profile picture", e);
+                                            });
                                 });
                     }
                 })

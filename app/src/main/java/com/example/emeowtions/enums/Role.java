@@ -1,7 +1,7 @@
 package com.example.emeowtions.enums;
 
 public enum Role {
-    ADMIN("Administrator", 1),
+    ADMIN("Admin", 1),
     VETERINARY_STAFF("Veterinary Staff", 2),
     VETERINARIAN("Veterinarian", 3),
     USER("User", 4);

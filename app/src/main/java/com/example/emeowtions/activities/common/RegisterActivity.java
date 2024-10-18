@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         //region onClick listeners
-        // txtSignUp - Clicked: Redirect to RegisterActivity
+        // txtSignUp: create user account
         registerBinding.btnSignup.setOnClickListener(view -> {
             // Get inputs
             String email = registerBinding.edtEmail.getText().toString();
@@ -77,6 +77,11 @@ public class RegisterActivity extends AppCompatActivity {
             if (isValid) {
                 createUserAccount(email, password);
             }
+        });
+
+        // btnRegister: redirect to RegisterClinicActivity
+        registerBinding.btnRegisterClinic.setOnClickListener(view -> {
+            startActivity(new Intent(this, RegisterClinicActivity.class));
         });
 
         registerBinding.txtLogin.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));

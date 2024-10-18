@@ -202,7 +202,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             } else {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new CameraPermissionsFragment())
+                        .replace(R.id.userScreenFragmentContainer, new CameraPermissionsFragment())
                         .commit();
             }
         } else {
@@ -307,7 +307,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         if (!CameraPermissionsFragment.hasPermissions(requireContext())) {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new CameraPermissionsFragment())
+                    .replace(R.id.userScreenFragmentContainer, new CameraPermissionsFragment())
                     .commit();
         }
     }

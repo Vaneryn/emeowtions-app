@@ -18,10 +18,13 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.admin.AdminMainActivity;
 import com.example.emeowtions.activities.common.FeedbackActivity;
 import com.example.emeowtions.activities.common.LoginActivity;
 import com.example.emeowtions.activities.common.ProfileActivity;
+import com.example.emeowtions.activities.veterinary.VetMainActivity;
 import com.example.emeowtions.databinding.ActivityUserMainBinding;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.fragments.user.EmotionFragment;
 import com.example.emeowtions.fragments.user.UserChatListFragment;
 import com.example.emeowtions.fragments.user.UserClinicsFragment;
@@ -40,7 +43,6 @@ public class UserMainActivity extends AppCompatActivity {
     private ActivityUserMainBinding userMainBinding;
     private Fragment selectedFragment;
 
-    private FirebaseAuth mAuth;
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
@@ -50,7 +52,6 @@ public class UserMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Initialize Firebase service instances
-        mAuth = FirebaseAuth.getInstance();
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
@@ -59,8 +60,6 @@ public class UserMainActivity extends AppCompatActivity {
         // Get ViewBinding and set content view
         userMainBinding = ActivityUserMainBinding.inflate(getLayoutInflater());
         setContentView(userMainBinding.getRoot());
-        // Get FragmentManager
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Enable edge-to-edge layout
         EdgeToEdge.enable(this);
@@ -91,6 +90,34 @@ public class UserMainActivity extends AppCompatActivity {
         selectedFragment = userHomeFragment;
         showFragment(selectedFragment);
 
+        // Switch Admin View dialog
+        MaterialAlertDialogBuilder switchAdminViewDialog =
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.switch_to_admin_view)
+                        .setMessage(R.string.switch_admin_view_message)
+                        .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {
+                            // Unused
+                        })
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            // Return to AdminMainActivity
+                            Toast.makeText(this, "Switched to Admin view.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, AdminMainActivity.class));
+                        });
+
+        // Switch Vet View dialog
+        MaterialAlertDialogBuilder switchVetViewDialog =
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.switch_to_vet_view)
+                        .setMessage(R.string.are_you_sure_you_want_to_switch_to_vet_view)
+                        .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {
+                            // Unused
+                        })
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            // Redirect to VetMainActivity
+                            Toast.makeText(this, "Switched to Vet view.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, VetMainActivity.class));
+                        });
+
         // Logout dialog
         MaterialAlertDialogBuilder logoutDialog =
                 new MaterialAlertDialogBuilder(this)
@@ -101,7 +128,7 @@ public class UserMainActivity extends AppCompatActivity {
                         })
                         .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                             // Return to Login screen
-                            mAuth.signOut();
+                            firebaseAuthUtils.signOut();
                             Toast.makeText(this, "Successfully logged out.", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(this, LoginActivity.class));
                         });
@@ -110,6 +137,16 @@ public class UserMainActivity extends AppCompatActivity {
         //region onClick listeners
         // topAppBar navigationIcon: open navigation drawer
         userMainBinding.topAppBar.setNavigationOnClickListener(view -> userMainBinding.drawerLayout.open());
+
+        // txtSwitchAdminView: switch to Admin view
+        userMainBinding.txtSwitchAdminView.setOnClickListener(view -> {
+            switchAdminViewDialog.show();
+        });
+
+        // txtSwitchVetView: switch to Vet view
+        userMainBinding.txtSwitchVetView.setOnClickListener(view -> {
+            switchVetViewDialog.show();
+        });
 
         // txtLogout: sign out and redirect to login screen
         userMainBinding.txtLogout.setOnClickListener(view -> {
@@ -194,7 +231,7 @@ public class UserMainActivity extends AppCompatActivity {
         TextView txtDrawerDisplayName = drawerHeader.findViewById(R.id.txt_drawer_username);
         TextView txtDrawerEmail = drawerHeader.findViewById(R.id.txt_drawer_email);
 
-        // Load user information in drawer header
+        // Load user information in drawer header / View switching management
         usersRef.document(firebaseAuthUtils.getUid())
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
@@ -204,9 +241,18 @@ public class UserMainActivity extends AppCompatActivity {
                     if (value != null && value.exists()) {
                         User user = value.toObject(User.class);
 
+                        // Load user information
                         loadProfilePicture(user.getProfilePicture(), imgDrawerProfilePicture);
                         txtDrawerDisplayName.setText(user.getDisplayName());
                         txtDrawerEmail.setText(firebaseAuthUtils.getFirebaseEmail());
+
+                        // Only show view switcher to authorized roles
+                        String role = user.getRole();
+                        if (role.equals(Role.ADMIN.getTitle())) {
+                            userMainBinding.txtSwitchAdminView.setVisibility(View.VISIBLE);
+                        } else if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
+                            userMainBinding.txtSwitchVetView.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
         //endregion

@@ -17,6 +17,20 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.admin.ClinicRegistrationDetailsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.common.ClinicRegistrationStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.common.RegisterClinicSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.common.RegisterClinicActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".activities.user.EmotionAnalysisActivity"
             android:exported="false" />
         <activity
@@ -33,7 +47,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.common.ProfileActivity"
-            android:exported="false" /> <!-- Common Activities -->
+            android:exported="false" />
         <activity
             android:name=".activities.common.LaunchActivity"
             android:exported="true">
@@ -48,18 +62,15 @@
             android:exported="false" />
         <activity
             android:name=".activities.common.RegisterActivity"
-            android:exported="false" /> <!-- User Activities -->
-        <activity
-            android:name=".activities.user.UserMainActivity"
-            android:exported="false" /> <!-- Veterinary Clinic Activities -->
-        <activity
-            android:name=".activities.veterinary.VetMainActivity"
-            android:exported="false" /> <!-- Admin Activities -->
-        <activity
-            android:name=".activities.admin.AdminMainActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.user.UserMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.veterinary.VetMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.AdminMainActivity"
             android:exported="false" />
 
         <meta-data

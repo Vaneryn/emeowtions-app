@@ -119,4 +119,9 @@ public class FirebaseAuthUtils {
                     Log.w(TAG, "Verification email failed to send", e);
                 });
     }
+
+    // Signs out
+    public void signOut() {
+        auth.signOut();
+    }
 }

@@ -86,6 +86,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // btnRegister: redirect to RegisterClinicActivity
+        loginBinding.btnRegisterClinic.setOnClickListener(view -> {
+            startActivity(new Intent(this, RegisterClinicActivity.class));
+        });
+
         // txtSignUp: redirect to RegisterActivity
         loginBinding.txtSignup.setOnClickListener(view -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
@@ -212,6 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                             redirectRoleIntent = new Intent(this, UserMainActivity.class);
                         } else {
                             // Handle unknown roles or errors
+                            Toast.makeText(this, "Unable to authenticate your account.", Toast.LENGTH_SHORT).show();
                             redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
 
