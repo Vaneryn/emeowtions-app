@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/admin_dashboard_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_dashboard_24"
+        android:title="@string/dashboard" />
+    <item
+        android:id="@+id/admin_clinics_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_veterinary_care"
+        android:title="@string/clinics" />
+    <item
+        android:id="@+id/admin_vet_registrations_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_assignment_24"
+        android:title="@string/clinic_registrations" />
+    <item
+        android:id="@+id/admin_users_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_people_alt_24"
+        android:title="@string/users" />
+</menu>

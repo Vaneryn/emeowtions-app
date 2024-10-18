@@ -45,7 +45,6 @@
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
     <string name="add_cat">Add Cat</string>
-    <string name="name_required">Name <font color='#FF0000'>*</font></string>
     <string name="gender">Gender</string>
     <string name="breed">Breed</string>
     <string name="background">Background</string>
@@ -109,4 +108,69 @@
     <string name="save_analysis">Save Analysis</string>
     <string name="rate_analysis">Rate Analysis</string>
     <string name="none">None</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="users">Users</string>
+    <string name="navigation_drawer_switch_to_user_view_item">Navigation drawer switch to User view item</string>
+    <string name="switch_to_user_view">Switch to User View</string>
+    <string name="switch_user_view_message">Are you sure you want to switch to User view?</string>
+    <string name="switch_to_admin_view">Switch to Admin View</string>
+    <string name="switch_to_vet_view">Switch to Vet View</string>
+    <string name="switch_admin_view_message">Are you sure you want to switch to Admin view?</string>
+    <string name="are_you_sure_you_want_to_switch_to_vet_view">Are you sure you want to switch to Vet view?</string>
+    <string name="clinic_profile">Clinic Profile</string>
+    <string name="staff">Staff</string>
+    <string name="register_veterinary_clinic">Register Veterinary Clinic</string>
+    <string name="join_our_veterinary_network">Join Our Veterinary Network</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="see_registration_status">See Status</string>
+    <string name="register">Register</string>
+    <string name="veterinary_clinic_icon">Veterinary clinic icon</string>
+    <string name="address">Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="name_required">Name <font color='#FF0000'>*</font></string>
+    <string name="name_required_error">Name is required</string>
+    <string name="clinic_name_required">Clinic Name <font color='#FF0000'>*</font></string>
+    <string name="email_required">Email <font color='#FF0000'>*</font></string>
+    <string name="phone_number_required">Phone Number <font color='#FF0000'>*</font></string>
+    <string name="address_required">Address <font color='#FF0000'>*</font></string>
+    <string name="description_required">Description <font color='#FF0000'>*</font></string>
+    <string name="clinic_name_required_error">Clinic Name is required</string>
+    <string name="email_required_error">Email is required</string>
+    <string name="email_format_invalid">Email address format is not valid</string>
+    <string name="phone_number_required_error">Phone Number is required</string>
+    <string name="address_required_error">Address is required</string>
+    <string name="description_required_error">Description is required</string>
+    <string name="phone_number_format_invalid">Phone Number format is not valid</string>
+    <string name="no_address">No address</string>
+    <string name="veterinary_clinic_logo_upload_field">Veterinary Clinic logo upload field</string>
+    <string name="cancel_register_clinic_message">Are you sure you want to cancel? The details you filled in will be discarded.</string>
+    <string name="register_clinic_success_message">Your veterinary clinic has been successfully registered. Our admins will process your registration and notify you whether your clinic has been approved or rejected.</string>
+    <string name="success">Success</string>
+    <string name="success_icon">Success icon</string>
+    <string name="clinic_email_dialog_message">Enter the email you registered your veterinary clinic with.</string>
+    <string name="no_vet_clinic_email_error">There is no veterinary clinic registered with this email.</string>
+    <string name="registration_status">Registration Status</string>
+    <string name="status">Status</string>
+    <string name="clinic_details">Clinic Details</string>
+    <string name="logo">Logo</string>
+    <string name="veterinary_clinic_logo">Veterinary clinic logo</string>
+    <string name="clinic_registrations">Registrations</string>
+    <string name="search">Search</string>
+    <string name="no_registrations">No Registrations</string>
+    <string name="no_pending_registrations_message">There are no pending registrations.</string>
+    <string name="no_approved_registrations_message">There are no approved registrations.</string>
+    <string name="no_rejected_registrations_message">There are no rejected registrations.</string>
+    <string name="no_registration_results_message">No registrations found.\nTry different names or search settings!</string>
+    <string name="clear_all">Clear All</string>
+    <string name="go_to_dashboard">Go to Dashboard</string>
+    <string name="pending">Pending</string>
+    <string name="approved">Approved</string>
+    <string name="rejected">Rejected</string>
+    <string name="edit">Edit</string>
+    <string name="reject">Reject</string>
+    <string name="approve">Approve</string>
+    <string name="details">Details</string>
+    <string name="registration_details">Registration Details</string>
+    <string name="search_options">Search Options</string>
+    <string name="restore">Restore</string>
 </resources>

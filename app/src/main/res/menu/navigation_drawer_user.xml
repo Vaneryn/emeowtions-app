@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <item
             android:id="@+id/profile_item"
-            android:icon="@drawable/baseline_person_24"
+            android:icon="@drawable/baseline_account_circle_24"
             android:title="@string/profile"
             android:checkable="true"
             android:contentDescription="@string/navigation_drawer_profile_item"

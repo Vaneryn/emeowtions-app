@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/vet_profile_item"
+        android:icon="@drawable/baseline_account_circle_24"
+        android:title="@string/profile"
+        android:checkable="true"
+        android:contentDescription="@string/navigation_drawer_profile_item"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/vet_feedback_item"
+        android:icon="@drawable/baseline_feedback_24"
+        android:title="@string/feedback"
+        android:checkable="true"
+        android:contentDescription="@string/navigation_drawer_feedback_item"
+        app:showAsAction="ifRoom" />
+</menu>

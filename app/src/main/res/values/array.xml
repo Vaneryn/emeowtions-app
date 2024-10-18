@@ -25,6 +25,7 @@
         <item>No</item>
         <item>Unspecified</item>
     </string-array>
+
     <!-- Query -->
     <string-array name="sort_cats_items">
         <item>Name (Asc.)</item>
@@ -43,6 +44,14 @@
         <item>Gender (Female)</item>
         <item>Gender (Unspecified)</item>
     </string-array>
+
+    <string-array name="sort_clinic_registrations_items">
+        <item>Name (Asc.)</item>
+        <item>Name (Desc.)</item>
+        <item>Updated (Asc.)</item>
+        <item>Updated (Desc.)</item>
+    </string-array>
+
     <!-- EmotionFragment -->
     <string-array name="emotion_analysis_mode_items">
         <item>Upload Image</item>
