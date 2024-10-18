@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_screen_edge">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/txtfield_menu_sort"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/sort">
+
+        <AutoCompleteTextView
+            android:id="@+id/edm_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:lines="1"
+            app:simpleItems="@array/sort_clinic_registrations_items" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

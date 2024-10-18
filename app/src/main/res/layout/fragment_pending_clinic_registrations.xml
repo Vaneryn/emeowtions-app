@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragments.admin.PendingClinicRegistrationsFragment">
+
+    <!-- Searchbar and Options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding_screen_edge"
+        android:layout_marginBottom="@dimen/margin_small_2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txtfield_searchbar"
+            style="@style/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:layout_weight="1"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_searchbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSearchOptions"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/baseline_tune_24"
+            app:iconSize="30sp"
+            app:iconTint="@color/gray_500" />
+
+    </LinearLayout>
+
+    <!-- Results -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_clinic_registrations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/padding_screen_edge"
+        android:paddingBottom="@dimen/padding_screen_edge"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideInset"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <!-- No Registrations -->
+    <LinearLayout
+        android:id="@+id/layout_no_registrations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_assignment_24"
+            app:tint="@color/gray_400" />
+
+        <TextView
+            style="@style/HeadingText2.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/no_registrations" />
+
+        <TextView
+            android:id="@+id/txt_no_registrations"
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_pending_registrations_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_go_to_dashboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/go_to_dashboard" />
+
+    </LinearLayout>
+
+    <!-- No Results -->
+    <LinearLayout
+        android:id="@+id/layout_no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_search_off_24"
+            app:tint="@color/gray_400" />
+
+        <TextView
+            style="@style/HeadingText2.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/results_not_found" />
+
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_registration_results_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_clear_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/clear_all" />
+
+    </LinearLayout>
+
+</LinearLayout>
