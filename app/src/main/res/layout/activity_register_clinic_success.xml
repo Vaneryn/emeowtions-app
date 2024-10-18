@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".activities.common.RegisterClinicSuccessActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="50dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:contentDescription="@string/success_icon"
+            android:src="@drawable/baseline_check_circle_outline_24"
+            app:tint="@color/quaternary_200"/>
+
+        <TextView
+            style="@style/HeadingText1.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/success"
+            android:textSize="28sp"
+            android:layout_marginVertical="@dimen/margin_small_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_clinic_success_message"
+            android:layout_marginVertical="@dimen/margin_small_2"
+            android:textAlignment="center" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_see_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/see_registration_status"
+            android:layout_marginVertical="@dimen/margin_small_2"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/back" />
+
+    </LinearLayout>
+
+</LinearLayout>

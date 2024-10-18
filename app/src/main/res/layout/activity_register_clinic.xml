@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_300"
+    android:orientation="vertical"
+    tools:context=".activities.common.RegisterClinicActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/img_app_logo"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:contentDescription="@string/emeowtions_logo"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            app:srcCompat="@drawable/ic_emeowtions_with_text" />
+
+        <ImageView
+            android:id="@+id/img_vet_clinic"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/veterinary_clinic_icon"
+            android:paddingTop="@dimen/padding_medium_2"
+            android:paddingBottom="@dimen/padding_medium_2"
+            app:srcCompat="@drawable/baseline_veterinary_care"
+            app:tint="@color/white" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="-30dp"
+        app:cardCornerRadius="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_create_account"
+                style="@style/HeadingText1.SemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingVertical="20dp"
+                android:text="@string/join_our_veterinary_network" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_register_clinic_banner"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_large"
+                android:layout_marginBottom="@dimen/margin_small_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small_2"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_clinic_logo"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:background="@color/white"
+                            android:contentDescription="@string/veterinary_clinic_logo_upload_field"
+                            android:padding="@dimen/padding_small_1"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                            app:srcCompat="@drawable/baseline_local_hospital_24"
+                            app:strokeColor="@color/gray_200"
+                            app:strokeWidth="1dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_clear_image"
+                                style="@style/Widget.Material3.Button.Icon"
+                                android:layout_width="30dp"
+                                android:layout_height="40dp"
+                                android:padding="0dp"
+                                app:cornerRadius="4dp"
+                                app:icon="@drawable/baseline_settings_backup_restore_24"
+                                app:iconGravity="textStart"
+                                app:iconPadding="0dp"
+                                app:iconSize="@dimen/text_large" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_upload_image"
+                                style="@style/Widget.Material3.Button.Icon"
+                                android:layout_width="30dp"
+                                android:layout_height="40dp"
+                                android:padding="0dp"
+                                app:cornerRadius="4dp"
+                                app:icon="@drawable/baseline_upload_24"
+                                app:iconGravity="textStart"
+                                app:iconPadding="0dp"
+                                app:iconSize="@dimen/text_large"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/margin_small_2"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_small_2">
+
+                        <TextView
+                            android:id="@+id/txt_banner_name"
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/name" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/margin_small_1"
+                            android:fadeScrollbars="false">
+
+                            <TextView
+                                android:id="@+id/txt_banner_address"
+                                style="@style/BodyText2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_address" />
+                        </ScrollView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/margin_small_1"
+                android:layout_weight="1"
+                android:fadeScrollbars="false"
+                android:paddingHorizontal="@dimen/padding_large"
+                android:scrollbarStyle="outsideInset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:id="@+id/txtfield_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:hint="@string/name_required"
+                        android:textColorHint="@color/gray_400"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="100"
+                        app:endIconMode="clear_text"
+                        app:hintTextColor="@color/primary_400"
+                        app:startIconDrawable="@drawable/baseline_account_box_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLength="100" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:id="@+id/txtfield_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:hint="@string/email_required"
+                        android:textColorHint="@color/gray_400"
+                        app:hintTextColor="@color/primary_400"
+                        app:startIconDrawable="@drawable/baseline_email_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="emailAddress"
+                            android:inputType="textEmailAddress" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:id="@+id/txtfield_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:hint="@string/phone_number_required"
+                        android:textColorHint="@color/gray_400"
+                        app:hintTextColor="@color/primary_400"
+                        app:startIconDrawable="@drawable/baseline_phone_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="phone"
+                            android:inputType="phone|number" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_address"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:hint="@string/address_required"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="200"
+                        app:endIconMode="clear_text"
+                        app:startIconDrawable="@drawable/baseline_location_pin_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:lines="4"
+                            android:maxLength="200"
+                            android:textSize="@dimen/text_medium_1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_description"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:hint="@string/description_required"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="300"
+                        app:endIconMode="clear_text"
+                        app:startIconDrawable="@drawable/baseline_description_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:lines="4"
+                            android:maxLength="300"
+                            android:textSize="@dimen/text_medium_1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/margin_large"
+                android:paddingTop="@dimen/padding_medium_1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/margin_small_2"
+                    android:weightSum="2">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_cancel_register_clinic"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_large"
+                        android:layout_weight="1"
+                        android:text="@string/cancel" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_register"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/register" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_check_clinic_reg_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/already_registered"
+                        android:textColor="@color/gray_500" />
+
+                    <TextView
+                        android:id="@+id/txtbtn_check_clinic_reg_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="@string/see_registration_status"
+                        android:textColor="@color/clickable_text" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

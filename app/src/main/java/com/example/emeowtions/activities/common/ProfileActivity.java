@@ -310,7 +310,7 @@ public class ProfileActivity extends AppCompatActivity {
                         originalDisplayName = user.getDisplayName();
                         originalGender = user.getGender();
                         originalDateOfBirth = user.getDateOfBirth();
-                        selectedDateOfBirth = originalDateOfBirth == null ? null : originalDateOfBirth.toDate() ;
+                        selectedDateOfBirth = originalDateOfBirth == null ? null : originalDateOfBirth.toDate();
                         originalEmail = firebaseAuthUtils.getFirebaseEmail();
 
                         // Profile Banner
