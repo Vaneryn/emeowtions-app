@@ -101,7 +101,7 @@ public class PendingClinicRegistrationsFragment extends Fragment {
             }
         });
 
-        // Only allow searching if there are existing registrations
+        // Dynamic search
         pendingBinding.edtSearchbar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}

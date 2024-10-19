@@ -11,10 +11,11 @@ public class VeterinaryClinic {
     private String logoUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private boolean deleted;
 
     private VeterinaryClinic() {}
 
-    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, Timestamp createdAt, Timestamp updatedAt) {
+    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.name = name;
         this.description = description;
         this.address = address;
@@ -23,6 +24,7 @@ public class VeterinaryClinic {
         this.logoUrl = logoUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.deleted = deleted;
     }
 
     public String getName() {
@@ -57,6 +59,10 @@ public class VeterinaryClinic {
         return updatedAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -87,5 +93,9 @@ public class VeterinaryClinic {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

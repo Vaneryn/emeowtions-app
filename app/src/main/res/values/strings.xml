@@ -176,4 +176,10 @@
     <string name="reason">Reason</string>
     <string name="reason_required">Reason<font color='#FF0000'>*</font></string>
     <string name="reason_required_error">Reason is required</string>
+    <string name="no_clinics">No Clinics</string>
+    <string name="no_clinics_message">There are no existing clinics.\nCheck pending registrations?</string>
+    <string name="go_to_registrations">Go to Registrations</string>
+    <string name="no_clinic_results_message">No clinics found.\nTry different names or search settings!</string>
+    <string name="delete">Delete</string>
+    <string name="delete_clinic_dialog_message">Delete clinic? This action is irreversible!</string>
 </resources>

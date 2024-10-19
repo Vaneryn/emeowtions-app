@@ -451,13 +451,14 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
         // Add document
         VeterinaryClinic newClinic = new VeterinaryClinic(
                 name,
+                description,
+                address,
                 email,
                 phoneNumber,
-                address,
-                description,
                 null,
                 Timestamp.now(),
-                Timestamp.now()
+                Timestamp.now(),
+                false
         );
 
         clinicsRef.add(newClinic)

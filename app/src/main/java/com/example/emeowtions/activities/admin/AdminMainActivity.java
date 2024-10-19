@@ -221,7 +221,7 @@ public class AdminMainActivity extends AppCompatActivity {
                     if (values.isEmpty()) {
                         // No pending registrations
                         // Update tab badge
-                        adminMainBinding.adminBottomNavigation.getBadge(R.id.admin_vet_registrations_item).clearNumber();
+                        adminMainBinding.adminBottomNavigation.removeBadge(R.id.admin_vet_registrations_item);
                     } else {
                         // Existing pending registrations
                         // Update tab badge
