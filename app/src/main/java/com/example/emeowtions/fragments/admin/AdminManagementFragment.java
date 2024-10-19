@@ -1,6 +1,5 @@
-package com.example.emeowtions.fragments.user;
+package com.example.emeowtions.fragments.admin;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,40 +10,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.emeowtions.R;
-import com.example.emeowtions.activities.common.FeedbackActivity;
-import com.example.emeowtions.activities.user.UserMainActivity;
-import com.example.emeowtions.adapters.VeterinaryClinicAdapter;
-import com.example.emeowtions.databinding.FragmentUserClinicsBinding;
-import com.example.emeowtions.models.VeterinaryClinic;
+import com.example.emeowtions.activities.admin.AdminMainActivity;
+import com.example.emeowtions.adapters.UserAdapter;
+import com.example.emeowtions.databinding.FragmentAdminManagementBinding;
+import com.example.emeowtions.enums.Role;
+import com.example.emeowtions.models.User;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class UserClinicsFragment extends Fragment {
+public class AdminManagementFragment extends Fragment {
 
-    private static final String TAG = "UserClinicsFragment";
+    private static final String TAG = "AdminManagementFragment";
 
     // Firebase variables
     private FirebaseFirestore db;
-    private CollectionReference clinicsRef;
-
-    // Layout variables
-    private FragmentUserClinicsBinding binding;
+    private CollectionReference usersRef;
 
     // Private variables
+    private FragmentAdminManagementBinding binding;
+    private UserAdapter userAdapter;
     private boolean isInitialLoad;
-    private VeterinaryClinicAdapter clinicAdapter;
 
-    public UserClinicsFragment() {
-        super(R.layout.fragment_user_clinics);
+    public AdminManagementFragment() {
+        super(R.layout.fragment_admin_management);
     }
 
     @Override
@@ -53,8 +49,9 @@ public class UserClinicsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentUserClinicsBinding.inflate(inflater, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentAdminManagementBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -67,11 +64,11 @@ public class UserClinicsFragment extends Fragment {
         // Initialize Firebase service instances
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
-        clinicsRef = db.collection("veterinaryClinics");
+        usersRef = db.collection("users");
 
         //region UI Setups
-        // Hide empty-result views
-        binding.layoutNoClinics.setVisibility(View.GONE);
+        // Hide no results views
+        binding.layoutNoAdmins.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
         //endregion
 
@@ -79,22 +76,23 @@ public class UserClinicsFragment extends Fragment {
         isInitialLoad = true;
 
         // Query options
-        Query clinicQuery =
-                clinicsRef.whereEqualTo("deleted", false)
-                        .orderBy("updatedAt", Query.Direction.DESCENDING);
+        Query usersQuery =
+                usersRef.whereEqualTo("role", Role.ADMIN.getTitle())
+                        .whereEqualTo("deleted", false)
+                        .orderBy("displayName", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<VeterinaryClinic> options =
-                new FirestoreRecyclerOptions.Builder<VeterinaryClinic>()
-                        .setQuery(clinicQuery, VeterinaryClinic.class)
+        FirestoreRecyclerOptions<User> options =
+                new FirestoreRecyclerOptions.Builder<User>()
+                        .setQuery(usersQuery, User.class)
                         .setLifecycleOwner(lifecycleOwner)
                         .build();
 
         // Create and set adapter
-        clinicAdapter = new VeterinaryClinicAdapter(options, getContext());
-        binding.recyclerviewClinics.setAdapter(clinicAdapter);
+        userAdapter = new UserAdapter(options, getContext());
+        binding.recyclerviewAdmins.setAdapter(userAdapter);
 
         // Listen for changes to options
-        clinicAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        userAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
@@ -113,28 +111,29 @@ public class UserClinicsFragment extends Fragment {
 
                 if (queryText.isBlank()) {
                     isInitialLoad = true;
-                    clinicAdapter.updateOptions(options);
+                    userAdapter.updateOptions(options);
                 } else {
                     isInitialLoad = false;
 
                     Query searchQuery =
-                            clinicsRef.whereEqualTo("deleted", false)
+                            usersRef.whereEqualTo("role", Role.ADMIN.getTitle())
+                                    .whereEqualTo("deleted", false)
                                     .where(Filter.or(
-                                            Filter.equalTo("name", queryText),
+                                            Filter.equalTo("displayName", queryText),
                                             Filter.and(
-                                                    Filter.greaterThanOrEqualTo("name", queryText),
-                                                    Filter.lessThanOrEqualTo("name", queryText + "\uf8ff")
+                                                    Filter.greaterThanOrEqualTo("displayName", queryText),
+                                                    Filter.lessThanOrEqualTo("displayName", queryText + "\uf8ff")
                                             )
                                     ))
-                                    .orderBy("updatedAt", Query.Direction.DESCENDING);
+                                    .orderBy("displayName", Query.Direction.ASCENDING);
 
-                    FirestoreRecyclerOptions<VeterinaryClinic> searchOptions =
-                            new FirestoreRecyclerOptions.Builder<VeterinaryClinic>()
-                                    .setQuery(searchQuery, VeterinaryClinic.class)
+                    FirestoreRecyclerOptions<User> searchOptions =
+                            new FirestoreRecyclerOptions.Builder<User>()
+                                    .setQuery(searchQuery, User.class)
                                     .setLifecycleOwner(lifecycleOwner)
                                     .build();
 
-                    clinicAdapter.updateOptions(searchOptions);
+                    userAdapter.updateOptions(searchOptions);
                 }
             }
 
@@ -144,8 +143,10 @@ public class UserClinicsFragment extends Fragment {
         //endregion
 
         //region onClick Listeners
-        binding.btnSendFeedback.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), FeedbackActivity.class));
+        binding.btnGoToDashboard.setOnClickListener(view1 -> {
+            AdminMainActivity parentActivity = (AdminMainActivity) getActivity();
+            parentActivity.adminBottomNavigation.setSelectedItemId(R.id.admin_dashboard_item);
+            parentActivity.changeFragment(parentActivity.adminDashboardFragment, false);
         });
 
         binding.btnClearSearch.setOnClickListener(view1 -> {
@@ -154,15 +155,22 @@ public class UserClinicsFragment extends Fragment {
         //endregion
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (userAdapter != null)
+            userAdapter.notifyDataSetChanged();
+    }
+
     private void updateResultsView(boolean isInitialLoad) {
         // Reset visibility
-        binding.layoutNoClinics.setVisibility(View.GONE);
+        binding.layoutNoAdmins.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no clinics or no query results
-        if (clinicAdapter == null || clinicAdapter.getItemCount() == 0) {
+        // Determine no users or no query results
+        if (userAdapter == null || userAdapter.getItemCount() == 0) {
             if (isInitialLoad)
-                binding.layoutNoClinics.setVisibility(View.VISIBLE);
+                binding.layoutNoAdmins.setVisibility(View.VISIBLE);
             else
                 binding.layoutNoResults.setVisibility(View.VISIBLE);
         }

@@ -17,10 +17,11 @@ public class User {
     private boolean verified;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private boolean deleted;
 
     public User() {}
 
-    public User(String displayName, String email, String gender, String role, String profilePicture, Timestamp dateOfBirth, boolean verified, Timestamp createdAt, Timestamp updatedAt) {
+    public User(String displayName, String email, String gender, String role, String profilePicture, Timestamp dateOfBirth, boolean verified, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.displayName = displayName;
         this.email = email;
         this.gender = gender;
@@ -30,6 +31,7 @@ public class User {
         this.verified = verified;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.deleted = deleted;
     }
 
     public String getDisplayName() {
@@ -68,6 +70,10 @@ public class User {
         return updatedAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -102,5 +108,9 @@ public class User {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

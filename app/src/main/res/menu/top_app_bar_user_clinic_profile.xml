@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_get_directions"
+        android:title="@string/get_directions"
+        android:icon="@drawable/baseline_directions_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_review_clinic"
+        android:title="@string/review"
+        android:icon="@drawable/baseline_rate_review_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom"/>
+</menu>

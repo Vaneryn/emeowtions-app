@@ -221,7 +221,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         null,
                                         false,
                                         Timestamp.now(),
-                                        Timestamp.now()
+                                        Timestamp.now(),
+                                        false
                                 );
                                 usersRef.document(currentUser.getUid())
                                         .set(newUser)

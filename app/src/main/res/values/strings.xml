@@ -192,4 +192,10 @@
     <string name="no_users">No Users</string>
     <string name="there_are_no_existing_users">There are no existing users.</string>
     <string name="no_users_results_message">No users found.\nTry different names or search settings.</string>
+    <string name="no_vets">No Vets</string>
+    <string name="no_vets_message">There are no existing vets.</string>
+    <string name="no_vets_results_message">No vets found.\nTry different names or search settings.</string>
+    <string name="no_admins">No Admins</string>
+    <string name="no_admins_message">There are no existing admins.</string>
+    <string name="no_admins_results_message">No admins found.\nTry different names or search settings.</string>
 </resources>

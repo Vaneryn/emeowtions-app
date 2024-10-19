@@ -2,6 +2,8 @@ package com.example.emeowtions.fragments.admin;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -9,58 +11,117 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.databinding.FragmentAdminUsersBinding;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AdminUsersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AdminUsersFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "AdminUsersFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Layout variables
+    private FragmentAdminUsersBinding binding;
+    private UserManagementFragment userFragment;
+    private VetManagementFragment vetFragment;
+    private AdminManagementFragment adminFragment;
+    private Fragment selectedFragment;
 
     public AdminUsersFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AdminUsersFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AdminUsersFragment newInstance(String param1, String param2) {
-        AdminUsersFragment fragment = new AdminUsersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        super(R.layout.fragment_admin_users);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_users, container, false);
+        binding = FragmentAdminUsersBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //region UI Setups
+        userFragment = new UserManagementFragment();
+        vetFragment = new VetManagementFragment();
+        adminFragment = new AdminManagementFragment();
+
+        createFragment(userFragment);
+        createFragment(vetFragment);
+        createFragment(adminFragment);
+
+        selectedFragment = userFragment;
+        showFragment(selectedFragment);
+        //endregion
+
+        //region Navigation Listeners
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int tabPosition = tab.getPosition();
+
+                // No need for fragment replacement
+                boolean toReplace = false;
+
+                if (tabPosition == 0) {
+                    changeFragment(userFragment, toReplace);
+                } else if (tabPosition == 1) {
+                    changeFragment(vetFragment, toReplace);
+                } else if (tabPosition == 2) {
+                    changeFragment(adminFragment, toReplace);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+        //endregion
+    }
+
+    // Fragment management helpers
+    private void createFragment(Fragment fragment){
+        getChildFragmentManager().beginTransaction()
+                .add(R.id.users_fragment_container, fragment)
+                .hide(fragment)
+                .commit();
+    }
+
+    private void removeFragment(Fragment fragment) {
+        getChildFragmentManager().beginTransaction()
+                .remove(fragment)
+                .commit();
+    }
+
+    private void showFragment(Fragment fragment){
+        getChildFragmentManager().beginTransaction()
+                .show(fragment)
+                .commit();
+    }
+
+    private void hideFragment(Fragment fragment){
+        getChildFragmentManager().beginTransaction()
+                .hide(fragment)
+                .commit();
+    }
+
+    public void changeFragment(Fragment fragment, boolean replace) {
+        hideFragment(selectedFragment);
+
+        if (replace) {
+            removeFragment(selectedFragment);
+        }
+
+        selectedFragment = fragment;
+        showFragment(fragment);
     }
 }
