@@ -23,6 +23,7 @@ import com.example.emeowtions.activities.common.LoginActivity;
 import com.example.emeowtions.activities.common.ProfileActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.databinding.ActivityAdminMainBinding;
+import com.example.emeowtions.enums.VeterinaryClinicRegistrationStatus;
 import com.example.emeowtions.fragments.admin.AdminClinicRegistrationsFragment;
 import com.example.emeowtions.fragments.admin.AdminClinicsFragment;
 import com.example.emeowtions.fragments.admin.AdminDashboardFragment;
@@ -45,6 +46,7 @@ public class AdminMainActivity extends AppCompatActivity {
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
+    private CollectionReference vetRegsRef;
 
     // Public variables
     public AdminDashboardFragment adminDashboardFragment;
@@ -63,6 +65,7 @@ public class AdminMainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
+        vetRegsRef = db.collection("veterinaryClinicRegistrations");
 
         // Get ViewBinding and set content view
         adminMainBinding = ActivityAdminMainBinding.inflate(getLayoutInflater());
@@ -206,6 +209,26 @@ public class AdminMainActivity extends AppCompatActivity {
                         txtDrawerEmail.setText(firebaseAuthUtils.getFirebaseEmail());
                     }
                 });
+
+        // Retrieve pending registrations
+        vetRegsRef.whereEqualTo("status", VeterinaryClinicRegistrationStatus.PENDING.getTitle())
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onViewCreated: Failed to retrieve pending veterinaryClinicRegistrations", error);
+                    }
+                    // Success
+                    if (values.isEmpty()) {
+                        // No pending registrations
+                        // Update tab badge
+                        adminMainBinding.adminBottomNavigation.getBadge(R.id.admin_vet_registrations_item).clearNumber();
+                    } else {
+                        // Existing pending registrations
+                        // Update tab badge
+                        adminMainBinding.adminBottomNavigation.getOrCreateBadge(R.id.admin_vet_registrations_item).setNumber(values.size());
+                    }
+                });
+
         //endregion
 
         //region onClick Listeners
