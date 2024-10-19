@@ -237,7 +237,7 @@
                     style="@style/HeadingText2.SemiBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_small_2"
+                    android:layout_marginBottom="@dimen/margin_small_2"
                     android:text="@string/role" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -265,7 +265,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_2"
-                    android:hint="@string/veterinary_clinic_required">
+                    android:hint="@string/veterinary_clinic_required"
+                    android:visibility="gone">
 
                     <AutoCompleteTextView
                         android:id="@+id/edm_clinic"

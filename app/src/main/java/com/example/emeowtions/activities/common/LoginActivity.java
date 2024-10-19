@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Redirect to appropriate MainActivity based on role
                         Intent redirectRoleIntent;
 
-                        if (role.equals(Role.ADMIN.getTitle())) {
+                        if (role.equals(Role.SUPER_ADMIN.getTitle()) || role.equals(Role.ADMIN.getTitle())) {
                             redirectRoleIntent = new Intent(this, AdminMainActivity.class);
                         } else if (role.equals(Role.VETERINARY_STAFF.getTitle())) {
                             redirectRoleIntent = new Intent(this, VetMainActivity.class);

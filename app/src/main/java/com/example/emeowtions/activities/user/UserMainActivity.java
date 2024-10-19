@@ -248,7 +248,7 @@ public class UserMainActivity extends AppCompatActivity {
 
                         // Only show view switcher to authorized roles
                         String role = user.getRole();
-                        if (role.equals(Role.ADMIN.getTitle())) {
+                        if (role.equals(Role.SUPER_ADMIN.getTitle()) || role.equals(Role.ADMIN.getTitle())) {
                             userMainBinding.txtSwitchAdminView.setVisibility(View.VISIBLE);
                         } else if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
                             userMainBinding.txtSwitchVetView.setVisibility(View.VISIBLE);

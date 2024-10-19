@@ -1,10 +1,11 @@
 package com.example.emeowtions.enums;
 
 public enum Role {
-    ADMIN("Admin", 1),
-    VETERINARY_STAFF("Veterinary Staff", 2),
-    VETERINARIAN("Veterinarian", 3),
-    USER("User", 4);
+    SUPER_ADMIN("Super Admin", 1),
+    ADMIN("Admin", 2),
+    VETERINARY_STAFF("Veterinary Staff", 3),
+    VETERINARIAN("Veterinarian", 4),
+    USER("User", 5);
 
     private final String title;
     private final int code;

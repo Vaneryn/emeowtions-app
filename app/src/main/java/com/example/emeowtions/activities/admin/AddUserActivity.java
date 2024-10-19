@@ -2,17 +2,22 @@ package com.example.emeowtions.activities.admin;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,19 +26,35 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.ActivityAddUserBinding;
+import com.example.emeowtions.enums.Role;
+import com.example.emeowtions.models.User;
+import com.example.emeowtions.models.Veterinarian;
+import com.example.emeowtions.models.VeterinaryClinic;
+import com.example.emeowtions.models.VeterinaryStaff;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class AddUserActivity extends AppCompatActivity {
@@ -45,6 +66,9 @@ public class AddUserActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private CollectionReference usersRef;
+    private CollectionReference clinicsRef;
+    private CollectionReference vetStaffRef;
+    private CollectionReference vetsRef;
     private StorageReference storageRef;
     private StorageReference userPfpRef;
 
@@ -53,6 +77,9 @@ public class AddUserActivity extends AppCompatActivity {
 
     // Private variables
     private boolean isPfpUploaded;
+    private List<String> clinicIds;
+    private List<String> clinicNames;
+    private int selectedClinicIndex;
     private Date selectedDob;
 
     @Override
@@ -65,6 +92,9 @@ public class AddUserActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
+        clinicsRef = db.collection("veterinaryClinics");
+        vetStaffRef = db.collection("veterinaryStaff");
+        vetsRef = db.collection("veterinarians");
         // Initialize Storage references
         storageRef = storage.getReference();
 
@@ -82,6 +112,13 @@ public class AddUserActivity extends AppCompatActivity {
         });
 
         //region UI Setups
+        // Load banner text
+        binding.txtRole.setText(Role.USER.getTitle());
+
+        // Load default dropdown menu selections
+        binding.edmRole.setText(Role.USER.getTitle(), false);
+        binding.edmGender.setText(getString(R.string.unspecified), false);
+
         // Hide date of birth clear button
         binding.txtfieldDateofbirth.setEndIconVisible(false);
 
@@ -108,8 +145,8 @@ public class AddUserActivity extends AppCompatActivity {
         // Cancel dialog
         MaterialAlertDialogBuilder cancelDialog =
                 new MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.unsaved_changes)
-                        .setMessage(R.string.edit_profile_cancel_message)
+                        .setTitle(R.string.cancel)
+                        .setMessage(R.string.cancel_dialog_generic_message)
                         .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {
                             // Do nothing
                         })
@@ -123,7 +160,32 @@ public class AddUserActivity extends AppCompatActivity {
         //endregion
 
         //region Load Data
-        //
+        // Load clinic names into edmClinic
+        clinicsRef.addSnapshotListener((values, error) -> {
+            // Error
+            if (error != null) {
+                Log.w(TAG, "onCreate: Failed to listen on VeterinaryClinic changes", error);
+                return;
+            }
+            // Success
+            if (values != null && !values.getDocuments().isEmpty()) {
+                clinicIds = new ArrayList<>();
+                clinicNames = new ArrayList<>();
+
+                for (DocumentSnapshot document : values.getDocuments()) {
+                    VeterinaryClinic clinic = document.toObject(VeterinaryClinic.class);
+                    clinicIds.add(document.getId());
+                    clinicNames.add(clinic.getName());
+                }
+                Collections.sort(clinicNames);
+
+                ArrayAdapter<String> clinicNamesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, clinicNames);
+                binding.edmClinic.setAdapter(clinicNamesAdapter);
+                binding.edmClinic.setText(clinicNames.get(0), false);
+                selectedClinicIndex = 0;
+            }
+        });
+        //endregion
 
         //region onClick Listeners
         // Profile picture action buttons
@@ -135,6 +197,11 @@ public class AddUserActivity extends AppCompatActivity {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
+        });
+
+        // edmClinic: update selected item index
+        binding.edmClinic.setOnItemClickListener((adapterView, view, i, l) -> {
+            selectedClinicIndex = i;
         });
 
         // datePicker stuff
@@ -189,17 +256,17 @@ public class AddUserActivity extends AppCompatActivity {
             String password = binding.edtPassword.getText().toString();
             String confirmPassword = binding.edtConfirmPassword.getText().toString();
             String role = binding.edmRole.getText().toString();
-            String clinic = binding.edmClinic.getText().toString();
+            String clinicName = binding.edmClinic.getText().toString();
             String displayName = binding.edtDisplayName.getText().toString();
             String gender = binding.edmGender.getText().toString();
             Timestamp dob = selectedDob == null ? null : new Timestamp(selectedDob);
 
             // Validate inputs
-            boolean isValid = validateInputs(email, password, confirmPassword, role, clinic);
+            boolean isValid = validateInputs(email, password, confirmPassword, role, clinicName);
 
             // Create new user if inputs are valid
             if (isValid) {
-                createUser(pfpData, email, password, confirmPassword, role, displayName, gender, dob);
+                createAuthUser(pfpData, email, password, role, clinicIds.get(selectedClinicIndex), displayName, gender, dob);
             }
         });
         //endregion
@@ -215,8 +282,135 @@ public class AddUserActivity extends AppCompatActivity {
         firebaseAuthUtils.checkSignedIn(this);
     }
 
-    private void createUser(byte[] pfpData, String email, String password, String confirmPassword, String role, String displayName, String gender, Timestamp dob) {
+    private void createAuthUser(byte[] pfpData, String email, String password, String role, String clinicId, String displayName, String gender, Timestamp dob) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        // TODO: Use FirebaseAdmin SDK because this shit auto logs us out
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> {
+                    if (authResult != null) {
+                        // Retrieve new FirebaseAuth user
+                        FirebaseUser newAuthUser = authResult.getUser();
 
+                        if (newAuthUser == null) {
+                            Log.w(TAG, "createAuthUser: No authResult");
+                            Toast.makeText(this, "Authenticator returned no results.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            createFirestoreUser(newAuthUser.getUid(), pfpData, email, role, clinicId, displayName, gender, dob);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "createAuthUser: Failed to create Firebase Authentication user", e);
+                    Toast.makeText(this, "Failed to create user account." + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void createFirestoreUser(String uid, byte[] pfpData, String email, String role, String clinicId, String displayName, String gender, Timestamp dob) {
+        User newUser = new User(
+                displayName.isBlank() ? email.split("@")[0] : displayName,
+                email,
+                gender,
+                role,
+                null,
+                dob,
+                true,
+                Timestamp.now(),
+                Timestamp.now(),
+                false
+        );
+
+        // Create new Firestore user
+        usersRef.document(uid)
+                .set(newUser)
+                .addOnSuccessListener(unused -> {
+                    // TODO: email verification?
+                    // Upload and set profile picture if uploaded
+                    if (!isPfpUploaded) {
+                        // Create new document for VeterinaryStaff or Veterinarian account
+                        if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
+                            createVet(role, uid, clinicId);
+                        } else {
+                            Toast.makeText(this, "Successfully created new " + role + ".", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        userPfpRef = storageRef.child("images/users/" + uid + "/profile_picture.jpg");
+
+                        // Upload pfpData
+                        userPfpRef.putBytes(pfpData)
+                                .continueWithTask(task -> {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+                                    return userPfpRef.getDownloadUrl();
+                                })
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Uri pfpUrl = task.getResult();
+
+                                        // Update Firestore User with profile picture
+                                        usersRef.document(uid)
+                                                .update("profilePicture", pfpUrl)
+                                                .addOnSuccessListener(unused1 -> {
+                                                    // Create new document for VeterinaryStaff or Veterinarian account
+                                                    if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
+                                                        createVet(role, uid, clinicId);
+                                                    } else {
+                                                        Toast.makeText(this, "Successfully created new " + role + ".", Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.w(TAG, "createFirestoreUser: Failed to update User profile picture", e);
+                                                });
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "createFirestoreUser: Failed to create new User", e);
+                });
+    }
+
+    private void createVet(String role, String uid, String clinicId) {
+        // Create new document for VeterinaryStaff or Veterinarian account
+        if (role.equals(Role.VETERINARY_STAFF.getTitle())) {
+            VeterinaryStaff newVetStaff = new VeterinaryStaff(
+                    uid,
+                    clinicId,
+                    Role.VETERINARY_STAFF.getTitle(),
+                    Timestamp.now(),
+                    Timestamp.now(),
+                    false
+            );
+
+            vetStaffRef.add(newVetStaff)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Successfully created new " + role + ".", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "createVet: Failed to create VeterinaryStaff", e);
+                    });
+        } else if (role.equals(Role.VETERINARIAN.getTitle())) {
+            Veterinarian newVet = new Veterinarian(
+                    uid,
+                    clinicId,
+                    Role.VETERINARIAN.getTitle(),
+                    Role.VETERINARIAN.getTitle(),
+                    Timestamp.now(),
+                    Timestamp.now(),
+                    false
+            );
+
+            vetsRef.add(newVet)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Successfully created new " + role + ".", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "createVet: Failed to create Veterinarian", e);
+                    });
+        }
     }
 
     private boolean validateInputs(String email, String password, String confirmPassword, String role, String clinicName) {
@@ -294,12 +488,14 @@ public class AddUserActivity extends AppCompatActivity {
             return false;
         }
 
-        // Validate clinic
+        // Validate clinic (only if Role is VETERINARY_STAFF or VETERINARIAN)
         // Empty input
-        if (clinicName.isBlank()) {
-            binding.txtfieldClinic.setError(getString(R.string.veterinary_clinic_required_error));
-            binding.txtfieldClinic.requestFocus();
-            return false;
+        if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
+            if (clinicName.isBlank()) {
+                binding.txtfieldClinic.setError(getString(R.string.veterinary_clinic_required_error));
+                binding.txtfieldClinic.requestFocus();
+                return false;
+            }
         }
 
         return true;
@@ -320,12 +516,24 @@ public class AddUserActivity extends AppCompatActivity {
     }
 
     private void bindTextChangeListeners() {
+        // Account Credentials
         binding.edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 binding.txtfieldEmail.setErrorEnabled(false);
+
+                // Update banner text
+                String email = binding.edtEmail.getText().toString();
+                String displayName = binding.edtDisplayName.getText().toString();
+
+                binding.txtEmail.setText(binding.edtEmail.getText().toString());
+
+                if (displayName.isBlank()) {
+                    // Use front part of email as displayName if displayName input not provided
+                    binding.txtDisplayName.setText(email.split("@")[0]);
+                }
             }
             @Override
             public void afterTextChanged(Editable editable) {}
@@ -353,12 +561,24 @@ public class AddUserActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {}
         });
 
+        // Role
         binding.edmRole.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 binding.txtfieldRole.setErrorEnabled(false);
+
+                // Update banner text
+                String role = binding.edmRole.getText().toString();
+                binding.txtRole.setText(role);
+
+                // Show Clinic dropdown only if VETERINARY_STAFF or VETERINARIAN role selected
+                if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
+                    binding.txtfieldClinic.setVisibility(View.VISIBLE);
+                } else {
+                    binding.txtfieldClinic.setVisibility(View.GONE);
+                }
             }
             @Override
             public void afterTextChanged(Editable editable) {}
@@ -370,6 +590,27 @@ public class AddUserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 binding.txtfieldClinic.setErrorEnabled(false);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Personal Information
+        binding.edtDisplayName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String email = binding.edtEmail.getText().toString();
+                String displayName = binding.edtDisplayName.getText().toString();
+
+                if (!displayName.isBlank()) {
+                    // displayName input always overrides email for displayName
+                    binding.txtDisplayName.setText(displayName);
+                } else {
+                    // Use front part of email as displayName if displayName input not provided
+                    binding.txtDisplayName.setText(email.split("@")[0]);
+                }
             }
             @Override
             public void afterTextChanged(Editable editable) {}
