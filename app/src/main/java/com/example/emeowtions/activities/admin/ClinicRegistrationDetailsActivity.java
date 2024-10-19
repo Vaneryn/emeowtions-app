@@ -5,7 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,13 +29,19 @@ import com.example.emeowtions.R;
 import com.example.emeowtions.adapters.VeterinaryClinicRegistrationAdapter;
 import com.example.emeowtions.databinding.ActivityClinicRegistrationDetailsBinding;
 import com.example.emeowtions.enums.VeterinaryClinicRegistrationStatus;
+import com.example.emeowtions.models.VeterinaryClinic;
 import com.example.emeowtions.models.VeterinaryClinicRegistration;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,9 +58,11 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference vetRegsRef;
+    private CollectionReference clinicsRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private StorageReference vetRegLogoRef;
+    private StorageReference clinicLogoRef;
 
     // Layout variables
     private ActivityClinicRegistrationDetailsBinding binding;
@@ -61,6 +74,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
     private String originalPhoneNumber;
     private String originalAddress;
     private String originalDescription;
+    private String originalRejectionReason;
 
     private String vetRegId;
     private boolean isLogoChanged;
@@ -79,6 +93,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         // Initialize Firestore references
         vetRegsRef = db.collection("veterinaryClinicRegistrations");
+        clinicsRef = db.collection("veterinaryClinics");
         // Initialize Storage references
         storageRef = storage.getReference();
         vetRegLogoRef = storageRef.child("images/veterinaryClinicRegistrations/" + vetRegId + "/logo.jpg");
@@ -97,17 +112,6 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
         });
 
         //region UI Setups
-        MaterialAlertDialogBuilder rejectDialog =
-                new MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.reject)
-                        .setMessage("Reject this clinic?")
-                        .setNegativeButton(R.string.no, (dialogInterface, i) -> {
-                            // Do nothing
-                        })
-                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                            rejectRegistration();
-                        });
-
         MaterialAlertDialogBuilder approveDialog =
                 new MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.approve)
@@ -165,7 +169,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             if (itemId == R.id.action_edit_clinic_details) {
                 toggleEditMode(true);
             } else if (itemId == R.id.action_reject_clinic) {
-                rejectDialog.show();
+                showRejectDialog();
             } else if (itemId == R.id.action_approve_clinic) {
                 approveDialog.show();
             }
@@ -203,12 +207,20 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                         originalPhoneNumber = vetReg.getPhoneNumber();
                         originalAddress = vetReg.getAddress();
                         originalDescription = vetReg.getDescription();
+                        originalRejectionReason = vetReg.getRejectionReason();
 
                         // Load banner
                         loadLogo(originalLogoUrl);
                         binding.txtBannerName.setText(originalName);
                         binding.txtBannerCreatedDate.setText(String.format("Registered %s", sdf.format(vetReg.getCreatedAt().toDate())));
-                        binding.txtBannerUpdatedDate.setText(String.format("Updated %s", sdf.format(vetReg.getUpdatedAt().toDate())));
+                        binding.txtBannerUpdatedDate.setText(
+                                String.format("%s%s",
+                                        (vetReg.getStatus().equals(VeterinaryClinicRegistrationStatus.APPROVED.getTitle()) ? "Approved " :
+                                        vetReg.getStatus().equals(VeterinaryClinicRegistrationStatus.REJECTED.getTitle()) ? "Rejected " :
+                                        "Updated "),
+                                        sdf.format(vetReg.getUpdatedAt().toDate())
+                                )
+                        );
 
                         // Load fields
                         binding.edtName.setText(originalName);
@@ -216,6 +228,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                         binding.edtPhoneNumber.setText(originalPhoneNumber);
                         binding.edtAddress.setText(originalAddress);
                         binding.edtDescription.setText(originalDescription);
+                        binding.edtRejectionReason.setText(originalRejectionReason);
                     }
                 });
         //endregion
@@ -314,6 +327,12 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             binding.txtfieldEmail.requestFocus();
             return false;
         }
+        // Email format
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.txtfieldEmail.setError("Email format is invalid");
+            binding.txtfieldEmail.requestFocus();
+            return false;
+        }
 
         // Validate phone number
         // Empty input
@@ -388,11 +407,11 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
     }
 
     // Sets registration status to Rejected
-    private void rejectRegistration() {
-        // TODO: Rejection reason
+    private void rejectRegistration(String reason) {
         vetRegsRef.document(vetRegId)
                 .update(
                         "status", VeterinaryClinicRegistrationStatus.REJECTED.getTitle(),
+                        "rejectionReason", reason,
                         "updatedAt", Timestamp.now()
                 )
                 .addOnSuccessListener(unused -> {
@@ -412,11 +431,73 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                         "updatedAt", Timestamp.now()
                 )
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Successfully approved.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    // Create new VeterinaryClinic
+                    createVeterinaryClinic();
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "approveRegistration: Failed to update VeterinaryClinicRegistration status", e);
+                });
+    }
+
+    // Creates new VeterinaryClinic document
+    private void createVeterinaryClinic() {
+        // Get inputs
+        String name = binding.edtName.getText().toString();
+        String email = binding.edtEmail.getText().toString();
+        String phoneNumber = binding.edtPhoneNumber.getText().toString();
+        String address = binding.edtAddress.getText().toString();
+        String description = binding.edtDescription.getText().toString();
+
+        // Add document
+        VeterinaryClinic newClinic = new VeterinaryClinic(
+                name,
+                email,
+                phoneNumber,
+                address,
+                description,
+                null,
+                Timestamp.now(),
+                Timestamp.now()
+        );
+
+        clinicsRef.add(newClinic)
+                .addOnSuccessListener(documentReference -> {
+                    // Copy clinic logo to new path for officially approved clinic
+                    vetRegLogoRef.getBytes(1024 * 1024)
+                            .addOnSuccessListener(bytes -> {
+                                // Upload to new path
+                                clinicLogoRef = storageRef.child("images/veterinaryClinics/" + documentReference.getId() + "/logo.jpg");
+                                clinicLogoRef.putBytes(bytes)
+                                        .continueWithTask(logoCopyTask -> {
+                                            // Get URL
+                                            if (!logoCopyTask.isSuccessful()) {
+                                                throw logoCopyTask.getException();
+                                            }
+                                            return clinicLogoRef.getDownloadUrl();
+                                        })
+                                        .addOnCompleteListener(task -> {
+                                            // Update logoUrl
+                                            Uri logoUrl = task.getResult();
+                                            clinicsRef.document(documentReference.getId())
+                                                    .update("logoUrl", logoUrl)
+                                                    .addOnSuccessListener(unused -> {
+                                                        Toast.makeText(this, "Successfully approved " + name + ".", Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        Log.w(TAG, "createVeterinaryClinic: Failed to update logoUrl", e);
+                                                        Toast.makeText(this, "Failed to approve, please try again later.", Toast.LENGTH_SHORT).show();
+                                                    });
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "createVeterinaryClinic: Failed to download clinic logo", e);
+                                Toast.makeText(this, "Failed to approve, please try again later.", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "createVeterinaryClinic: Failed to create new VeterinaryClinic document", e);
+                    Toast.makeText(this, "Failed to approve, please try again later.", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -425,6 +506,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
         vetRegsRef.document(vetRegId)
                 .update(
                         "status", VeterinaryClinicRegistrationStatus.PENDING.getTitle(),
+                        "rejectionReason", null,
                         "updatedAt", Timestamp.now()
                 )
                 .addOnSuccessListener(unused -> {
@@ -442,13 +524,16 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             toggleEditMode(false);
             binding.appBarRegistrationDetails.getMenu().clear();
             binding.appBarRegistrationDetails.inflateMenu(R.menu.top_app_bar_clinic_registration_details);
+            binding.txtfieldRejectionReason.setVisibility(View.GONE);
         } else if (status.equals(VeterinaryClinicRegistrationStatus.APPROVED.getTitle())) {
             toggleEditMode(false);
             binding.appBarRegistrationDetails.getMenu().clear();
+            binding.txtfieldRejectionReason.setVisibility(View.GONE);
         } else if (status.equals(VeterinaryClinicRegistrationStatus.REJECTED.getTitle())) {
             toggleEditMode(false);
             binding.appBarRegistrationDetails.getMenu().clear();
             binding.appBarRegistrationDetails.inflateMenu(R.menu.top_app_bar_clinic_registration_details_rejected);
+            binding.txtfieldRejectionReason.setVisibility(View.VISIBLE);
         }
     }
 
@@ -476,6 +561,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             binding.txtfieldPhoneNumber.setErrorEnabled(false);
             binding.txtfieldAddress.setErrorEnabled(false);
             binding.txtfieldDescription.setErrorEnabled(false);
+            binding.txtfieldRejectionReason.setErrorEnabled(false);
         }
 
         // Toggle fields
@@ -484,16 +570,19 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
         binding.txtfieldPhoneNumber.setEnabled(enabled);
         binding.txtfieldAddress.setEnabled(enabled);
         binding.txtfieldDescription.setEnabled(enabled);
+        binding.txtfieldRejectionReason.setEnabled(enabled);
 
         binding.txtfieldName.setCounterEnabled(enabled);
         binding.txtfieldAddress.setCounterEnabled(enabled);
         binding.txtfieldDescription.setCounterEnabled(enabled);
+        binding.txtfieldRejectionReason.setCounterEnabled(enabled);
 
         binding.edtName.setTextColor(textColor);
         binding.edtEmail.setTextColor(textColor);
         binding.edtPhoneNumber.setTextColor(textColor);
         binding.edtAddress.setTextColor(textColor);
         binding.edtDescription.setTextColor(textColor);
+        binding.edtRejectionReason.setTextColor(textColor);
     }
 
     private void discardChanges() {
@@ -522,5 +611,53 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                     .load(logoUrl)
                     .into(binding.imgClinicLogo);
         }
+    }
+
+    private void showRejectDialog() {
+        // Dialog for getting rejection reason
+        View reasonDialogLayout = LayoutInflater.from(this).inflate(R.layout.dialog_reject, null);
+        TextInputLayout txtfieldReason = reasonDialogLayout.findViewById(R.id.txtfield_reason);
+        TextInputEditText edtReason = reasonDialogLayout.findViewById(R.id.edt_reason);
+
+        MaterialAlertDialogBuilder reasonDialogBuilder =
+                new MaterialAlertDialogBuilder(this)
+                        .setView(reasonDialogLayout)
+                        .setTitle(getString(R.string.reject))
+                        .setMessage("Provide rejection reason.")
+                        .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                            // Do nothing
+                        })
+                        .setPositiveButton(R.string.confirm, ((dialogInterface, i) -> {
+                            // Unused
+                        }));
+
+        AlertDialog reasonDialog = reasonDialogBuilder.create();
+        reasonDialog.show();
+
+        // Override the positive button's click behavior
+        reasonDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Validate reason
+            String reason = edtReason.getText().toString();
+            if (reason.isBlank()) {
+                txtfieldReason.setError(getString(R.string.reason_required_error));
+            } else {
+                rejectRegistration(reason);
+                reasonDialog.dismiss();
+            }
+        });
+
+        // Reset error when text is changed
+        edtReason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                txtfieldReason.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
     }
 }

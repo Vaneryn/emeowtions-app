@@ -293,6 +293,38 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_rejection_reason"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/reason"
+                        android:textColorHint="@color/gray_400"
+                        android:visibility="gone"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="300"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_rejection_reason"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:maxLength="300"
+                            android:overScrollMode="always"
+                            android:paddingTop="@dimen/padding_large"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="Does not exist" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
 
             </ScrollView>

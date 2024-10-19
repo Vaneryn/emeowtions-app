@@ -173,4 +173,7 @@
     <string name="registration_details">Registration Details</string>
     <string name="search_options">Search Options</string>
     <string name="restore">Restore</string>
+    <string name="reason">Reason</string>
+    <string name="reason_required">Reason<font color='#FF0000'>*</font></string>
+    <string name="reason_required_error">Reason is required</string>
 </resources>
