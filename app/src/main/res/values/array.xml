@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Data Model -->
+    <string-array name="role_items">
+        <item>User</item>
+        <item>Veterinarian</item>
+        <item>Veterinary Staff</item>
+        <item>Admin</item>
+    </string-array>
     <string-array name="gender_items">
         <item>Male</item>
         <item>Female</item>

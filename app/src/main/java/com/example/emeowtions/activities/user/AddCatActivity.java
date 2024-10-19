@@ -182,7 +182,7 @@ public class AddCatActivity extends AppCompatActivity {
             addCatBinding.txtfieldDateofbirth.setEndIconVisible(false);
         });
 
-        // btnCancelAddCat: return to Add Cat screen
+        // btnCancelAddCat: return to My Cats screen
         addCatBinding.btnCancelAddCat.setOnClickListener(view -> {
             cancelDialog.show();
         });

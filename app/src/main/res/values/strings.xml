@@ -70,7 +70,8 @@
     <string name="ok">OK</string>
     <string name="enter_password">Enter password</string>
     <string name="dialog_password_message">Provide your password to update email address</string>
-    <string name="password_is_required">Password is required</string>
+    <string name="password_required_error">Password is required</string>
+    <string name="confirm_password_required_error">Confirm Password is required</string>
     <string name="cancel_dialog_generic_message">Are you sure you want to cancel?</string>
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="cancel_cat_creation">Cancel Cat Creation</string>
@@ -131,6 +132,8 @@
     <string name="name_required_error">Name is required</string>
     <string name="clinic_name_required">Clinic Name <font color='#FF0000'>*</font></string>
     <string name="email_required">Email <font color='#FF0000'>*</font></string>
+    <string name="password_required">Password <font color='#FF0000'>*</font></string>
+    <string name="confirm_password_required">Confirm Password <font color='#FF0000'>*</font></string>
     <string name="phone_number_required">Phone Number <font color='#FF0000'>*</font></string>
     <string name="address_required">Address <font color='#FF0000'>*</font></string>
     <string name="description_required">Description <font color='#FF0000'>*</font></string>
@@ -186,7 +189,7 @@
     <string name="send_feedback">Send Feedback</string>
     <string name="get_directions">Get Directions</string>
     <string name="review">Review</string>
-    <string name="add_users">Add Users</string>
+    <string name="add_user">Add User</string>
     <string name="veterinary">Veterinary</string>
     <string name="admins">Admins</string>
     <string name="no_users">No Users</string>
@@ -198,4 +201,12 @@
     <string name="no_admins">No Admins</string>
     <string name="no_admins_message">There are no existing admins.</string>
     <string name="no_admins_results_message">No admins found.\nTry different names or search settings.</string>
+    <string name="account_credentials">Account Credentials</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="role">Role</string>
+    <string name="role_required">Role <font color='#FF0000'>*</font></string>
+    <string name="role_required_error">Role is required</string>
+    <string name="veterinary_clinic">Veterinary Clinic</string>
+    <string name="veterinary_clinic_required">Veterinary Clinic <font color='#FF0000'>*</font></string>
+    <string name="veterinary_clinic_required_error">Veterinary Clinic is required</string>
 </resources>

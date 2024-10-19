@@ -165,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Validate password
         // Empty input
         if (password.isEmpty()) {
-            registerBinding.txtfieldPassword.setError(getString(R.string.password_is_required));
+            registerBinding.txtfieldPassword.setError(getString(R.string.password_required_error));
             registerBinding.txtfieldPassword.requestFocus();
             return false;
         }

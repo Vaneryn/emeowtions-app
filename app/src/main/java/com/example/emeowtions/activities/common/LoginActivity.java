@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
         // Validate password
         // Empty input
         if (password.isEmpty()) {
-            loginBinding.txtfieldPassword.setError(getString(R.string.password_is_required));
+            loginBinding.txtfieldPassword.setError(getString(R.string.password_required_error));
             loginBinding.txtfieldPassword.requestFocus();
             return false;
         }
