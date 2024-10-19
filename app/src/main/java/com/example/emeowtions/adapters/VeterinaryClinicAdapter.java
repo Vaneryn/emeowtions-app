@@ -19,18 +19,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.activities.admin.AdminClinicProfileActivity;
+import com.example.emeowtions.activities.admin.AdminMainActivity;
+import com.example.emeowtions.activities.user.UserClinicProfileActivity;
+import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.models.VeterinaryClinic;
+import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<VeterinaryClinic, VeterinaryClinicAdapter.VeterinaryClinicHolder> {
 
     private static final String TAG = "VeterinaryClinicAdapter";
 
-    private Context context;
+    // Public variables
     public static final String KEY_CLINIC_ID = "clinicId";
+
+    // Private variables
+    private Context context;
 
     public VeterinaryClinicAdapter(FirestoreRecyclerOptions<VeterinaryClinic> options, Context context) {
         super(options);
@@ -48,7 +57,17 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
 
         // Redirect to Clinic Profile when clicked
         holder.clinicHolderBody.setOnClickListener(view -> {
-            Intent intent = new Intent(context, AdminClinicProfileActivity.class);
+            Intent intent;
+
+            if (context instanceof UserMainActivity) {
+                intent = new Intent(context, UserClinicProfileActivity.class);
+            } else if (context instanceof AdminMainActivity) {
+                intent = new Intent(context, AdminClinicProfileActivity.class);
+            } else {
+                // Default
+                intent = new Intent(context, UserClinicProfileActivity.class);
+            }
+
             intent.putExtra(KEY_CLINIC_ID, getSnapshots().getSnapshot(position).getId());
             context.startActivity(intent);
         });

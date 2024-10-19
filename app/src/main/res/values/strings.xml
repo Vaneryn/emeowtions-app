@@ -182,4 +182,14 @@
     <string name="no_clinic_results_message">No clinics found.\nTry different names or search settings!</string>
     <string name="delete">Delete</string>
     <string name="delete_clinic_dialog_message">Delete clinic? This action is irreversible!</string>
+    <string name="no_clinics_user_message">There are no existing clinics.\nWould you like to send feedback?</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="get_directions">Get Directions</string>
+    <string name="review">Review</string>
+    <string name="add_users">Add Users</string>
+    <string name="veterinary">Veterinary</string>
+    <string name="admins">Admins</string>
+    <string name="no_users">No Users</string>
+    <string name="there_are_no_existing_users">There are no existing users.</string>
+    <string name="no_users_results_message">No users found.\nTry different names or search settings.</string>
 </resources>

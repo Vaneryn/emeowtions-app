@@ -15,7 +15,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
@@ -29,7 +28,6 @@ import com.example.emeowtions.fragments.admin.AdminClinicsFragment;
 import com.example.emeowtions.fragments.admin.AdminDashboardFragment;
 import com.example.emeowtions.fragments.admin.AdminFeedbackFragment;
 import com.example.emeowtions.fragments.admin.AdminUsersFragment;
-import com.example.emeowtions.fragments.user.EmotionFragment;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -147,6 +145,18 @@ public class AdminMainActivity extends AppCompatActivity {
             return false;
         });
 
+        // topAppBar menu: manage action buttons for each fragment's respective action menu
+        adminMainBinding.topAppBar.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+
+            // UserMyCatsFragment
+            if (itemId == R.id.action_add_user) {
+                startActivity(new Intent(this, AddUserActivity.class));
+            }
+
+            return false;
+        });
+
         // adminBottomNavigation item: change to selected fragment
         adminBottomNavigation = adminMainBinding.adminBottomNavigation;
         adminBottomNavigation.setOnItemSelectedListener(item -> {
@@ -175,6 +185,8 @@ public class AdminMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.admin_users_item) {
                 adminMainBinding.topAppBar.setTitle(R.string.users);
+                adminMainBinding.topAppBar.inflateMenu(R.menu.top_app_bar_user_management);
+                adminMainBinding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
                 changeFragment(adminUsersFragment, toReplace);
                 return true;
             } else if (itemId == R.id.admin_feedback_item) {

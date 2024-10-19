@@ -244,6 +244,12 @@ public class AdminClinicProfileActivity extends AppCompatActivity {
         //endregion
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuthUtils.checkSignedIn(this);
+    }
+
     // Consolidates profile changes
     private void updateClinicProfile(byte[] logoData, String name, String email, String phoneNumber, String address, String description) {
         // Check if logo was updated

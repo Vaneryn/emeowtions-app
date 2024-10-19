@@ -17,6 +17,15 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.admin.EditUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.AddUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.user.UserClinicProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.admin.AdminClinicProfileActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />

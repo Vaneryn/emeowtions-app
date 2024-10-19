@@ -33,8 +33,10 @@ public class AdminClinicsFragment extends Fragment {
     private FirebaseFirestore db;
     private CollectionReference clinicsRef;
 
-    // Private variables
+    // Layout variables
     private FragmentAdminClinicsBinding binding;
+
+    // Private variables
     private boolean isInitialLoad;
     private VeterinaryClinicAdapter clinicAdapter;
 
