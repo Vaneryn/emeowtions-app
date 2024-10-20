@@ -42,7 +42,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -341,6 +343,9 @@ public class EditUserActivity extends AppCompatActivity {
 
             // Update user if inputs are valid
             if (isValid) {
+                if (displayName.isBlank())
+                    displayName = email.split("@")[0];
+
                 updatePfp(pfpData, displayName, gender, dob, role, clinicId, email, password);
             }
         });
@@ -450,10 +455,6 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     private void updateUser(String pfpUrl, String displayName, String gender, Timestamp dob, String role, String clinicId, String email, String password) {
-        // Determine if email or password were changed
-        boolean isEmailChanged = !email.equals(originalEmail);
-        boolean isPasswordChanged = !password.isEmpty();
-
         // Store copy of original role
         String initialRole = originalRole;
 
@@ -470,36 +471,40 @@ public class EditUserActivity extends AppCompatActivity {
                         "updatedAt", Timestamp.now()
                 )
                 .addOnSuccessListener(unused -> {
-                    // Check updated role
-                    // USER -> VET / VET_STAFF
-                    if (!role.equals(initialRole) && (initialRole.equals(USER_ROLE) || initialRole.equals(ADMIN_ROLE)) && isVet(role)) {
-                        updateUserToVet(initialRole, role, clinicId);
-                    }
-                    // VET / VET_STAFF -> REMAIN
-                    else if (role.equals(initialRole) && isVet(initialRole)) {
-                        updateVet(initialRole, role, clinicId);
-                    }
-                    // VET / VET_STAFF -> INTERCHANGE
-                    else if (!role.equals(initialRole) && isVet(initialRole) && isVet(role)) {
-                        updateVetInterchange(initialRole, role, clinicId);
-                    }
-                    // VET / VET_STAFF -> USER / ADMIN
-                    else if (!role.equals(initialRole) && isVet(initialRole) && !isVet(role)) {
-                        updateVetToUser(initialRole, role);
-                    }
-                    // REMAIN ROLE
-                    else if (role.equals(initialRole)) {
-                        Toast.makeText(this, String.format("Successfully updated %s.", initialRole), Toast.LENGTH_SHORT).show();
-                        reloadActivity(role);
-                    // USER -> ADMIN / ADMIN -> USER
-                    } else {
-                        Toast.makeText(this, String.format("Successfully updated %s to %s.", initialRole, role), Toast.LENGTH_SHORT).show();
-                        reloadActivity(role);
-                    }
+                    processRoleUpdate(initialRole, role, clinicId);
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "updateUser: Failed to update User", e);
                 });
+    }
+
+    private void processRoleUpdate(String initialRole, String newRole, String clinicId) {
+        // Check updated role
+        // USER -> VET / VET_STAFF
+        if (!newRole.equals(initialRole) && (initialRole.equals(USER_ROLE) || initialRole.equals(ADMIN_ROLE)) && isVet(newRole)) {
+            updateUserToVet(initialRole, newRole, clinicId);
+        }
+        // VET / VET_STAFF -> REMAIN
+        else if (newRole.equals(initialRole) && isVet(initialRole)) {
+            updateVet(initialRole, newRole, clinicId);
+        }
+        // VET / VET_STAFF -> INTERCHANGE
+        else if (!newRole.equals(initialRole) && isVet(initialRole) && isVet(newRole)) {
+            updateVetInterchange(initialRole, newRole, clinicId);
+        }
+        // VET / VET_STAFF -> USER / ADMIN
+        else if (!newRole.equals(initialRole) && isVet(initialRole) && !isVet(newRole)) {
+            updateVetToUser(initialRole, newRole);
+        }
+        // REMAIN ROLE
+        else if (newRole.equals(initialRole)) {
+            Toast.makeText(this, String.format("Successfully updated %s.", initialRole), Toast.LENGTH_SHORT).show();
+            reloadActivity(newRole);
+            // USER -> ADMIN / ADMIN -> USER
+        } else {
+            Toast.makeText(this, String.format("Successfully updated %s to %s.", initialRole, newRole), Toast.LENGTH_SHORT).show();
+            reloadActivity(newRole);
+        }
     }
 
     // Create new VET or VET_STAFF from User or enable existing VET or VET_STAFF
@@ -744,14 +749,6 @@ public class EditUserActivity extends AppCompatActivity {
         }
     }
 
-    private void updateAuthEmail() {
-
-    }
-
-    private void updateAuthPassword() {
-
-    }
-
     private void deleteUser() {
         usersRef.document(uid)
                 .update(
@@ -802,6 +799,7 @@ public class EditUserActivity extends AppCompatActivity {
                 });
     }
 
+    // UNUSED
     private boolean validateInputs(String email, String password, String confirmPassword) {
         // Reset errors
         binding.txtfieldEmail.setErrorEnabled(false);
@@ -834,6 +832,12 @@ public class EditUserActivity extends AppCompatActivity {
             // Empty confirm password
             if (confirmPassword.isEmpty()) {
                 binding.txtfieldConfirmPassword.setError(getString(R.string.confirm_password_required_error));
+                binding.txtfieldConfirmPassword.requestFocus();
+                return false;
+            }
+            // Check if password and confirm password match
+            if (!password.equals(confirmPassword)) {
+                binding.txtfieldConfirmPassword.setError("Passwords do not match");
                 binding.txtfieldConfirmPassword.requestFocus();
                 return false;
             }
