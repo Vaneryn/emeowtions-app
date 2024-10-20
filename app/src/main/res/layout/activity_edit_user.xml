@@ -1,10 +1,457 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_300"
+    android:orientation="vertical"
     tools:context=".activities.admin.EditUserActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_300">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/app_bar_edituser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            app:menu="@menu/top_app_bar_edituser"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:navigationIconTint="@color/white"
+            app:title="@string/edit_user"
+            app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_medium_2"
+        android:background="@color/primary_300"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_pfp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/margin_medium_2"
+                android:background="@color/white"
+                android:contentDescription="@string/veterinary_clinic_logo"
+                android:padding="@dimen/padding_small_1"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/circleImageView"
+                app:srcCompat="@drawable/baseline_local_hospital_24"
+                app:strokeColor="@color/white"
+                app:strokeWidth="2dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_revert"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/baseline_settings_backup_restore_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/text_large" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_upload"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/baseline_upload_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/text_large"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_screen_edge">
+
+            <TextView
+                android:id="@+id/txt_banner_display_name"
+                style="@style/HeadingText2.SemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="John Smith" />
+
+            <TextView
+                android:id="@+id/txt_banner_created"
+                style="@style/BodyText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="Created 1 Jan 2000, 0:00 AM" />
+
+            <TextView
+                android:id="@+id/txt_banner_updated"
+                style="@style/BodyText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="Updated 1 Jan 2000, 0:00 AM" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="-30dp"
+        app:cardCornerRadius="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_screen_edge">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="@dimen/padding_screen_edge"
+                android:scrollbarStyle="outsideInset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Personal Information -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/margin_small_2"
+                            android:text="@string/personal_information" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_display_name"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="@string/display_name"
+                            android:textColorHint="@color/gray_400"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="50"
+                            app:endIconMode="clear_text">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_display_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="text"
+                                android:maxLength="50"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="John Smith" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_gender"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/gender"
+                            android:textColorHint="@color/gray_400">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/edm_gender"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="none"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                app:simpleItems="@array/gender_items"
+                                tools:text="Male" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_dob"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/date_of_birth"
+                            android:textColorHint="@color/gray_400"
+                            app:endIconDrawable="@drawable/outline_close_small_24"
+                            app:endIconMode="custom"
+                            app:endIconTint="@color/black">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_dob"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:focusable="false"
+                                android:inputType="none"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="1 January 2000" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <!-- Role -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/margin_small_2"
+                            android:text="@string/role" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_role"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/role"
+                            android:textColorHint="@color/gray_400">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/edm_role"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="none"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                app:simpleItems="@array/role_items_admin"
+                                tools:text="User" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_clinic"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/veterinary_clinic"
+                            android:textColorHint="@color/gray_400"
+                            android:visibility="gone">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/edm_clinic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="none"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="Neko Inu Veterinary Centre" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <!-- Account Credentials -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small_2"
+                            android:text="@string/account_credentials" />
+
+                        <TextView
+                            android:id="@+id/txt_password_tip"
+                            style="@style/BodyText3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/margin_small_2"
+                            android:text="@string/leave_password_blank_hint" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_email"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/email"
+                            android:textColorHint="@color/gray_400"
+                            app:endIconMode="clear_text">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="text"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="vetone@gmail.com" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_password"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/password"
+                            android:textColorHint="@color/gray_400"
+                            app:endIconMode="password_toggle">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="textPassword"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="12345678" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_confirm_password"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/confirm_password"
+                            android:textColorHint="@color/gray_400"
+                            app:endIconMode="password_toggle">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_confirm_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="textPassword"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="12345678" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/layout_edit_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_small_1"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:padding="@dimen/padding_small_2"
+                android:visibility="visible"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_medium_2"
+                    android:layout_weight="1"
+                    android:text="@string/cancel" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/confirm" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

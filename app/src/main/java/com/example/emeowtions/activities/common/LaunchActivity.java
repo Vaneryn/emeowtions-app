@@ -1,6 +1,8 @@
 package com.example.emeowtions.activities.common;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,9 +28,13 @@ public class LaunchActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference usersRef;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = this.getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
 
         // Initialize Firebase service instances
         db = FirebaseFirestore.getInstance();
@@ -72,6 +78,9 @@ public class LaunchActivity extends AppCompatActivity {
                             Toast.makeText(this, "Unable to authenticate your account.", Toast.LENGTH_SHORT).show();
                             redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
+
+                        // Save role to sharedPreferences
+                        sharedPreferences.edit().putString("role", role).apply();
 
                         finish();
                         startActivity(redirectRoleIntent);

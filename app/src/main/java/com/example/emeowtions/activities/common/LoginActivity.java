@@ -1,6 +1,8 @@
 package com.example.emeowtions.activities.common;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -46,10 +48,13 @@ public class LoginActivity extends AppCompatActivity {
     private CollectionReference usersRef;
 
     private ActivityLoginBinding loginBinding;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = this.getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
 
         // Initialize Firebase service instances
         mAuth = FirebaseAuth.getInstance();
@@ -220,6 +225,9 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(this, "Unable to authenticate your account.", Toast.LENGTH_SHORT).show();
                             redirectRoleIntent = new Intent(this, LoginActivity.class);
                         }
+
+                        // Save role to sharedPreferences
+                        sharedPreferences.edit().putString("role", role).apply();
 
                         Toast.makeText(this, "Successfully logged in.", Toast.LENGTH_SHORT).show();
                         startActivity(redirectRoleIntent);

@@ -254,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:textSize="@dimen/text_medium_1"
-                        app:simpleItems="@array/role_items"
+                        app:simpleItems="@array/role_items_admin"
                         tools:text="User" />
 
                 </com.google.android.material.textfield.TextInputLayout>

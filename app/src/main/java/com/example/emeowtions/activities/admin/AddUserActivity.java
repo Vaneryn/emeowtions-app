@@ -1,5 +1,7 @@
 package com.example.emeowtions.activities.admin;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,6 +63,7 @@ import java.util.Locale;
 public class AddUserActivity extends AppCompatActivity {
 
     private static final String TAG = "AddUserActivity";
+    private SharedPreferences sharedPreferences;
 
     // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
@@ -76,6 +80,7 @@ public class AddUserActivity extends AppCompatActivity {
     private ActivityAddUserBinding binding;
 
     // Private variables
+    private String currentUserRole;
     private boolean isPfpUploaded;
     private List<String> clinicIds;
     private List<String> clinicNames;
@@ -85,6 +90,10 @@ public class AddUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Top level
+        sharedPreferences = getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        currentUserRole = sharedPreferences.getString("role", "Admin");
 
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
@@ -160,30 +169,40 @@ public class AddUserActivity extends AppCompatActivity {
         //endregion
 
         //region Load Data
+        // Load Role options
+        if (currentUserRole.equals(Role.SUPER_ADMIN.getTitle())) {
+            // Only Super Admin can select Admins
+            String[] roleList = getResources().getStringArray(R.array.role_items_super_admin);
+            ArrayAdapter<String> rolesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roleList);
+            binding.edmRole.setAdapter(rolesAdapter);
+            binding.edmRole.setText(roleList[0], false);
+        }
+
         // Load clinic names into edmClinic
-        clinicsRef.addSnapshotListener((values, error) -> {
-            // Error
-            if (error != null) {
-                Log.w(TAG, "onCreate: Failed to listen on VeterinaryClinic changes", error);
-                return;
-            }
-            // Success
-            if (values != null && !values.getDocuments().isEmpty()) {
-                clinicIds = new ArrayList<>();
-                clinicNames = new ArrayList<>();
+        clinicsRef.whereEqualTo("deleted", false)
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onCreate: Failed to listen on VeterinaryClinic changes", error);
+                        return;
+                    }
+                    // Success
+                    if (values != null && !values.getDocuments().isEmpty()) {
+                        clinicIds = new ArrayList<>();
+                        clinicNames = new ArrayList<>();
 
-                for (DocumentSnapshot document : values.getDocuments()) {
-                    VeterinaryClinic clinic = document.toObject(VeterinaryClinic.class);
-                    clinicIds.add(document.getId());
-                    clinicNames.add(clinic.getName());
-                }
-                Collections.sort(clinicNames);
+                        for (DocumentSnapshot document : values.getDocuments()) {
+                            VeterinaryClinic clinic = document.toObject(VeterinaryClinic.class);
+                            clinicIds.add(document.getId());
+                            clinicNames.add(clinic.getName());
+                        }
+                        Collections.sort(clinicNames);
 
-                ArrayAdapter<String> clinicNamesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, clinicNames);
-                binding.edmClinic.setAdapter(clinicNamesAdapter);
-                binding.edmClinic.setText(clinicNames.get(0), false);
-                selectedClinicIndex = 0;
-            }
+                        ArrayAdapter<String> clinicNamesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, clinicNames);
+                        binding.edmClinic.setAdapter(clinicNamesAdapter);
+                        binding.edmClinic.setText(clinicNames.get(0), false);
+                        selectedClinicIndex = 0;
+                    }
         });
         //endregion
 
@@ -283,9 +302,10 @@ public class AddUserActivity extends AppCompatActivity {
     }
 
     private void createAuthUser(byte[] pfpData, String email, String password, String role, String clinicId, String displayName, String gender, Timestamp dob) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        // TODO: Use FirebaseAdmin SDK because this shit auto logs us out
-        auth.createUserWithEmailAndPassword(email, password)
+        FirebaseApp adminApp = FirebaseApp.getInstance("admin");
+        FirebaseAuth adminAuth = FirebaseAuth.getInstance(adminApp);
+
+        adminAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     if (authResult != null) {
                         // Retrieve new FirebaseAuth user
@@ -313,7 +333,7 @@ public class AddUserActivity extends AppCompatActivity {
                 role,
                 null,
                 dob,
-                true,
+                true,   // TODO: User accounts are still unverified in FirebaseAuth, but for testing purposes we set Firestore User.verified to true
                 Timestamp.now(),
                 Timestamp.now(),
                 false
@@ -323,7 +343,6 @@ public class AddUserActivity extends AppCompatActivity {
         usersRef.document(uid)
                 .set(newUser)
                 .addOnSuccessListener(unused -> {
-                    // TODO: email verification?
                     // Upload and set profile picture if uploaded
                     if (!isPfpUploaded) {
                         // Create new document for VeterinaryStaff or Veterinarian account
@@ -331,6 +350,7 @@ public class AddUserActivity extends AppCompatActivity {
                             createVet(role, uid, clinicId);
                         } else {
                             Toast.makeText(this, "Successfully created new " + role + ".", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     } else {
                         userPfpRef = storageRef.child("images/users/" + uid + "/profile_picture.jpg");
@@ -530,9 +550,17 @@ public class AddUserActivity extends AppCompatActivity {
 
                 binding.txtEmail.setText(binding.edtEmail.getText().toString());
 
+                if (email.isBlank()) {
+                    binding.txtEmail.setText(R.string.email);
+                }
+
                 if (displayName.isBlank()) {
-                    // Use front part of email as displayName if displayName input not provided
-                    binding.txtDisplayName.setText(email.split("@")[0]);
+                    if (email.isBlank()) {
+                        binding.txtDisplayName.setText(R.string.name);
+                    } else {
+                        // Use front part of email as displayName if displayName input not provided
+                        binding.txtDisplayName.setText(email.split("@")[0]);
+                    }
                 }
             }
             @Override
@@ -608,8 +636,12 @@ public class AddUserActivity extends AppCompatActivity {
                     // displayName input always overrides email for displayName
                     binding.txtDisplayName.setText(displayName);
                 } else {
-                    // Use front part of email as displayName if displayName input not provided
-                    binding.txtDisplayName.setText(email.split("@")[0]);
+                    if (email.isBlank()) {
+                        binding.txtEmail.setText(R.string.email);
+                    } else {
+                        // Use front part of email as displayName if displayName input not provided
+                        binding.txtDisplayName.setText(email.split("@")[0]);
+                    }
                 }
             }
             @Override

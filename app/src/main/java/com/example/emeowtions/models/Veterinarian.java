@@ -11,6 +11,8 @@ public class Veterinarian {
     private Timestamp updatedAt;
     private boolean deleted;
 
+    public Veterinarian() {}
+
     public Veterinarian(String uid, String veterinaryClinicId, String jobTitle, String qualification, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.uid = uid;
         this.veterinaryClinicId = veterinaryClinicId;

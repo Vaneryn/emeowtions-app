@@ -289,6 +289,10 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             }
         });
         //endregion
+
+        //region Other Listeners
+        bindTextChangeListeners();
+        //endregion
     }
 
     @Override
@@ -647,7 +651,6 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Reset error when text is changed
         edtReason.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -655,6 +658,73 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 txtfieldReason.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private void bindTextChangeListeners() {
+        binding.edtName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.txtfieldName.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.txtfieldEmail.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.edtPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.txtfieldPhoneNumber.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.edtAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.txtfieldAddress.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.edtDescription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                binding.txtfieldDescription.setErrorEnabled(false);
             }
 
             @Override

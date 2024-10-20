@@ -27,6 +27,7 @@ public class UserAdapter extends FirestoreRecyclerAdapter<User, UserAdapter.User
 
     private static final String TAG = "UserAdapter";
     public static final String KEY_UID = "userId";
+    public static final String KEY_ROLE = "role";
 
     private Context context;
 
@@ -59,6 +60,7 @@ public class UserAdapter extends FirestoreRecyclerAdapter<User, UserAdapter.User
         holder.userHolderBody.setOnClickListener(view -> {
             Intent intent = new Intent(context, EditUserActivity.class);
             intent.putExtra(KEY_UID, getSnapshots().getSnapshot(position).getId());
+            intent.putExtra(KEY_ROLE, model.getRole());
             context.startActivity(intent);
         });
     }

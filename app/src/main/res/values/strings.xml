@@ -209,4 +209,6 @@
     <string name="veterinary_clinic">Veterinary Clinic</string>
     <string name="veterinary_clinic_required">Veterinary Clinic <font color='#FF0000'>*</font></string>
     <string name="veterinary_clinic_required_error">Veterinary Clinic is required</string>
+    <string name="edit_user">Edit User</string>
+    <string name="leave_password_blank_hint">Leave the password fields blank if you do not intend to change it.</string>
 </resources>

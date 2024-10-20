@@ -32,6 +32,7 @@ import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -41,6 +42,8 @@ public class AdminMainActivity extends AppCompatActivity {
     private ActivityAdminMainBinding adminMainBinding;
     private Fragment selectedFragment;
 
+    // Firebase variables
+    private FirebaseApp adminApp;
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
@@ -58,9 +61,17 @@ public class AdminMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize Admin app instance
+        if (FirebaseApp.getApps(this).size() == 1) {
+            adminApp = FirebaseApp.initializeApp(this, FirebaseApp.getInstance().getOptions(), "admin");
+        } else {
+            adminApp = FirebaseApp.getInstance("admin");
+        }
+
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
+
         // Initialize Firestore references
         usersRef = db.collection("users");
         vetRegsRef = db.collection("veterinaryClinicRegistrations");
