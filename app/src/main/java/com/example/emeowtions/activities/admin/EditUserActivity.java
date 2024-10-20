@@ -295,19 +295,18 @@ public class EditUserActivity extends AppCompatActivity {
             String role = binding.edmRole.getText().toString();
             String clinicName = binding.edmClinic.getText().toString();
             String clinicId = clinicIdList.get(clinicNameList.indexOf(clinicName));
-            String email = binding.edtEmail.getText().toString();
 
             // Check for changes
             if (isVet(selectedUserRole)) {
-                if (!clinicId.equals(originalClinicId) || isPfpChanged || !displayName.equals(originalDisplayName) || !gender.equals(originalGender) ||
-                        (dob != null && !dob.equals(originalDob)) || !role.equals(originalRole) || !email.equals(originalEmail)) {
+                if (!clinicId.equals(originalClinicId) || isPfpChanged || !displayName.equals(originalDisplayName) ||
+                        !gender.equals(originalGender) || (dob != null && !dob.equals(originalDob)) || !role.equals(originalRole)) {
                     cancelDialog.show();
                 } else {
                     discardChanges();
                 }
             } else {
                 if (isPfpChanged || !displayName.equals(originalDisplayName) || !gender.equals(originalGender) ||
-                        (dob != null && !dob.equals(originalDob)) || !role.equals(originalRole) || !email.equals(originalEmail)) {
+                        (dob != null && !dob.equals(originalDob)) || !role.equals(originalRole)) {
                     cancelDialog.show();
                 } else {
                     discardChanges();
@@ -334,19 +333,13 @@ public class EditUserActivity extends AppCompatActivity {
             String role = binding.edmRole.getText().toString();
             String clinicName = binding.edmClinic.getText().toString();
             String clinicId = clinicIdList.get(clinicNameList.indexOf(clinicName));
-            String email = binding.edtEmail.getText().toString();
-            String password = binding.edtPassword.getText().toString();
-            String confirmPassword = binding.edtConfirmPassword.getText().toString();
 
             // Validate inputs
-            boolean isValid = validateInputs(email, password, confirmPassword);
+            boolean isValid = validateInputs();
 
             // Update user if inputs are valid
             if (isValid) {
-                if (displayName.isBlank())
-                    displayName = email.split("@")[0];
-
-                updatePfp(pfpData, displayName, gender, dob, role, clinicId, email, password);
+                updatePfp(pfpData, displayName, gender, dob, role, clinicId);
             }
         });
         //endregion
@@ -432,7 +425,7 @@ public class EditUserActivity extends AppCompatActivity {
                 });
     }
 
-    private void updatePfp(byte[] pfpData, String displayName, String gender, Timestamp dob, String role, String clinicId, String email, String password) {
+    private void updatePfp(byte[] pfpData, String displayName, String gender, Timestamp dob, String role, String clinicId) {
         // Check if profile picutre is updated
         if (isPfpChanged) {
             // Upload image to storage
@@ -446,15 +439,15 @@ public class EditUserActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Uri pfpUrl = task.getResult();
-                            updateUser(pfpUrl.toString(), displayName, gender, dob, role, clinicId, email, password);
+                            updateUser(pfpUrl.toString(), displayName, gender, dob, role, clinicId);
                         }
                     });
         } else {
-            updateUser(originalPfpUrl, displayName, gender, dob, role, clinicId, email, password);
+            updateUser(originalPfpUrl, displayName, gender, dob, role, clinicId);
         }
     }
 
-    private void updateUser(String pfpUrl, String displayName, String gender, Timestamp dob, String role, String clinicId, String email, String password) {
+    private void updateUser(String pfpUrl, String displayName, String gender, Timestamp dob, String role, String clinicId) {
         // Store copy of original role
         String initialRole = originalRole;
 
@@ -466,7 +459,6 @@ public class EditUserActivity extends AppCompatActivity {
                         "gender", gender,
                         "dateOfBirth", dob,
                         "role", role,
-                        "email", email,
                         "verified", true,
                         "updatedAt", Timestamp.now()
                 )
@@ -800,66 +792,7 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     // UNUSED
-    private boolean validateInputs(String email, String password, String confirmPassword) {
-        // Reset errors
-        binding.txtfieldEmail.setErrorEnabled(false);
-        binding.txtfieldPassword.setErrorEnabled(false);
-        binding.txtfieldConfirmPassword.setErrorEnabled(false);
-
-        // Validate email
-        // Empty input
-        if (email.isBlank()) {
-            binding.txtfieldEmail.setError(getString(R.string.email_required_error));
-            binding.txtfieldEmail.requestFocus();
-            return false;
-        }
-        // Email format
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.txtfieldEmail.setError(getString(R.string.email_format_invalid));
-            binding.txtfieldEmail.requestFocus();
-            return false;
-        }
-
-        // Validate password if updated (not blank if updated)
-        if (!password.isEmpty()) {
-            // Password strength
-            String passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$";
-            if (!password.matches(passwordRegex)) {
-                binding.txtfieldPassword.setError("Password should be at least 8 characters, containing at least 1 letter, 1 number, and 1 special character");
-                binding.txtfieldPassword.requestFocus();
-                return false;
-            }
-            // Empty confirm password
-            if (confirmPassword.isEmpty()) {
-                binding.txtfieldConfirmPassword.setError(getString(R.string.confirm_password_required_error));
-                binding.txtfieldConfirmPassword.requestFocus();
-                return false;
-            }
-            // Check if password and confirm password match
-            if (!password.equals(confirmPassword)) {
-                binding.txtfieldConfirmPassword.setError("Passwords do not match");
-                binding.txtfieldConfirmPassword.requestFocus();
-                return false;
-            }
-        }
-
-        // Validate confirm password if updated (not blank if updated)
-        if (!confirmPassword.isEmpty()) {
-            // Password strength
-            String passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$";
-            if (!password.matches(passwordRegex)) {
-                binding.txtfieldPassword.setError("Password should be at least 8 characters, containing at least 1 letter, 1 number, and 1 special character");
-                binding.txtfieldPassword.requestFocus();
-                return false;
-            }
-            // Empty password
-            if (password.isEmpty()) {
-                binding.txtfieldPassword.setError(getString(R.string.password_required_error));
-                binding.txtfieldPassword.requestFocus();
-                return false;
-            }
-        }
-
+    private boolean validateInputs() {
         return true;
     }
 
@@ -872,40 +805,6 @@ public class EditUserActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 selectedUserRole = binding.edmRole.getText().toString();
                 switchViewMode(selectedUserRole, currentUserRole);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        // Account Credentials
-        binding.edtEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                binding.txtfieldEmail.setErrorEnabled(false);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        binding.edtPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                binding.txtfieldPassword.setErrorEnabled(false);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        binding.edtConfirmPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                binding.txtfieldConfirmPassword.setErrorEnabled(false);
             }
             @Override
             public void afterTextChanged(Editable editable) {}
@@ -938,16 +837,12 @@ public class EditUserActivity extends AppCompatActivity {
             // Controls
             binding.btnRevert.setVisibility(View.VISIBLE);
             binding.btnUpload.setVisibility(View.VISIBLE);
+            binding.txtCredentialTip.setVisibility(View.VISIBLE);
+            binding.btnSendPasswordReset.setVisibility(View.VISIBLE);
             binding.layoutEditButtons.setVisibility(View.VISIBLE);
 
             // datePicker
             binding.txtfieldDob.setEndIconVisible(originalDob != null);
-
-            // Password fields
-            binding.txtPasswordTip.setVisibility(View.VISIBLE);
-            binding.edtPassword.getText().clear();
-            binding.edtConfirmPassword.getText().clear();
-            binding.edtConfirmPassword.setVisibility(View.VISIBLE);
         } else {
             textColor = getResources().getColor(R.color.gray_400);
 
@@ -955,23 +850,16 @@ public class EditUserActivity extends AppCompatActivity {
             binding.appBarEdituser.inflateMenu(R.menu.top_app_bar_edituser);
             binding.btnRevert.setVisibility(View.GONE);
             binding.btnUpload.setVisibility(View.GONE);
+            binding.txtCredentialTip.setVisibility(View.GONE);
+            binding.btnSendPasswordReset.setVisibility(View.GONE);
             binding.layoutEditButtons.setVisibility(View.GONE);
 
             // dateOfBirth
             binding.txtfieldDob.setEndIconVisible(false);
 
-            // Password fields
-            binding.txtPasswordTip.setVisibility(View.GONE);
-            binding.edtPassword.setText("12345678");
-            binding.edtConfirmPassword.getText().clear();
-            binding.edtConfirmPassword.setVisibility(View.GONE);
-
             // Clear errors
             binding.txtfieldRole.setErrorEnabled(false);
             binding.txtfieldClinic.setErrorEnabled(false);
-            binding.txtfieldEmail.setErrorEnabled(false);
-            binding.txtfieldPassword.setErrorEnabled(false);
-            binding.txtfieldConfirmPassword.setErrorEnabled(false);
         }
 
         // Toggle fields
@@ -980,17 +868,12 @@ public class EditUserActivity extends AppCompatActivity {
         binding.txtfieldDob.setEnabled(enabled);
         binding.txtfieldRole.setEnabled(enabled);
         binding.txtfieldClinic.setEnabled(enabled);
-        binding.txtfieldEmail.setEnabled(enabled);
-        binding.txtfieldPassword.setEnabled(enabled);
-        binding.txtfieldConfirmPassword.setEnabled(enabled);
 
         // Text counters
         binding.txtfieldDisplayName.setCounterEnabled(enabled);
 
         // End icons
         binding.txtfieldDob.setEndIconVisible(enabled);
-        binding.txtfieldPassword.setEndIconVisible(enabled);
-        binding.txtfieldConfirmPassword.setEndIconVisible(enabled);
 
         // Text colors
         binding.edtDisplayName.setTextColor(textColor);
@@ -998,13 +881,10 @@ public class EditUserActivity extends AppCompatActivity {
         binding.edtDob.setTextColor(textColor);
         binding.edmRole.setTextColor(textColor);
         binding.edmClinic.setTextColor(textColor);
-        binding.edtEmail.setTextColor(textColor);
-        binding.edtPassword.setTextColor(textColor);
-        binding.edtConfirmPassword.setTextColor(textColor);
     }
 
     private void discardChanges() {
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
 
         toggleEditMode(false);
 
@@ -1020,7 +900,6 @@ public class EditUserActivity extends AppCompatActivity {
         );
         binding.edmRole.setText(originalRole, false);
         binding.edtEmail.setText(originalEmail);
-        binding.edtPassword.setText("12345678");
 
         if (isVet(selectedUserRole)) {
             binding.edmClinic.setText(clinicNameList.get(clinicIdList.indexOf(originalClinicId)), false);

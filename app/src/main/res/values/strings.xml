@@ -210,5 +210,6 @@
     <string name="veterinary_clinic_required">Veterinary Clinic <font color='#FF0000'>*</font></string>
     <string name="veterinary_clinic_required_error">Veterinary Clinic is required</string>
     <string name="edit_user">Edit User</string>
-    <string name="leave_password_blank_hint">Leave the password fields blank if you do not intend to change it.</string>
+    <string name="credential_update_hint">You are not permitted to edit email or password.</string>
+    <string name="send_password_reset_email">Send Password Reset Email</string>
 </resources>
