@@ -26,7 +26,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.UserClinicProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.admin.AdminClinicProfileActivity"
             android:exported="false"
@@ -50,19 +51,23 @@
             android:exported="false" />
         <activity
             android:name=".activities.user.CatProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.AddCatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.AnalysisHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".activities.common.FeedbackActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.common.ProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.common.LaunchActivity"
             android:exported="true">
@@ -74,16 +79,19 @@
         </activity>
         <activity
             android:name=".activities.common.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.common.RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.UserMainActivity"
             android:exported="false" />
         <activity
             android:name=".activities.veterinary.VetMainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.admin.AdminMainActivity"
             android:exported="false" />

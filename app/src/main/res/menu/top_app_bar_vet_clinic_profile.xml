@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_edit_vet_clinic_profile"
+        android:title="@string/edit"
+        android:icon="@drawable/baseline_edit_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom" />
+</menu>

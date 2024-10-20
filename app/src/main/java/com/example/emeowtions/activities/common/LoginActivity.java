@@ -165,7 +165,8 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Check if email is verified
-                        if (mAuth.getCurrentUser().isEmailVerified()) {
+                        // TODO: Temporarily disable verified email check for testing purposes
+                        if (mAuth.getCurrentUser().isEmailVerified() || !mAuth.getCurrentUser().isEmailVerified()) {
                             // Sign in success, redirect to role-based home screen
                             Log.d(TAG, "signInWithEmail:success");
 

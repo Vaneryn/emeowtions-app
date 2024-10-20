@@ -1,14 +1,320 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_300"
+    android:orientation="vertical"
     tools:context=".fragments.veterinary.VetClinicProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_medium_2"
+        android:background="@color/primary_300"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_clinic_logo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/margin_medium_2"
+                android:background="@color/white"
+                android:contentDescription="@string/veterinary_clinic_logo"
+                android:padding="@dimen/padding_small_1"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                app:srcCompat="@drawable/baseline_local_hospital_24"
+                app:strokeColor="@color/white"
+                app:strokeWidth="2dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_revert_logo"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/baseline_settings_backup_restore_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/text_large" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_edit_logo"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/baseline_upload_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/text_large"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_screen_edge">
+
+            <TextView
+                android:id="@+id/txt_banner_name"
+                style="@style/HeadingText2.SemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="Veterinary Clinic One" />
+
+            <TextView
+                android:id="@+id/txt_banner_joined_date"
+                style="@style/BodyText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="Joined 1 Jan 2000, 0:00 AM" />
+
+            <TextView
+                android:id="@+id/txt_banner_updated_date"
+                style="@style/BodyText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="end"
+                android:textColor="@color/white"
+                tools:text="Updated 1 Jan 2000, 0:00 AM" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Clinic Profile" />
+        android:layout_marginBottom="-30dp"
+        app:cardCornerRadius="30dp">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_screen_edge">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="@dimen/padding_screen_edge"
+                android:scrollbarStyle="outsideInset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_name"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/name"
+                        android:textColorHint="@color/gray_400"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="100"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:maxLength="100"
+                            android:paddingTop="@dimen/padding_large"
+                            android:textColor="@color/gray_400"
+                            android:textSize="@dimen/text_medium_1"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="Veterinary Clinic One" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_email"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/email"
+                        android:textColorHint="@color/gray_400"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:paddingTop="@dimen/padding_large"
+                            android:textColor="@color/gray_400"
+                            android:textSize="@dimen/text_medium_1"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="vetone@gmail.com" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_phone_number"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/phone_number"
+                        android:textColorHint="@color/gray_400"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:paddingTop="@dimen/padding_large"
+                            android:textColor="@color/gray_400"
+                            android:textSize="@dimen/text_medium_1"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="+60123456789" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_address"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/address"
+                        android:textColorHint="@color/gray_400"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="200"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:maxLength="200"
+                            android:overScrollMode="always"
+                            android:paddingTop="@dimen/padding_large"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical"
+                            android:textSize="@dimen/text_medium_1"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="0, Lorong Kucing 1, Taman Neko, 11900 Bayan Lepas, Penang" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtfield_description"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_2"
+                        android:enabled="false"
+                        android:hint="@string/description"
+                        android:textColorHint="@color/gray_400"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="300"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:maxLength="300"
+                            android:overScrollMode="always"
+                            android:paddingTop="@dimen/padding_large"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical"
+                            android:textSize="@dimen/text_medium_1"
+                            app:boxBackgroundColor="@android:color/transparent"
+                            tools:text="Affordable healthcare for your furry friends" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/layout_edit_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_small_1"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:padding="@dimen/padding_small_2"
+                android:visibility="gone"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_medium_2"
+                    android:layout_weight="1"
+                    android:text="@string/cancel" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/confirm" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

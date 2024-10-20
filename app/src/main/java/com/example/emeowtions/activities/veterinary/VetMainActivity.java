@@ -1,6 +1,8 @@
 package com.example.emeowtions.activities.veterinary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,25 +25,40 @@ import com.example.emeowtions.activities.common.LoginActivity;
 import com.example.emeowtions.activities.common.ProfileActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.databinding.ActivityVetMainBinding;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.fragments.veterinary.VetChatFragment;
 import com.example.emeowtions.fragments.veterinary.VetClinicProfileFragment;
 import com.example.emeowtions.fragments.veterinary.VetDashboardFragment;
 import com.example.emeowtions.fragments.veterinary.VetStaffFragment;
 import com.example.emeowtions.models.User;
+import com.example.emeowtions.models.Veterinarian;
+import com.example.emeowtions.models.VeterinaryStaff;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class VetMainActivity extends AppCompatActivity {
 
     private static final String TAG = "VetMainActivity";
-    private ActivityVetMainBinding vetMainBinding;
-    private Fragment selectedFragment;
+    private SharedPreferences sharedPreferences;
 
+    // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
+    private CollectionReference vetsRef;
+    private CollectionReference vetStaffRef;
+
+    // Layout variables
+    public ActivityVetMainBinding binding;
+    private Fragment selectedFragment;
+
+    // Private variables
+    private String currentUserRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +69,61 @@ public class VetMainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
+        vetsRef = db.collection("veterinarians");
+        vetStaffRef = db.collection("veterinaryStaff");
 
+        //region Shared preferences
+        // Get user role
+        sharedPreferences = getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        currentUserRole = sharedPreferences.getString("role", "Admin");
+
+        // Get and set veterinaryClinicId
+        if (currentUserRole.equals(Role.VETERINARIAN.getTitle())) {
+            vetsRef.whereEqualTo("uid", firebaseAuthUtils.getUid())
+                    .addSnapshotListener((values, error) -> {
+                        // Error
+                        if (error != null) {
+                            Log.w(TAG, "onCreate: Failed to listen on Veterinarian changes", error);
+                            return;
+                        }
+                        // Success
+                        if (values != null && !values.isEmpty()) {
+                            DocumentSnapshot documentSnapshot = values.getDocuments().get(0);
+                            Veterinarian vet = documentSnapshot.toObject(Veterinarian.class);
+                            sharedPreferences.edit().putString("veterinaryClinicId", vet.getVeterinaryClinicId()).apply();
+                            sharedPreferences.edit().putString("veterinaryStaffId", documentSnapshot.getId()).apply();
+                            continueOnCreate();
+                        } else {
+                            Toast.makeText(this, "Your account is not recognized as veterinary staff. Please contact support.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else if (currentUserRole.equals(Role.VETERINARY_STAFF.getTitle())) {
+            vetStaffRef.whereEqualTo("uid", firebaseAuthUtils.getUid())
+                    .addSnapshotListener((values, error) -> {
+                        // Error
+                        if (error != null) {
+                            Log.w(TAG, "onCreate: Failed to listen on VeterinaryStaff changes", error);
+                            return;
+                        }
+                        // Success
+                        if (values != null && !values.isEmpty()) {
+                            DocumentSnapshot documentSnapshot = values.getDocuments().get(0);
+                            VeterinaryStaff vetStaff = documentSnapshot.toObject(VeterinaryStaff.class);
+                            sharedPreferences.edit().putString("veterinaryClinicId", vetStaff.getVeterinaryClinicId()).apply();
+                            sharedPreferences.edit().putString("veterinarianId", documentSnapshot.getId()).apply();
+                            continueOnCreate();
+                        } else {
+                            Toast.makeText(this, "Your account is not recognized as veterinary staff. Please contact support.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+        //endregion
+    }
+
+    private void continueOnCreate() {
         // Get ViewBinding and set content view
-        vetMainBinding = ActivityVetMainBinding.inflate(getLayoutInflater());
-        setContentView(vetMainBinding.getRoot());
+        binding = ActivityVetMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Enable edge-to-edge layout
         EdgeToEdge.enable(this);
@@ -61,23 +131,26 @@ public class VetMainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            vetMainBinding.layoutLogout.setPadding(0, 0, 0, systemBars.bottom);
+            binding.layoutLogout.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
 
         //region UI Setups
-        vetMainBinding.vetBottomNavigation.setOnApplyWindowInsetsListener(null);
-        vetMainBinding.vetBottomNavigation.setPadding(0, 0, 0, 0);
+        // Bottom nav setup
+        binding.vetBottomNavigation.setOnApplyWindowInsetsListener(null);
+        binding.vetBottomNavigation.setPadding(0, 0, 0, 0);
+        if (currentUserRole.equals(Role.VETERINARIAN.getTitle()))
+            binding.vetBottomNavigation.getMenu().removeItem(R.id.vet_staff_item);
 
         // Initialize Fragments
         VetDashboardFragment vetDashboardFragment = new VetDashboardFragment();
-        VetStaffFragment vetStaffFragment = new VetStaffFragment();
         VetChatFragment vetChatFragment = new VetChatFragment();
+        VetStaffFragment vetStaffFragment = new VetStaffFragment();
         VetClinicProfileFragment vetClinicProfileFragment = new VetClinicProfileFragment();
 
         createFragment(vetDashboardFragment);
-        createFragment(vetStaffFragment);
         createFragment(vetChatFragment);
+        createFragment(vetStaffFragment);
         createFragment(vetClinicProfileFragment);
 
         selectedFragment = vetDashboardFragment;
@@ -115,12 +188,12 @@ public class VetMainActivity extends AppCompatActivity {
 
         //region Navigation Listeners
         // topAppBar navigationIcon: open navigation drawer
-        vetMainBinding.topAppBar.setNavigationOnClickListener(view -> vetMainBinding.vetDrawerLayout.open());
+        binding.topAppBar.setNavigationOnClickListener(view -> binding.vetDrawerLayout.open());
 
         // drawerNavigationView item: redirect to selected screen
-        vetMainBinding.drawerNavigationView.setNavigationItemSelectedListener(item -> {
+        binding.drawerNavigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            vetMainBinding.vetDrawerLayout.close();
+            binding.vetDrawerLayout.close();
 
             if (itemId == R.id.vet_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -130,27 +203,43 @@ public class VetMainActivity extends AppCompatActivity {
         });
 
         // vetBottomNavigation item: change to selected fragment
-        vetMainBinding.vetBottomNavigation.setOnItemSelectedListener(item -> {
+        binding.vetBottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            vetMainBinding.topAppBar.getMenu().clear();
+
+            // Reset background
+            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            // Reset top app bar
+            binding.topAppBar.getMenu().clear();
+            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.gray_700));
+            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray_700));
 
             // No need for fragment replacement in Admin view
             boolean toReplace = false;
 
             if (itemId == R.id.vet_dashboard_item) {
-                vetMainBinding.topAppBar.setTitle(R.string.dashboard);
+                binding.topAppBar.setTitle(R.string.dashboard);
                 changeFragment(vetDashboardFragment, toReplace);
                 return true;
-            } else if (itemId == R.id.vet_staff_item) {
-                vetMainBinding.topAppBar.setTitle(R.string.staff);
-                changeFragment(vetStaffFragment, toReplace);
-                return true;
             } else if (itemId == R.id.vet_chat_item) {
-                vetMainBinding.topAppBar.setTitle(R.string.chat);
+                binding.topAppBar.setTitle(R.string.chat);
                 changeFragment(vetChatFragment, toReplace);
                 return true;
+            } else if (itemId == R.id.vet_staff_item) {
+                binding.topAppBar.setTitle(R.string.staff);
+                changeFragment(vetStaffFragment, toReplace);
+                return true;
             } else if (itemId == R.id.vet_clinic_profile_item) {
-                vetMainBinding.topAppBar.setTitle(R.string.clinic_profile);
+                binding.topAppBar.setTitle(R.string.clinic_profile);
+
+                // Set background
+                binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+                // Update top app bar style
+                binding.topAppBar.inflateMenu(R.menu.top_app_bar_vet_clinic_profile);
+                binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+                binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.white));
+                binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+
                 changeFragment(vetClinicProfileFragment, toReplace);
                 return true;
             }
@@ -161,7 +250,7 @@ public class VetMainActivity extends AppCompatActivity {
 
         //region Load Data
         // Get drawer header views
-        View drawerHeader = vetMainBinding.drawerNavigationView.getHeaderView(0);
+        View drawerHeader = binding.drawerNavigationView.getHeaderView(0);
         ImageView imgDrawerProfilePicture = drawerHeader.findViewById(R.id.img_profile_picture);
         TextView txtDrawerDisplayName = drawerHeader.findViewById(R.id.txt_drawer_username);
         TextView txtDrawerEmail = drawerHeader.findViewById(R.id.txt_drawer_email);
@@ -185,12 +274,12 @@ public class VetMainActivity extends AppCompatActivity {
 
         //region onClick Listeners
         // Switch to User view
-        vetMainBinding.txtSwitchUserView.setOnClickListener(view -> {
+        binding.txtSwitchUserView.setOnClickListener(view -> {
             switchUserViewDialog.show();
         });
 
         // Log the user out from account
-        vetMainBinding.txtLogout.setOnClickListener(view -> {
+        binding.txtLogout.setOnClickListener(view -> {
             logoutDialog.show();
         });
         //endregion

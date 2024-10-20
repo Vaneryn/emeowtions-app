@@ -6,15 +6,15 @@
         android:icon="@drawable/baseline_dashboard_24"
         android:title="@string/dashboard" />
     <item
-        android:id="@+id/vet_staff_item"
-        android:enabled="true"
-        android:icon="@drawable/baseline_people_alt_24"
-        android:title="@string/staff" />
-    <item
         android:id="@+id/vet_chat_item"
         android:enabled="true"
         android:icon="@drawable/baseline_chat_24"
         android:title="@string/chat" />
+    <item
+        android:id="@+id/vet_staff_item"
+        android:enabled="true"
+        android:icon="@drawable/baseline_people_alt_24"
+        android:title="@string/staff" />
     <item
         android:id="@+id/vet_clinic_profile_item"
         android:enabled="true"
