@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,15 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.VeterinarianAdapter;
 import com.example.emeowtions.adapters.VeterinaryClinicAdapter;
 import com.example.emeowtions.databinding.ActivityUserClinicProfileBinding;
+import com.example.emeowtions.models.Veterinarian;
 import com.example.emeowtions.models.VeterinaryClinic;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -34,9 +40,11 @@ public class UserClinicProfileActivity extends AppCompatActivity {
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference clinicsRef;
+    private CollectionReference vetsRef;
 
     // Layout variables
     private ActivityUserClinicProfileBinding binding;
+    private VeterinarianAdapter vetAdapter;
 
     // Private variables
     private String clinicId;
@@ -56,6 +64,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         clinicsRef = db.collection("veterinaryClinics");
+        vetsRef = db.collection("veterinarians");
 
         // Get ViewBinding and set content view
         binding = ActivityUserClinicProfileBinding.inflate(getLayoutInflater());
@@ -90,6 +99,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
         //endregion
 
         //region Load Data
+        // Load veterinary clinic data
         clinicsRef.document(clinicId)
                 .addSnapshotListener((value, error) -> {
                     // Error
@@ -123,6 +133,28 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                         binding.txtDescription.setText(description);
                     }
                 });
+
+        // Load veterinarians data
+        Query vetsQuery =
+                vetsRef.whereEqualTo("veterinaryClinicId", clinicId)
+                        .whereEqualTo("deleted", false);
+
+        FirestoreRecyclerOptions<Veterinarian> options =
+                new FirestoreRecyclerOptions.Builder<Veterinarian>()
+                        .setQuery(vetsQuery, Veterinarian.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        vetAdapter = new VeterinarianAdapter(options, this);
+        binding.recyclerviewVets.setAdapter(vetAdapter);
+
+        vetAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                updateResultsView();
+            }
+        });
         //endregion
 
         //region onClick Listeners
@@ -161,6 +193,18 @@ public class UserClinicProfileActivity extends AppCompatActivity {
             Glide.with(getApplicationContext())
                     .load(logoUrl)
                     .into(binding.imgClinicLogo);
+        }
+    }
+
+    // Updates veterinarian or review lists results view
+    private void updateResultsView() {
+        // Reset visibility
+        binding.layoutNoVets.setVisibility(View.GONE);
+        // binding.layoutNoReviews.setVisibility(View.VISIBLE); // TODO: Reviews
+
+        // Determine no users or no query results
+        if (vetAdapter == null || vetAdapter.getItemCount() == 0) {
+            binding.layoutNoVets.setVisibility(View.VISIBLE);
         }
     }
 }

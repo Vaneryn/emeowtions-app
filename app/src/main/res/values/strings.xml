@@ -228,4 +228,9 @@
     <string name="qualification">Qualification</string>
     <string name="qualification_required">Qualification <font color='#FF0000'>*</font></string>
     <string name="qualification_required_error">Qualification is required</string>
+    <string name="about_us">About Us</string>
+    <string name="reviews">Reviews</string>
+    <string name="no_veterinarians_listed">No veterinarians listed.\nConsider contacting this clinic or\nwriting feedback to us.</string>
+    <string name="no_reviews">No Reviews</string>
+    <string name="no_reviews_message">No existing reviews.\nConsider reviewing this clinic\nif you have experienced their services!</string>
 </resources>

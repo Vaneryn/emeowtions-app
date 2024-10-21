@@ -113,16 +113,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- About Us -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="@dimen/padding_screen_edge">
+                            android:paddingHorizontal="@dimen/padding_medium_2"
+                            android:paddingTop="@dimen/padding_medium_1"
+                            android:paddingBottom="@dimen/padding_medium_2">
+
+                            <TextView
+                                style="@style/HeadingText2.SemiBold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_small_2"
+                                android:text="@string/about_us"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -138,6 +149,7 @@
                                     android:src="@drawable/baseline_email_24" />
                                 <TextView
                                     android:id="@+id/txt_email"
+                                    style="@style/BodyText1"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="top"
@@ -158,6 +170,7 @@
                                     android:layout_gravity="top" />
                                 <TextView
                                     android:id="@+id/txt_phone_number"
+                                    style="@style/BodyText1"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="top"
@@ -178,6 +191,7 @@
                                     android:layout_gravity="top" />
                                 <TextView
                                     android:id="@+id/txt_address"
+                                    style="@style/BodyText1"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="top"
@@ -198,6 +212,7 @@
                                     android:src="@drawable/baseline_description_24" />
                                 <TextView
                                     android:id="@+id/txt_description"
+                                    style="@style/BodyText1"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="top"
@@ -208,9 +223,137 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Veterinarians -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
+                        app:cardBackgroundColor="@color/white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="@dimen/padding_medium_2"
+                            android:paddingTop="@dimen/padding_medium_1"
+                            android:paddingBottom="@dimen/padding_medium_2">
+
+                            <TextView
+                                style="@style/HeadingText2.SemiBold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/veterinarians"/>
+
+                            <!-- Veterinarian List -->
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerview_vets"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_small_2"
+                                android:cacheColorHint="#00000000"
+                                android:orientation="horizontal"
+                                android:requiresFadingEdge="horizontal"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            <!-- No Veterinarians -->
+                            <LinearLayout
+                                android:id="@+id/layout_no_vets"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_small_1"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:src="@drawable/baseline_people_alt_24"
+                                    app:tint="@color/gray_400" />
+
+                                <TextView
+                                    style="@style/HeadingText3.SemiBold"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:text="@string/no_veterinarians"
+                                    android:textColor="@color/gray_400"/>
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:text="@string/no_veterinarians_listed" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Reviews -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="@dimen/padding_medium_2"
+                            android:paddingTop="@dimen/padding_medium_1"
+                            android:paddingBottom="@dimen/padding_medium_2">
+
+                            <TextView
+                                style="@style/HeadingText2.SemiBold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/reviews"/>
+
+                            <!-- Review List -->
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerview_reviews"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_small_2"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            <!-- No Reviews -->
+                            <LinearLayout
+                                android:id="@+id/layout_no_reviews"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_small_1"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:visibility="visible" >
+
+                                <ImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:src="@drawable/baseline_reviews_24"
+                                    app:tint="@color/gray_400" />
+
+                                <TextView
+                                    style="@style/HeadingText3.SemiBold"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:text="@string/no_reviews"
+                                    android:textColor="@color/gray_400"/>
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:text="@string/no_reviews_message" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 
