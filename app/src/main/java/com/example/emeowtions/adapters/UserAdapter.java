@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.admin.AdminMainActivity;
 import com.example.emeowtions.activities.admin.EditUserActivity;
+import com.example.emeowtions.activities.veterinary.EditStaffActivity;
+import com.example.emeowtions.activities.veterinary.VetMainActivity;
 import com.example.emeowtions.models.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -56,9 +59,19 @@ public class UserAdapter extends FirestoreRecyclerAdapter<User, UserAdapter.User
         holder.txtEmail.setText(model.getEmail());
         holder.txtRole.setText(model.getRole());
 
-        // Redirect to EditUserActivity
+        // Redirect to EditStaffActivity (Veterinary) or EditUserActivity (Admin)
         holder.userHolderBody.setOnClickListener(view -> {
-            Intent intent = new Intent(context, EditUserActivity.class);
+            Intent intent;
+
+            if (context instanceof VetMainActivity) {
+                intent = new Intent(context, EditStaffActivity.class);
+            } else if (context instanceof AdminMainActivity) {
+                intent = new Intent(context, EditUserActivity.class);
+            } else {
+                // Default
+                intent = new Intent(context, EditStaffActivity.class);
+            }
+
             intent.putExtra(KEY_UID, getSnapshots().getSnapshot(position).getId());
             intent.putExtra(KEY_ROLE, model.getRole());
             context.startActivity(intent);

@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/baseline_menu_24"
-                app:title="@string/dashboard" />
+                app:title="@string/dashboard"
+                app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

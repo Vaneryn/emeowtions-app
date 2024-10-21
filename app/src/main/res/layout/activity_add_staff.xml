@@ -6,18 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.admin.AddUserActivity">
+    tools:context=".activities.veterinary.AddStaffActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/app_bar_add_user"
+            android:id="@+id/app_bar_vet_staff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:title="@string/add_user" />
+            app:title="@string/add_staff" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -255,27 +255,53 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:textSize="@dimen/text_medium_1"
-                        app:simpleItems="@array/role_items_admin"
-                        tools:text="User" />
+                        app:simpleItems="@array/role_items_vetstaff"
+                        tools:text="Veterinarian" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/txtfield_clinic"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:id="@+id/txtfield_jobtitle"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_2"
-                    android:hint="@string/veterinary_clinic_required"
-                    android:visibility="gone">
+                    android:hint="@string/job_title_required"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="50"
+                    app:endIconMode="clear_text">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/edm_clinic"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_jobtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
+                        android:inputType="text"
+                        android:maxLength="50"
                         android:textSize="@dimen/text_medium_1"
-                        tools:text="Neko Inu Veterinary Centre" />
+                        tools:text="Head Veterinarian" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/txtfield_qualification"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_2"
+                    android:hint="@string/qualification_required"
+                    android:visibility="visible"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="100"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_qualification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLength="100"
+                        android:textSize="@dimen/text_medium_1"
+                        tools:text="Doctor of Veterinary Medicine" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

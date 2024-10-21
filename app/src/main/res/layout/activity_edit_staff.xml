@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary_300"
     android:orientation="vertical"
-    tools:context=".activities.admin.EditUserActivity">
+    tools:context=".activities.veterinary.EditStaffActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -15,14 +15,14 @@
         android:background="@color/primary_300">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/app_bar_edituser"
+            android:id="@+id/app_bar_editstaff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            app:menu="@menu/top_app_bar_edituser"
+            app:menu="@menu/top_app_bar_editstaff"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:navigationIconTint="@color/white"
-            app:title="@string/edit_user"
+            app:title="@string/edit_staff"
             app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance"
             app:titleTextColor="@color/white" />
 
@@ -177,6 +177,7 @@
                             style="@style/Widget.Material3.TextInputLayout.FilledBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
                             android:enabled="false"
                             android:hint="@string/display_name"
                             android:textColorHint="@color/gray_400"
@@ -294,27 +295,58 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/txtfield_clinic"
-                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:id="@+id/txtfield_jobtitle"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_small_2"
                             android:enabled="false"
-                            android:hint="@string/veterinary_clinic"
+                            android:hint="@string/job_title"
                             android:textColorHint="@color/gray_400"
-                            android:visibility="gone">
+                            app:counterEnabled="true"
+                            app:counterMaxLength="50"
+                            app:endIconMode="clear_text">
 
-                            <AutoCompleteTextView
-                                android:id="@+id/edm_clinic"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_jobtitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
-                                android:inputType="none"
+                                android:inputType="text"
+                                android:maxLength="50"
                                 android:paddingTop="@dimen/padding_large"
                                 android:textColor="@color/gray_400"
                                 android:textSize="@dimen/text_medium_1"
                                 app:boxBackgroundColor="@android:color/transparent"
-                                tools:text="Neko Inu Veterinary Centre" />
+                                tools:text="Head Veterinarian" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtfield_qualification"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_2"
+                            android:enabled="false"
+                            android:hint="@string/qualification"
+                            android:textColorHint="@color/gray_400"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="100"
+                            app:endIconMode="clear_text">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_qualification"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:inputType="text"
+                                android:maxLength="100"
+                                android:paddingTop="@dimen/padding_large"
+                                android:textColor="@color/gray_400"
+                                android:textSize="@dimen/text_medium_1"
+                                app:boxBackgroundColor="@android:color/transparent"
+                                tools:text="Doctor of Veterinary Medicine" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 

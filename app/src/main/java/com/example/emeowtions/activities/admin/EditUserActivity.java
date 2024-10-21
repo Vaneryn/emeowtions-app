@@ -492,8 +492,9 @@ public class EditUserActivity extends AppCompatActivity {
         else if (newRole.equals(initialRole)) {
             Toast.makeText(this, String.format("Successfully updated %s.", initialRole), Toast.LENGTH_SHORT).show();
             reloadActivity(newRole);
-            // USER -> ADMIN / ADMIN -> USER
-        } else {
+        }
+        // USER -> ADMIN / ADMIN -> USER
+        else {
             Toast.makeText(this, String.format("Successfully updated %s to %s.", initialRole, newRole), Toast.LENGTH_SHORT).show();
             reloadActivity(newRole);
         }
@@ -889,6 +890,7 @@ public class EditUserActivity extends AppCompatActivity {
         toggleEditMode(false);
 
         // Reset fields to original values
+        selectedUserRole = originalRole;
         isPfpChanged = false;
         loadPfp(originalPfpUrl);
         binding.edtDisplayName.setText(originalDisplayName);

@@ -55,7 +55,7 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
         holder.txtName.setText(model.getName());
         holder.txtAddress.setText(model.getAddress());
 
-        // Redirect to Clinic Profile when clicked
+        // Redirect to UserClinicProfileActivity (User) or AdminClinicProfileActivity (Admin)
         holder.clinicHolderBody.setOnClickListener(view -> {
             Intent intent;
 

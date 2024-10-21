@@ -221,4 +221,11 @@
     <string name="no_veterinary_staff_message">There are no existing veterinary staff members.\nAdd staff?</string>
     <string name="approval_date">Approval Date</string>
     <string name="rejection_date">Rejection Date</string>
+    <string name="edit_staff">Edit Staff</string>
+    <string name="job_title">Job Title</string>
+    <string name="job_title_required">Job Title <font color='#FF0000'>*</font></string>
+    <string name="job_title_required_error">Job Title is required</string>
+    <string name="qualification">Qualification</string>
+    <string name="qualification_required">Qualification <font color='#FF0000'>*</font></string>
+    <string name="qualification_required_error">Qualification is required</string>
 </resources>

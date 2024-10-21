@@ -129,19 +129,6 @@ public class VetClinicProfileFragment extends Fragment {
                         });
         //endregion
 
-        //region Navigation Listeners
-        // Edit
-        parentActivity.binding.topAppBar.setOnMenuItemClickListener(item -> {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.action_edit_vet_clinic_profile) {
-                toggleEditMode(true);
-            }
-
-            return false;
-        });
-        //endregion
-
         //region Load Data
         isLogoChanged = false;
         toggleEditMode(false);
@@ -356,7 +343,7 @@ public class VetClinicProfileFragment extends Fragment {
     }
 
     // Toggles edit mode on and off
-    private void toggleEditMode(boolean enabled) {
+    public void toggleEditMode(boolean enabled) {
         int textColor;
 
         parentActivity.binding.topAppBar.getMenu().clear();

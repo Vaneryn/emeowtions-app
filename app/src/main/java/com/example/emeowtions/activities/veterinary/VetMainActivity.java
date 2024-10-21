@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.admin.AddUserActivity;
 import com.example.emeowtions.activities.common.LoginActivity;
 import com.example.emeowtions.activities.common.ProfileActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
@@ -34,7 +36,9 @@ import com.example.emeowtions.models.User;
 import com.example.emeowtions.models.Veterinarian;
 import com.example.emeowtions.models.VeterinaryStaff;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -47,6 +51,7 @@ public class VetMainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     // Firebase variables
+    private FirebaseApp vetApp;
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
@@ -56,6 +61,7 @@ public class VetMainActivity extends AppCompatActivity {
     // Layout variables
     public ActivityVetMainBinding binding;
     private Fragment selectedFragment;
+    public BottomNavigationView vetBottomNavigation;
 
     // Private variables
     private String currentUserRole;
@@ -63,6 +69,13 @@ public class VetMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Veterinary app instance
+        if (!doesAppExist("vet")) {
+            vetApp = FirebaseApp.initializeApp(this, FirebaseApp.getInstance().getOptions(), "vet");
+        } else {
+            vetApp = FirebaseApp.getInstance("vet");
+        }
 
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
@@ -75,20 +88,21 @@ public class VetMainActivity extends AppCompatActivity {
         //region Shared preferences
         // Get user role
         sharedPreferences = getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
-        currentUserRole = sharedPreferences.getString("role", "Admin");
+        currentUserRole = sharedPreferences.getString("role", "Veterinarian");
 
         // Get and set veterinaryClinicId
         if (currentUserRole.equals(Role.VETERINARIAN.getTitle())) {
             vetsRef.whereEqualTo("uid", firebaseAuthUtils.getUid())
-                    .addSnapshotListener((values, error) -> {
+                    .get()
+                    .addOnCompleteListener(task -> {
                         // Error
-                        if (error != null) {
-                            Log.w(TAG, "onCreate: Failed to listen on Veterinarian changes", error);
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "onCreate: Failed to listen on Veterinarian changes", task.getException());
                             return;
                         }
                         // Success
-                        if (values != null && !values.isEmpty()) {
-                            DocumentSnapshot documentSnapshot = values.getDocuments().get(0);
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                             Veterinarian vet = documentSnapshot.toObject(Veterinarian.class);
                             sharedPreferences.edit().putString("veterinaryClinicId", vet.getVeterinaryClinicId()).apply();
                             sharedPreferences.edit().putString("veterinaryStaffId", documentSnapshot.getId()).apply();
@@ -99,15 +113,16 @@ public class VetMainActivity extends AppCompatActivity {
                     });
         } else if (currentUserRole.equals(Role.VETERINARY_STAFF.getTitle())) {
             vetStaffRef.whereEqualTo("uid", firebaseAuthUtils.getUid())
-                    .addSnapshotListener((values, error) -> {
+                    .get()
+                    .addOnCompleteListener(task -> {
                         // Error
-                        if (error != null) {
-                            Log.w(TAG, "onCreate: Failed to listen on VeterinaryStaff changes", error);
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "onCreate: Failed to listen on VeterinaryStaff changes", task.getException());
                             return;
                         }
                         // Success
-                        if (values != null && !values.isEmpty()) {
-                            DocumentSnapshot documentSnapshot = values.getDocuments().get(0);
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                             VeterinaryStaff vetStaff = documentSnapshot.toObject(VeterinaryStaff.class);
                             sharedPreferences.edit().putString("veterinaryClinicId", vetStaff.getVeterinaryClinicId()).apply();
                             sharedPreferences.edit().putString("veterinarianId", documentSnapshot.getId()).apply();
@@ -202,8 +217,24 @@ public class VetMainActivity extends AppCompatActivity {
             return false;
         });
 
+        // topAppBar menu: manage action buttons for each fragment's respective action menu
+        binding.topAppBar.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.action_add_staff) {
+                // VetStaffFragment
+                startActivity(new Intent(this, AddStaffActivity.class));
+            } else if (itemId == R.id.action_edit_vet_clinic_profile) {
+                // VetClinicProfileFragment
+                vetClinicProfileFragment.toggleEditMode(true);
+            }
+
+            return false;
+        });
+
         // vetBottomNavigation item: change to selected fragment
-        binding.vetBottomNavigation.setOnItemSelectedListener(item -> {
+        vetBottomNavigation = binding.vetBottomNavigation;
+        vetBottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             // Reset background
@@ -213,6 +244,9 @@ public class VetMainActivity extends AppCompatActivity {
             binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
             binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.gray_700));
             binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray_700));
+            // Top app bar scaling
+            float scale = getResources().getDisplayMetrics().density;
+            binding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
             // No need for fragment replacement in Admin view
             boolean toReplace = false;
@@ -227,6 +261,8 @@ public class VetMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.vet_staff_item) {
                 binding.topAppBar.setTitle(R.string.staff);
+                binding.topAppBar.inflateMenu(R.menu.top_app_bar_vet_staff);
+                binding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
                 changeFragment(vetStaffFragment, toReplace);
                 return true;
             } else if (itemId == R.id.vet_clinic_profile_item) {
@@ -345,5 +381,14 @@ public class VetMainActivity extends AppCompatActivity {
                     .load(profilePictureUrl)
                     .into(imageView);
         }
+    }
+
+    private boolean doesAppExist(String name) {
+        for (FirebaseApp app : FirebaseApp.getApps(this)) {
+            if (app.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

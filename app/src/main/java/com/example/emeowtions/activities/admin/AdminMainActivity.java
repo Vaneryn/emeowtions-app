@@ -62,7 +62,7 @@ public class AdminMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Initialize Admin app instance
-        if (FirebaseApp.getApps(this).size() == 1) {
+        if (!doesAppExist("admin")) {
             adminApp = FirebaseApp.initializeApp(this, FirebaseApp.getInstance().getOptions(), "admin");
         } else {
             adminApp = FirebaseApp.getInstance("admin");
@@ -160,7 +160,7 @@ public class AdminMainActivity extends AppCompatActivity {
         adminMainBinding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
-            // UserMyCatsFragment
+            // AdminUsersFragment
             if (itemId == R.id.action_add_user) {
                 startActivity(new Intent(this, AddUserActivity.class));
             }
@@ -174,7 +174,7 @@ public class AdminMainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             adminMainBinding.topAppBar.getMenu().clear();
 
-            // Top app bar sizing
+            // Top app bar scaling
             float scale = getResources().getDisplayMetrics().density;
             adminMainBinding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -327,5 +327,15 @@ public class AdminMainActivity extends AppCompatActivity {
                     .load(profilePictureUrl)
                     .into(imageView);
         }
+    }
+
+    // Checks if adminApp already exists
+    private boolean doesAppExist(String name) {
+        for (FirebaseApp app : FirebaseApp.getApps(this)) {
+            if (app.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
