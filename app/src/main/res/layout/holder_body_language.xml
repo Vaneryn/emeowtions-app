@@ -16,43 +16,68 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="@android:color/transparent">
+        app:cardBackgroundColor="@android:color/transparent"
+        app:strokeColor="@color/gray_100">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_small_2">
 
-            <ImageView
-                android:id="@+id/img_cat_profile_picture"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_body_language_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@color/primary_200"
-                android:padding="@dimen/padding_small_2"
                 android:scaleType="centerCrop"
                 android:src="@drawable/baseline_remove_red_eye_24"
+                app:contentPadding="@dimen/padding_small_1"
+                app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
                 app:tint="@color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small_2">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium_1"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginRight="@dimen/margin_medium_2"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/txt_body_language_name"
-                        style="@style/HeadingText3"
-                        android:layout_width="0dp"
+                        android:id="@+id/txt_value"
+                        style="@style/BodyText1.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small_1"
+                        tools:text="Exposed Belly" />
+                    <TextView
+                        android:id="@+id/txt_description"
+                        style="@style/BodyText2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="2"
+                        tools:text="Lorem ipsum dolor sit amet" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_probability"
+                        style="@style/BodyText2.Medium"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_2"
-                        android:layout_weight="1"
-                        android:lines="2"
-                        tools:text="Nekomata Okayu" />
+                        tools:text="69%" />
 
                 </LinearLayout>
 

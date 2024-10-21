@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,7 +39,9 @@ public class BodyLanguageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         BodyLanguageHolder bodyLanguageHolder = (BodyLanguageHolder) holder;
 
         // Populate data
-        bodyLanguageHolder.txtBodyLanguageName.setText(item.getName());
+        bodyLanguageHolder.txtValue.setText(item.getValue());
+        bodyLanguageHolder.txtDescription.setText(item.getDescription());
+        bodyLanguageHolder.txtProbability.setText(String.format("%s%%", item.getProbability()));
     }
 
     @Override
@@ -47,11 +50,16 @@ public class BodyLanguageAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private class BodyLanguageHolder extends RecyclerView.ViewHolder {
-        TextView txtBodyLanguageName;
+        ImageView imgIcon;
+        TextView txtValue;
+        TextView txtDescription;
+        TextView txtProbability;
 
         public BodyLanguageHolder(@NonNull View itemView) {
             super(itemView);
-            txtBodyLanguageName = itemView.findViewById(R.id.txt_body_language_name);
+            txtValue = itemView.findViewById(R.id.txt_value);
+            txtDescription = itemView.findViewById(R.id.txt_description);
+            txtProbability = itemView.findViewById(R.id.txt_probability);
         }
     }
 }

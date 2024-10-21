@@ -59,7 +59,7 @@
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_medium_2"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
                         android:columnCount="2"
                         android:useDefaultMargins="true">
 

@@ -19,6 +19,7 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class EmotionClassifier {
@@ -94,7 +95,7 @@ public class EmotionClassifier {
     }
 
     // Runs inference and returns predicted labels
-    public synchronized ArrayList<String> predict(Bitmap croppedCat) {
+    public synchronized HashMap<String, Float> predict(Bitmap croppedCat) {
         // Keep track of inference time
         long inferenceTime = SystemClock.uptimeMillis();
 
@@ -115,13 +116,13 @@ public class EmotionClassifier {
     }
 
     // Processes model output and returns labels that meet the threshold
-    private ArrayList<String> processOutput(float[] output) {
-        ArrayList<String> predictedLabels = new ArrayList<>();
+    private HashMap<String, Float> processOutput(float[] output) {
+        HashMap<String, Float> predictedLabels = new HashMap<>();
 
         for (int i = 0; i < output.length; i++) {
-            Log.d(TAG, "output" + i + ": " + output[i]);
+            Log.d(TAG, String.format("processOutput: label=%s | conf=%s | %s", LABELS.get(i), output[i], output[i] > THRESHOLD));
             if (output[i] > THRESHOLD) {
-                predictedLabels.add(LABELS.get(i));
+                predictedLabels.put(LABELS.get(i), output[i]);
             }
         }
 

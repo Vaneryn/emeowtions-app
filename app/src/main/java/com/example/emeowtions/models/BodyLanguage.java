@@ -4,51 +4,51 @@ import com.google.firebase.Timestamp;
 
 public class BodyLanguage {
 
-    private String name;
+    private String key;
+    private String value;
     private String description;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private int probability;
 
     public BodyLanguage() {
 
     }
 
-    public BodyLanguage(String name, String description, Timestamp createdAt, Timestamp updatedAt) {
-        this.name = name;
+    public BodyLanguage(String key, String value, String description, int probability) {
+        this.key = key;
+        this.value = value;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.probability = probability;
     }
 
-    public String getName() {
-        return name;
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public int getProbability() {
+        return probability;
     }
 
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setProbability(int probability) {
+        this.probability = probability;
     }
 }

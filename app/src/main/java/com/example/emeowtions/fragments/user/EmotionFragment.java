@@ -50,6 +50,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -87,7 +88,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
 
     // EmotionClassifier Variables
     EmotionClassifier emotionClassifier;
-    private ArrayList<String> predictedLabels;
+    private HashMap<String, Float> predictedLabels;
     private boolean isCatDetected;
 
     public EmotionFragment() {
@@ -249,7 +250,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                             Intent intent = new Intent(getContext(), EmotionAnalysisActivity.class);
                             intent.putExtra(KEY_CAT_ID, "");
                             intent.putExtra(KEY_TEMP_CAT_IMAGE_URL, task.getResult().toString());
-                            intent.putStringArrayListExtra(KEY_PREDICTED_LABELS, predictedLabels);
+                            intent.putExtra(KEY_PREDICTED_LABELS, predictedLabels);
                             startActivity(intent);
                         }
                     });
@@ -275,7 +276,8 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             }
         } else {
             // Shut down object detector and camera executor
-            cameraProvider.unbindAll();
+            if (cameraProvider != null)
+                cameraProvider.unbindAll();
 
             if (objectDetector != null)
                 objectDetector.close();

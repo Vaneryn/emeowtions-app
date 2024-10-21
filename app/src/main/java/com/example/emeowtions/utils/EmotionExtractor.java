@@ -1,12 +1,15 @@
 package com.example.emeowtions.utils;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class EmotionExtractor {
 
-    // Define a set of emotions as a static constant
-    private static final HashSet<String> EMOTIONS = new HashSet<>();
+    public static final HashSet<String> EMOTIONS = new HashSet<>();
 
     static {
         EMOTIONS.add("angry");
@@ -15,13 +18,26 @@ public class EmotionExtractor {
         EMOTIONS.add("scared");
     }
 
-    // Method to extract the single emotion
-    public static String getSingleEmotion(ArrayList<String> labels) {
-        for (String label : labels) {
-            if (EMOTIONS.contains(label)) {
-                return label; // Return the first matching emotion
+    public static Pair<String, Float> getTrueEmotion(HashMap<String, Float> labelProbabilities) {
+        String highestEmotion = null;
+        float highestProbability = -1.0f;  // Initialize to a very low value
+
+        // Iterate over the label probabilities
+        for (Map.Entry<String, Float> entry : labelProbabilities.entrySet()) {
+            String label = entry.getKey();
+            float probability = entry.getValue();
+
+            // Check if the label is one of the emotions
+            if (EMOTIONS.contains(label) && probability > highestProbability) {
+                highestEmotion = label;
+                highestProbability = probability;
             }
         }
-        return null; // Return null if no valid emotion is found
+
+        return new Pair<>(highestEmotion, highestProbability); // Return the emotion and its probability
+    }
+
+    public static boolean isEmotion(String label) {
+        return EMOTIONS.contains(label);
     }
 }
