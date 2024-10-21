@@ -106,7 +106,7 @@ public class EditStaffActivity extends AppCompatActivity {
         vetStaffRef = db.collection("veterinaryStaff");
         // Initialize Storage references
         storageRef = storage.getReference();
-        pfpRef = storageRef.child("images/users/" + uid + "profile_picture.jpg");
+        pfpRef = storageRef.child("images/users/" + uid + "/profile_picture.jpg");
 
         // Get ViewBinding and set content view
         binding = ActivityEditStaffBinding.inflate(getLayoutInflater());

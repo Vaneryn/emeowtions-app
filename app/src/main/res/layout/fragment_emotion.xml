@@ -99,6 +99,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/txt_upload_detection"
+            style="@style/BodyText1.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_medium_2"
+            android:background="@drawable/background_textview_border"
+            android:backgroundTint="@color/tertiary_100"
+            android:elevation="10dp"
+            android:paddingHorizontal="@dimen/padding_screen_edge"
+            android:paddingVertical="@dimen/padding_small_1"
+            android:text="@string/no_cat_detected"
+            android:textColor="@color/tertiary_100"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/layout_upload_actions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.example.emeowtions.utils.OverlayView
+            android:id="@+id/upload_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:translationZ="5dp"
+            app:layout_constraintBottom_toTopOf="@id/layout_upload_actions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
         <LinearLayout
             android:id="@+id/layout_upload_actions"
             android:layout_width="0dp"
@@ -169,7 +199,7 @@
             tools:text="100ms" />
 
         <TextView
-            android:id="@+id/txt_detection"
+            android:id="@+id/txt_camera_detection"
             style="@style/BodyText1.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -199,7 +229,7 @@
             app:scaleType="fillStart" />
 
         <com.example.emeowtions.utils.OverlayView
-            android:id="@+id/overlay"
+            android:id="@+id/camera_overlay"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:translationZ="5dp"

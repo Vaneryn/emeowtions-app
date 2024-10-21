@@ -233,4 +233,5 @@
     <string name="no_veterinarians_listed">No veterinarians listed.\nConsider contacting this clinic or\nwriting feedback to us.</string>
     <string name="no_reviews">No Reviews</string>
     <string name="no_reviews_message">No existing reviews.\nConsider reviewing this clinic\nif you have experienced their services!</string>
+    <string name="image">Image</string>
 </resources>

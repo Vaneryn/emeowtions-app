@@ -1,6 +1,7 @@
 package com.example.emeowtions.activities.user;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,10 +13,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.adapters.BodyLanguageAdapter;
-import com.example.emeowtions.adapters.CatAdapter;
-import com.example.emeowtions.databinding.ActivityAnalysisHistoryBinding;
 import com.example.emeowtions.databinding.ActivityEmotionAnalysisBinding;
 import com.example.emeowtions.fragments.user.EmotionFragment;
 import com.example.emeowtions.models.BodyLanguage;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class EmotionAnalysisActivity extends AppCompatActivity {
 
     private static final String TAG = "EmotionAnalysisActivity";
-    private ActivityEmotionAnalysisBinding emotionAnalysisBinding;
+    private ActivityEmotionAnalysisBinding binding;
     private BodyLanguageAdapter bodyLanguageAdapter;
 
     private FirebaseAuthUtils firebaseAuthUtils;
@@ -46,9 +46,10 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private StorageReference profilePictureRef;
 
+    private String catId;
+    private String tempCatImageUrl;
     private ArrayList<String> predictedLabels;
     private String emotion;
-    private String catId;
     private ArrayList<BodyLanguage> bodyLanguageList;
     private ArrayList<String> recommendationList;
 
@@ -59,6 +60,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         // Get intent data
         Intent passedIntent = getIntent();
         catId = passedIntent.getStringExtra(EmotionFragment.KEY_CAT_ID);
+        tempCatImageUrl = passedIntent.getStringExtra(EmotionFragment.KEY_TEMP_CAT_IMAGE_URL);
         predictedLabels = passedIntent.getStringArrayListExtra(EmotionFragment.KEY_PREDICTED_LABELS);
 
         bodyLanguageList = new ArrayList<>();
@@ -83,8 +85,8 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         catsRef = db.collection("cats");
 
         // Get ViewBinding and set content view
-        emotionAnalysisBinding = ActivityEmotionAnalysisBinding.inflate(getLayoutInflater());
-        setContentView(emotionAnalysisBinding.getRoot());
+        binding = ActivityEmotionAnalysisBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Enable edge-to-edge layout
         EdgeToEdge.enable(this);
@@ -96,14 +98,16 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         });
 
         //region UI Setups
-
+        Glide.with(getApplicationContext())
+                .load(tempCatImageUrl)
+                .into(binding.imgDetectedCat);
         //endregion
 
         //region Load Data
         // Get cat's name
         if (catId.isEmpty()) {
             // Unspecified cat
-            emotionAnalysisBinding.txtCatName.setText(getString(R.string.unspecified));
+            binding.txtCatName.setText(getString(R.string.unspecified));
         } else {
             // Specified cat
             catsRef.document(catId)
@@ -111,9 +115,9 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             Cat cat = documentSnapshot.toObject(Cat.class);
-                            emotionAnalysisBinding.txtCatName.setText(cat.getName());
+                            binding.txtCatName.setText(cat.getName());
                         } else {
-                            emotionAnalysisBinding.txtCatName.setText(getString(R.string.unspecified));
+                            binding.txtCatName.setText(getString(R.string.unspecified));
                         }
                     })
                     .addOnFailureListener(e -> {
@@ -123,42 +127,42 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
 
         // Set emotion
         if (emotion != null)
-            emotionAnalysisBinding.txtEmotion.setText(emotion.substring(0, 1).toUpperCase() + emotion.substring(1));
+            binding.txtEmotion.setText(emotion.substring(0, 1).toUpperCase() + emotion.substring(1));
         else
-            emotionAnalysisBinding.txtEmotion.setText(R.string.none);
+            binding.txtEmotion.setText(R.string.none);
 
         // Load detected body language types
         if (bodyLanguageList.isEmpty()) {
             // No results
-            emotionAnalysisBinding.layoutNoBodyLanguage.setVisibility(View.VISIBLE);
+            binding.layoutNoBodyLanguage.setVisibility(View.VISIBLE);
         } else {
             // Show results
             bodyLanguageAdapter = new BodyLanguageAdapter(bodyLanguageList, this);
-            emotionAnalysisBinding.recyclerviewBodyLanguage.setAdapter(bodyLanguageAdapter);
-            emotionAnalysisBinding.layoutNoBodyLanguage.setVisibility(View.GONE);
+            binding.recyclerviewBodyLanguage.setAdapter(bodyLanguageAdapter);
+            binding.layoutNoBodyLanguage.setVisibility(View.GONE);
         }
 
         // Load recommendations
         if (recommendationList.isEmpty()) {
             // No results
-            emotionAnalysisBinding.layoutNoRecommendations.setVisibility(View.VISIBLE);
+            binding.layoutNoRecommendations.setVisibility(View.VISIBLE);
         } else {
             // Show results
-            emotionAnalysisBinding.layoutNoRecommendations.setVisibility(View.GONE);
+            binding.layoutNoRecommendations.setVisibility(View.GONE);
         }
         //endregion
 
         //region Listeners
         // appBarEmotionAnalysis back button: return to Emotion screen
-        emotionAnalysisBinding.appBarEmotionAnalysis.setNavigationOnClickListener(view -> finish());
+        binding.appBarEmotionAnalysis.setNavigationOnClickListener(view -> finish());
 
         // btnBackBodyLanguage: return to Emotion screen
-        emotionAnalysisBinding.btnBackBodyLanguage.setOnClickListener(view -> {
+        binding.btnBackBodyLanguage.setOnClickListener(view -> {
             finish();
         });
 
         // btnBackRecommendations: return to Emotion screen
-        emotionAnalysisBinding.btnBackRecommendations.setOnClickListener(view -> {
+        binding.btnBackRecommendations.setOnClickListener(view -> {
             finish();
         });
         //endregion

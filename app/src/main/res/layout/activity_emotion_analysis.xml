@@ -59,6 +59,7 @@
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_2"
                         android:columnCount="2"
                         android:useDefaultMargins="true">
 
@@ -103,6 +104,30 @@
                         </LinearLayout>
 
                     </GridLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/margin_small_1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/BodyText3.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:text="@string/image" />
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_detected_cat"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                            app:strokeColor="@color/gray_200"
+                            app:strokeWidth="1dp"
+                            tools:src="@tools:sample/avatars" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
