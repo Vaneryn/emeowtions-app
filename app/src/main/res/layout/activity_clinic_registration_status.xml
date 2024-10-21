@@ -94,13 +94,37 @@
                                 style="@style/BodyText3.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                tools:text="Reason" />
+                                android:text="@string/reason" />
                             <TextView
                                 android:id="@+id/txt_rejection_reason"
-                                style="BodyText2"
+                                style="@style/BodyText2.Medium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:text="Clinic does not exist" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_datetime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small_2"
+                            android:orientation="vertical"
+                            android:layout_columnWeight="1"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/txt_datetime_title"
+                                style="@style/BodyText3.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Date" />
+                            <TextView
+                                android:id="@+id/txt_datetime_value"
+                                style="@style/BodyText2.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="0 January 2000, 0:00 am" />
 
                         </LinearLayout>
 
@@ -173,7 +197,6 @@
                             android:textColor="@color/gray_400" />
                         <TextView
                             android:id="@+id/txt_clinic_name"
-                            style="BodyText2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="Clinic 1" />
@@ -194,7 +217,6 @@
                             android:textColor="@color/gray_400" />
                         <TextView
                             android:id="@+id/txt_clinic_email"
-                            style="BodyText2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="clinic1@gmail.com" />
@@ -215,7 +237,6 @@
                             android:textColor="@color/gray_400" />
                         <TextView
                             android:id="@+id/txt_clinic_phone_number"
-                            style="BodyText2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="+60123456789" />
@@ -236,7 +257,6 @@
                             android:textColor="@color/gray_400" />
                         <TextView
                             android:id="@+id/txt_clinic_address"
-                            style="BodyText2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="0, Lorong Kucing 1, 11900 Bayan Lepas, Penang" />
@@ -257,10 +277,8 @@
                             android:textColor="@color/gray_400" />
                         <TextView
                             android:id="@+id/txt_clinic_description"
-                            style="BodyText2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
                             tools:text="Affordable healthcare for your furry friends." />
 
                     </LinearLayout>

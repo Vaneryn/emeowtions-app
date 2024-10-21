@@ -212,4 +212,13 @@
     <string name="edit_user">Edit User</string>
     <string name="credential_update_hint">You are not permitted to edit email or password.</string>
     <string name="send_password_reset_email">Send Password Reset Email</string>
+    <string name="veterinary_staff">Veterinary Staff</string>
+    <string name="veterinarians">Veterinarians</string>
+    <string name="no_veterinarians">No Veterinarians</string>
+    <string name="no_veterinarians_message">There are no existing veterinarians.\nAdd staff?</string>
+    <string name="add_staff">Add Staff</string>
+    <string name="no_veterinary_staff">No Veterinary Staff</string>
+    <string name="no_veterinary_staff_message">There are no existing veterinary staff members.\nAdd staff?</string>
+    <string name="approval_date">Approval Date</string>
+    <string name="rejection_date">Rejection Date</string>
 </resources>

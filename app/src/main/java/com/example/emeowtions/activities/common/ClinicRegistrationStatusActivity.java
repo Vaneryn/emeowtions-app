@@ -3,6 +3,7 @@ package com.example.emeowtions.activities.common;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -24,6 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class ClinicRegistrationStatusActivity extends AppCompatActivity {
 
     private static final String TAG = "ClinicRegistrationStatusActivity";
@@ -32,8 +36,6 @@ public class ClinicRegistrationStatusActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private CollectionReference vetRegsRef;
-    private StorageReference storageRef;
-    private StorageReference vetRegLogoRef;
 
     // Private variables
     private String vetRegId;
@@ -51,8 +53,6 @@ public class ClinicRegistrationStatusActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         // Initialize Firestore references
         vetRegsRef = db.collection("veterinaryClinicRegistrations");
-        // Initialize Storage references
-        storageRef = storage.getReference();
 
         // Get ViewBinding and set content view
         regStatusBinding = ActivityClinicRegistrationStatusBinding.inflate(getLayoutInflater());
@@ -75,6 +75,7 @@ public class ClinicRegistrationStatusActivity extends AppCompatActivity {
                         return;
                     }
                     if (value != null && value.exists()) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
                         VeterinaryClinicRegistration veterinaryClinicRegistration = value.toObject(VeterinaryClinicRegistration.class);
                         String status = veterinaryClinicRegistration.getStatus();
 
@@ -94,14 +95,25 @@ public class ClinicRegistrationStatusActivity extends AppCompatActivity {
                             regStatusBinding.txtStatus.setTextColor(getColor(R.color.warning_3));
                         } else if (status.equals(VeterinaryClinicRegistrationStatus.APPROVED.getTitle())) {
                             regStatusBinding.txtStatus.setTextColor(getColor(R.color.quaternary_200));
+
+                            // Load approval date
+                            regStatusBinding.layoutDatetime.setVisibility(View.VISIBLE);
+                            regStatusBinding.txtDatetimeTitle.setText(R.string.approval_date);
+                            regStatusBinding.txtDatetimeValue.setText(sdf.format(veterinaryClinicRegistration.getUpdatedAt().toDate()));
                         } else if (status.equals(VeterinaryClinicRegistrationStatus.REJECTED.getTitle())) {
                             regStatusBinding.txtStatus.setTextColor(getColor(R.color.error_2));
+
                             // Load rejection rejection
+                            regStatusBinding.layoutRejectionReason.setVisibility(View.VISIBLE);
                             regStatusBinding.txtRejectionReason.setText(
                                     veterinaryClinicRegistration.getRejectionReason() != null ?
                                             veterinaryClinicRegistration.getRejectionReason() :
                                             "Unspecified"
                             );
+                            // Load rejection date
+                            regStatusBinding.layoutDatetime.setVisibility(View.VISIBLE);
+                            regStatusBinding.txtDatetimeTitle.setText(R.string.rejection_date);
+                            regStatusBinding.txtDatetimeValue.setText(sdf.format(veterinaryClinicRegistration.getUpdatedAt().toDate()));
                         }
                     }
                 });
