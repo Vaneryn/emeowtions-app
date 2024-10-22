@@ -1,27 +1,35 @@
 package com.example.emeowtions.activities.user;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.BehaviourStrategyAdapter;
 import com.example.emeowtions.adapters.BodyLanguageAdapter;
 import com.example.emeowtions.databinding.ActivityEmotionAnalysisBinding;
 import com.example.emeowtions.fragments.user.EmotionFragment;
+import com.example.emeowtions.models.BehaviourStrategy;
 import com.example.emeowtions.models.BodyLanguage;
 import com.example.emeowtions.models.Cat;
+import com.example.emeowtions.models.Recommendation;
 import com.example.emeowtions.utils.BodyLanguageUtils;
 import com.example.emeowtions.utils.EmotionUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.example.emeowtions.utils.Recommender;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -48,11 +56,12 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
 
     // Private variables
     private String catId;
+    private Cat selectedCat;
     private String tempCatImageUrl;
     private HashMap<String, Float> predictedLabels;
     private Pair<String, Float> trueEmotion;
     private ArrayList<BodyLanguage> bodyLanguageList;
-    private ArrayList<String> recommendationList;
+    private ArrayList<BehaviourStrategy> stratList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,33 +94,26 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         });
 
         //region UI Setups
+        // Cat image
         Glide.with(getApplicationContext())
                 .load(tempCatImageUrl)
                 .into(binding.imgDetectedCat);
+
+        // Rate analysis dialog
+        // Save analysis dialog
+        MaterialAlertDialogBuilder saveDialog =
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.save_analysis)
+                        .setMessage(R.string.are_you_sure)
+                        .setNegativeButton(R.string.no, (dialogInterface, i) -> {
+                            // Do nothing
+                        })
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            saveAnalysis();
+                        });
         //endregion
 
         //region Load Data
-        // Get cat's name
-        if (catId == null) {
-            // Unspecified cat
-            binding.txtCatName.setText(getString(R.string.unspecified));
-        } else {
-            // Specified cat
-            catsRef.document(catId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Cat cat = documentSnapshot.toObject(Cat.class);
-                            binding.txtCatName.setText(cat.getName());
-                        } else {
-                            binding.txtCatName.setText(getString(R.string.unspecified));
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w(TAG, "onCreate: Failed to get from catsRef", e);
-                    });
-        }
-
         // Extract true emotion and body languages
         BodyLanguageUtils bodyLanguageUtils = new BodyLanguageUtils(this);
         bodyLanguageList = new ArrayList<>();
@@ -136,9 +138,39 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
             // Load number of detected body language types
             binding.txtBodyLanguageCount.setText(String.format("%s", bodyLanguageList.size()));
         }
+
+        // - GET CAT DATA
+        // - GENERATE RECOMMENDATIONS
+        // - LOAD RECOMMENDATIONS
+        if (catId == null) {
+            // Unspecified cat
+            selectedCat = null;
+            binding.txtCatName.setText(getString(R.string.unspecified));
+            // Initialize and run Recommender
+            getRecommendations();
+        } else {
+            // Specified cat
+            catsRef.document(catId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            selectedCat = documentSnapshot.toObject(Cat.class);
+                            binding.txtCatName.setText(selectedCat.getName());
+                        } else {
+                            binding.txtCatName.setText(getString(R.string.unspecified));
+                        }
+
+                        // Initialize and run Recommender
+                        getRecommendations();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "onCreate: Failed to get from catsRef", e);
+                    });
+        }
+
         // Load emotion text
         if (trueEmotion != null) {
-            String emotion = trueEmotion.first;
+            String emotion = trueEmotion.first == null ? "None" : trueEmotion.first;
             int probability = (int) (trueEmotion.second * 100);
 
             binding.txtEmotion.setText(
@@ -151,9 +183,11 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         } else {
             binding.txtEmotion.setText(R.string.none);
         }
+
         // Load detected body language types
         if (bodyLanguageList.isEmpty()) {
             // No results
+            binding.recyclerviewBodyLanguage.setVisibility(View.GONE);
             binding.layoutNoBodyLanguage.setVisibility(View.VISIBLE);
         } else {
             // Show results
@@ -161,21 +195,24 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
             binding.recyclerviewBodyLanguage.setAdapter(bodyLanguageAdapter);
             binding.layoutNoBodyLanguage.setVisibility(View.GONE);
         }
-
-        // Load recommendations
-        recommendationList = new ArrayList<>();
-        if (recommendationList.isEmpty()) {
-            // No results
-            binding.layoutNoRecommendations.setVisibility(View.VISIBLE);
-        } else {
-            // Show results
-            binding.layoutNoRecommendations.setVisibility(View.GONE);
-        }
         //endregion
 
         //region Listeners
         // appBarEmotionAnalysis back button: return to Emotion screen
         binding.appBarEmotionAnalysis.setNavigationOnClickListener(view -> finish());
+
+        // appBarEmotionAnalysis action buttons
+        binding.appBarEmotionAnalysis.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.action_rate_analysis) {
+                rateAnalysis();
+            } else if (itemId == R.id.action_save_analysis) {
+                saveDialog.show();
+            }
+
+            return false;
+        });
 
         // btnBackBodyLanguage: return to Emotion screen
         binding.btnBackBodyLanguage.setOnClickListener(view -> {
@@ -187,5 +224,52 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
             finish();
         });
         //endregion
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuthUtils.checkSignedIn(this);
+    }
+
+    private void getRecommendations() {
+        Context context = this;
+        stratList = new ArrayList<>();
+
+        // Initialize and run Recommender
+        Recommender recommender = new Recommender(this);
+        recommender.initialize(trueEmotion.first, selectedCat);
+        //recommender.generateStrategies();
+        recommender.retrieveRecommendations(strats -> {
+            if (strats != null || !strats.isEmpty()) {
+                stratList = strats;
+                Log.d(TAG, "getRecommendations: " + stratList);
+
+                // Display recommendations
+                if (stratList == null || stratList.isEmpty()) {
+                    // No results
+                    binding.recyclerviewRecommendations.setVisibility(View.GONE);
+                    binding.layoutNoRecommendations.setVisibility(View.VISIBLE);
+                } else {
+                    // Show results
+                    BehaviourStrategyAdapter stratAdapter = new BehaviourStrategyAdapter(stratList, context);
+                    binding.recyclerviewRecommendations.setAdapter(stratAdapter);
+                    binding.txtRecommendationsCount.setText(String.format("%s", stratList.size()));
+                    binding.layoutNoRecommendations.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void rateAnalysis() {
+        MenuItem menuItem = binding.appBarEmotionAnalysis.getMenu().findItem(R.id.action_rate_analysis);
+        menuItem.setEnabled(false);
+        menuItem.setIconTintList(ContextCompat.getColorStateList(this, R.color.gray_200));
+    }
+
+    private void saveAnalysis() {
+        MenuItem menuItem = binding.appBarEmotionAnalysis.getMenu().findItem(R.id.action_save_analysis);
+        menuItem.setEnabled(false);
+        menuItem.setIconTintList(ContextCompat.getColorStateList(this, R.color.gray_200));
     }
 }

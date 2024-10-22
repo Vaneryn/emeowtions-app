@@ -173,7 +173,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerview_body_language"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="300dp"
                         android:cacheColorHint="#00000000"
                         android:fadingEdgeLength="@dimen/padding_small_2"
                         android:requiresFadingEdge="vertical"
@@ -238,16 +238,30 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/HeadingText2.SemiBold"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small_1"
-                        android:text="@string/recommendations" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:layout_weight="1"
+                            android:text="@string/recommendations" />
+                        <TextView
+                            android:id="@+id/txt_recommendations_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="1" />
+
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_recommendations"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="300dp"
                         android:requiresFadingEdge="vertical"
                         android:visibility="visible"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

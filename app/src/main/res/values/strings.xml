@@ -234,4 +234,7 @@
     <string name="no_reviews">No Reviews</string>
     <string name="no_reviews_message">No existing reviews.\nConsider reviewing this clinic\nif you have experienced their services!</string>
     <string name="image">Image</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="users_found_this_useful">users found this useful</string>
+    <string name="general">General</string>
 </resources>

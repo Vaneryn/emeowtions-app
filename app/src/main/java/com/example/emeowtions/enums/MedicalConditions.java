@@ -1,15 +1,14 @@
 package com.example.emeowtions.enums;
 
-public enum CatBackground {
-    DOMESTIC("Domestic", 1),
-    STRAY("Stray", 2),
-    FERAL("Feral", 3),
-    UNSPECIFIED("Unspecified", 4);
+public enum MedicalConditions {
+    YES("Yes", 1),
+    NO("No", 2),
+    UNSPECIFIED("Unspecified", 3);
 
     private final String title;
     private final int code;
 
-    CatBackground(String title, int code) {
+    MedicalConditions(String title, int code) {
         this.title = title;
         this.code = code;
     }

@@ -29,36 +29,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_2"
+                android:weightSum="5"
                 android:orientation="horizontal">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/img_body_language_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/img_recommendation_icon"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginRight="@dimen/margin_small_2"
-                    android:background="@color/primary_200"
+                    android:background="@color/secondary_200"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/baseline_remove_red_eye_24"
+                    android:src="@drawable/baseline_event_24"
                     app:contentPadding="@dimen/padding_small_1"
                     app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
                     app:tint="@color/white" />
 
-                <TextView
-                    android:id="@+id/txt_value"
-                    style="@style/BodyText1.Medium"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/margin_large"
-                    android:layout_weight="1"
-                    tools:text="Exposed Belly" />
+                    android:layout_weight="4"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txt_probability"
-                    style="@style/BodyText2.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primary_400"
-                    tools:text="69%" />
+                    <TextView
+                        android:id="@+id/txt_factor_type"
+                        style="@style/BodyText3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Age" />
+                    <TextView
+                        android:id="@+id/txt_factor_value"
+                        style="@style/BodyText1.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:text="Kitten" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -67,8 +74,33 @@
                 style="@style/BodyText2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_1"
                 android:justificationMode="inter_word"
                 tools:text="Lorem ipsum dolor sit amet" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_rating"
+                    style="@style/BodyText2.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_small_1"
+                    android:textColor="@color/primary_400"
+                    tools:text="69%" />
+                <TextView
+                    style="@style/BodyText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_400"
+                    android:text="@string/users_found_this_useful" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
