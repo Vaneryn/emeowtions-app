@@ -2,13 +2,13 @@ package com.example.emeowtions.utils;
 
 import android.util.Pair;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class EmotionExtractor {
+public class EmotionUtils {
 
+    private static final String TAG = "EmotionUtils";
     public static final HashSet<String> EMOTIONS = new HashSet<>();
 
     static {

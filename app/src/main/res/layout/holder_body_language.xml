@@ -22,66 +22,52 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_small_2">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_body_language_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@color/primary_200"
-                android:scaleType="centerCrop"
-                android:src="@drawable/baseline_remove_red_eye_24"
-                app:contentPadding="@dimen/padding_small_1"
-                app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
-                app:tint="@color/white" />
+            android:orientation="vertical"
+            android:padding="@dimen/margin_medium_1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_medium_1"
+                android:layout_marginBottom="@dimen/margin_small_2"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_body_language_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="@dimen/margin_small_2"
+                    android:background="@color/primary_200"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/baseline_remove_red_eye_24"
+                    app:contentPadding="@dimen/padding_small_1"
+                    app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/txt_value"
+                    style="@style/BodyText1.Medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_medium_2"
+                    android:layout_marginRight="@dimen/margin_large"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    tools:text="Exposed Belly" />
 
-                    <TextView
-                        android:id="@+id/txt_value"
-                        style="@style/BodyText1.Medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small_1"
-                        tools:text="Exposed Belly" />
-                    <TextView
-                        android:id="@+id/txt_description"
-                        style="@style/BodyText2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lines="2"
-                        tools:text="Lorem ipsum dolor sit amet" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_probability"
+                    style="@style/BodyText2.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_probability"
-                        style="@style/BodyText2.Medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_small_2"
-                        tools:text="69%" />
-
-                </LinearLayout>
+                    tools:text="69%" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_description"
+                style="@style/BodyText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                tools:text="Lorem ipsum dolor sit amet" />
 
         </LinearLayout>
 

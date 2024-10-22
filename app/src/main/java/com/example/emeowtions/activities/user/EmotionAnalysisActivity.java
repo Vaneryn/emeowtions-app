@@ -1,14 +1,12 @@
 package com.example.emeowtions.activities.user;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,14 +19,10 @@ import com.example.emeowtions.databinding.ActivityEmotionAnalysisBinding;
 import com.example.emeowtions.fragments.user.EmotionFragment;
 import com.example.emeowtions.models.BodyLanguage;
 import com.example.emeowtions.models.Cat;
-import com.example.emeowtions.utils.BodyLanguageExtractor;
-import com.example.emeowtions.utils.EmotionExtractor;
+import com.example.emeowtions.utils.BodyLanguageUtils;
+import com.example.emeowtions.utils.EmotionUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -69,29 +63,6 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         catId = passedIntent.getStringExtra(EmotionFragment.KEY_CAT_ID);
         tempCatImageUrl = passedIntent.getStringExtra(EmotionFragment.KEY_TEMP_CAT_IMAGE_URL);
         predictedLabels = (HashMap<String, Float>) passedIntent.getSerializableExtra(EmotionFragment.KEY_PREDICTED_LABELS);
-
-        bodyLanguageList = new ArrayList<>();
-        recommendationList = new ArrayList<>();
-
-        // Get emotion with highest probability
-        if (!predictedLabels.isEmpty()) {
-            // Get emotion
-            trueEmotion = EmotionExtractor.getTrueEmotion(predictedLabels);
-
-            // Convert labels to corresponding body language types
-            for (String label : predictedLabels.keySet()) {
-                if (BodyLanguageExtractor.isBodyLanguage(label))
-                    bodyLanguageList.add(
-                            new BodyLanguage(
-                                    label,
-                                    BodyLanguageExtractor.getValue(label),
-                                    BodyLanguageExtractor.getDescription(label),
-                                    (int) (predictedLabels.get(label) * 100)
-                            )
-                    );
-            }
-        }
-
         Log.d(TAG, "onCreate: " + predictedLabels);
 
         // Initialize Firebase service instances
@@ -121,7 +92,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
 
         //region Load Data
         // Get cat's name
-        if (catId.isEmpty()) {
+        if (catId == null) {
             // Unspecified cat
             binding.txtCatName.setText(getString(R.string.unspecified));
         } else {
@@ -141,7 +112,31 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                     });
         }
 
-        // Set emotion
+        // Extract true emotion and body languages
+        BodyLanguageUtils bodyLanguageUtils = new BodyLanguageUtils(this);
+        bodyLanguageList = new ArrayList<>();
+
+        if (!predictedLabels.isEmpty()) {
+            // Get emotion with highest probability
+            trueEmotion = EmotionUtils.getTrueEmotion(predictedLabels);
+
+            // Convert remaining labels to corresponding body language types
+            for (String label : predictedLabels.keySet()) {
+                if (bodyLanguageUtils.isBodyLanguage(label))
+                    bodyLanguageList.add(
+                            new BodyLanguage(
+                                    label,
+                                    bodyLanguageUtils.getValue(label),
+                                    bodyLanguageUtils.getDescription(label),
+                                    (int) (predictedLabels.get(label) * 100)
+                            )
+                    );
+            }
+
+            // Load number of detected body language types
+            binding.txtBodyLanguageCount.setText(String.format("%s", bodyLanguageList.size()));
+        }
+        // Load emotion text
         if (trueEmotion != null) {
             String emotion = trueEmotion.first;
             int probability = (int) (trueEmotion.second * 100);
@@ -156,7 +151,6 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         } else {
             binding.txtEmotion.setText(R.string.none);
         }
-
         // Load detected body language types
         if (bodyLanguageList.isEmpty()) {
             // No results
@@ -169,6 +163,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         }
 
         // Load recommendations
+        recommendationList = new ArrayList<>();
         if (recommendationList.isEmpty()) {
             // No results
             binding.layoutNoRecommendations.setVisibility(View.VISIBLE);

@@ -69,6 +69,8 @@ dependencies {
 
     implementation(libs.core.splashscreen)
 
+    implementation(libs.opencsv)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

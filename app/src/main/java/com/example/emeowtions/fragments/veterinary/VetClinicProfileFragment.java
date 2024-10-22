@@ -346,6 +346,9 @@ public class VetClinicProfileFragment extends Fragment {
     public void toggleEditMode(boolean enabled) {
         int textColor;
 
+        if (parentActivity.binding == null)
+            return;
+
         parentActivity.binding.topAppBar.getMenu().clear();
 
         // Check mode

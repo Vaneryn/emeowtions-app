@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,7 +19,6 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -30,11 +28,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.activities.user.EmotionAnalysisActivity;
+import com.example.emeowtions.models.Cat;
 import com.example.emeowtions.utils.BoundingBox;
 import com.example.emeowtions.utils.EmotionClassifier;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
@@ -42,14 +42,16 @@ import com.example.emeowtions.utils.ObjectDetector;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.FragmentEmotionBinding;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -58,14 +60,21 @@ import java.util.concurrent.Executors;
 
 public class EmotionFragment extends Fragment implements ObjectDetector.DetectorListener {
 
-    private FragmentEmotionBinding binding;
-
+    // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference catsRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private StorageReference tempImageRef;
+
+    // Layout variables
+    private FragmentEmotionBinding binding;
+
+    // Private variables
+    private int selectedCatIndex;
+    private List<String> catIdList;
+    private List<String> catNameList;
 
     // Mode Control
     private boolean isUploadMode;
@@ -128,11 +137,25 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
         isImageUploaded = false;
         isCatDetected = false;
 
-        // Load default dropdown menu selections
+        // Load dropdown menus
         binding.edmMode.setText(getResources().getStringArray(R.array.emotion_analysis_mode_items)[0], false);
-        binding.edmSelectedCat.setText(getString(R.string.unspecified), false);
 
-        // Start emotion classifier, object detector, and camera executor
+        loadCats(null);
+        catsRef.whereEqualTo("ownerId", firebaseAuthUtils.getUid())
+                .whereEqualTo("deleted", false)
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onViewCreated: Failed to listen on Cat changes", error);
+                        return;
+                    }
+                    // Success
+                    if (values != null && !values.getDocuments().isEmpty()) {
+                        loadCats(values.getDocuments());
+                    }
+                });
+
+        // Start emotion classifier
         emotionClassifier = new EmotionClassifier(requireContext(), EMEOWTIONS_MODEL_PATH, EMEOWTIONS_LABELS_PATH);
 
         // Create photo picker
@@ -162,8 +185,6 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     }
 
     private void bindListeners() {
-        // TODO
-
         // edmMode: switch mode
         binding.edmMode.setOnItemClickListener((adapterView, view, i, l) -> {
             String selectedMode = adapterView.getItemAtPosition(i).toString();
@@ -194,6 +215,11 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 binding.imgUploadView.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.baseline_emeowtions_24));
                 binding.btnGenerateAnalysis.setEnabled(false);
             }
+        });
+
+        // edmSelectedCat: change selected cat
+        binding.edmSelectedCat.setOnItemClickListener((adapterView, view, i, l) -> {
+            selectedCatIndex = i;
         });
 
         // btnClear: clear image
@@ -248,7 +274,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                         if (task.isSuccessful()) {
                             // Pass catId (if cat selected) and temp image URL
                             Intent intent = new Intent(getContext(), EmotionAnalysisActivity.class);
-                            intent.putExtra(KEY_CAT_ID, "");
+                            intent.putExtra(KEY_CAT_ID, catIdList.get(selectedCatIndex));
                             intent.putExtra(KEY_TEMP_CAT_IMAGE_URL, task.getResult().toString());
                             intent.putExtra(KEY_PREDICTED_LABELS, predictedLabels);
                             startActivity(intent);
@@ -448,6 +474,29 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             isCatDetected = true;
             binding.btnGenerateAnalysis.setEnabled(true);
         });
+    }
+
+    private void loadCats(List<DocumentSnapshot> documentSnapshots) {
+        // Add dummy values for "Unspecified"
+        catIdList = new ArrayList<>();
+        catNameList = new ArrayList<>();
+        catIdList.add(null);
+        catNameList.add("Unspecified");
+
+        // Add cat names to options
+        if (documentSnapshots != null) {
+            for (DocumentSnapshot document : documentSnapshots) {
+                Cat cat = document.toObject(Cat.class);
+                catIdList.add(document.getId());
+                catNameList.add(cat.getName());
+            }
+        }
+
+        // Set adapter
+        ArrayAdapter<String> catNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, catNameList);
+        binding.edmSelectedCat.setAdapter(catNamesAdapter);
+        binding.edmSelectedCat.setText(catNameList.get(0), false);
+        selectedCatIndex = 0;
     }
 
     private Bitmap cropBitmap(Bitmap sourceBitmap, BoundingBox boundingBox) {
