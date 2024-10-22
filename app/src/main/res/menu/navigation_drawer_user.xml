@@ -9,11 +9,11 @@
             android:contentDescription="@string/navigation_drawer_profile_item"
             app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/analysis_history_item"
-            android:icon="@drawable/baseline_history_24"
-            android:title="@string/analysis_history"
+            android:id="@+id/saved_analyses_item"
+            android:icon="@drawable/baseline_assignment_24"
+            android:title="@string/saved_analyses"
             android:checkable="true"
-            android:contentDescription="@string/navigation_drawer_analysis_history_item"
+            android:contentDescription="@string/navigation_drawer_saved_analyses_item"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/feedback_item"

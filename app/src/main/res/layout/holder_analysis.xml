@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small_1"
+    android:clipToPadding="false"
+    android:orientation="horizontal"
+    android:padding="1dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/body"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@android:color/transparent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small_2"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_analyzed_image"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginRight="@dimen/margin_small_2"
+                android:background="@color/primary_300"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_emeowtions_24"
+                app:contentPadding="@dimen/padding_small_1"
+                app:shapeAppearanceOverlay="@style/roundedRectangleImageView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_cat_name"
+                    style="@style/BodyText1.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    tools:text="Nekomata Okayu" />
+                <TextView
+                    android:id="@+id/txt_emotion"
+                    style="@style/BodyText1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    tools:text="Happy" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/txt_created_date"
+                    style="@style/BodyText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    tools:text="0 Jan 2000" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

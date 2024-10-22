@@ -8,6 +8,7 @@ public class Analysis {
 
     private String catId;
     private String uid;
+    private String catName;
     private String emotion;
     private List<BodyLanguage> bodyLanguages;
     private String imageUrl;
@@ -17,9 +18,10 @@ public class Analysis {
 
     public Analysis() {}
 
-    public Analysis(String catId, String uid, String emotion, List<BodyLanguage> bodyLanguages, String imageUrl, Timestamp createdAt, Timestamp updatedAt, boolean forFeedback) {
+    public Analysis(String catId, String uid, String catName, String emotion, List<BodyLanguage> bodyLanguages, String imageUrl, Timestamp createdAt, Timestamp updatedAt, boolean forFeedback) {
         this.catId = catId;
         this.uid = uid;
+        this.catName = catName;
         this.emotion = emotion;
         this.bodyLanguages = bodyLanguages;
         this.imageUrl = imageUrl;
@@ -34,6 +36,10 @@ public class Analysis {
 
     public String getUid() {
         return uid;
+    }
+
+    public String getCatName() {
+        return catName;
     }
 
     public String getEmotion() {
@@ -68,6 +74,10 @@ public class Analysis {
         this.uid = uid;
     }
 
+    public void setCatName(String catName) {
+        this.catName = catName;
+    }
+
     public void setEmotion(String emotion) {
         this.emotion = emotion;
     }
@@ -97,6 +107,7 @@ public class Analysis {
         return "Analysis{" +
                 "catId='" + catId + '\'' +
                 ", uid='" + uid + '\'' +
+                ", catName='" + catName + '\'' +
                 ", emotion='" + emotion + '\'' +
                 ", bodyLanguages=" + bodyLanguages +
                 ", imageUrl='" + imageUrl + '\'' +

@@ -237,4 +237,11 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="users_found_this_useful">users found this useful</string>
     <string name="general">General</string>
+    <string name="saved_analyses">Saved Analyses</string>
+    <string name="navigation_drawer_saved_analyses_item">Navigation drawer saved analyses item</string>
+    <string name="no_analyses">No Analyses</string>
+    <string name="you_have_no_saved_analyses">You have no saved analyses.</string>
+    <string name="no_analyses_results_message">No analyses found.\nTry different cat names or search settings.</string>
+    <string name="rate_analysis_message">We would love to hear from you. How was your experience with the emotion and body language analysis?</string>
+    <string name="search_cat_name">Search cat name</string>
 </resources>

@@ -11,12 +11,14 @@ public class RecommendedBehaviourStrategy {
     private String factorType;
     private String factorValue;
     private boolean rated;
+    private boolean liked;
+    private boolean disliked;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public RecommendedBehaviourStrategy() {}
 
-    public RecommendedBehaviourStrategy(String stratId, String title, String description, String recommendationFactorId, String factorType, String factorValue, boolean rated, Timestamp createdAt, Timestamp updatedAt) {
+    public RecommendedBehaviourStrategy(String stratId, String title, String description, String recommendationFactorId, String factorType, String factorValue, boolean rated, boolean liked, boolean disliked, Timestamp createdAt, Timestamp updatedAt) {
         this.stratId = stratId;
         this.title = title;
         this.description = description;
@@ -24,6 +26,8 @@ public class RecommendedBehaviourStrategy {
         this.factorType = factorType;
         this.factorValue = factorValue;
         this.rated = rated;
+        this.liked = liked;
+        this.disliked = disliked;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -54,6 +58,14 @@ public class RecommendedBehaviourStrategy {
 
     public boolean isRated() {
         return rated;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public boolean isDisliked() {
+        return disliked;
     }
 
     public Timestamp getCreatedAt() {
@@ -92,6 +104,14 @@ public class RecommendedBehaviourStrategy {
         this.rated = rated;
     }
 
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public void setDisliked(boolean disliked) {
+        this.disliked = disliked;
+    }
+
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
@@ -110,6 +130,8 @@ public class RecommendedBehaviourStrategy {
                 ", factorType='" + factorType + '\'' +
                 ", factorValue='" + factorValue + '\'' +
                 ", rated=" + rated +
+                ", liked=" + liked +
+                ", disliked=" + disliked +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

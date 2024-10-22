@@ -14,7 +14,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
@@ -33,7 +32,6 @@ import com.example.emeowtions.fragments.user.UserMyCatsFragment;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -162,8 +160,8 @@ public class UserMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
-            } else if (itemId == R.id.analysis_history_item) {
-                startActivity(new Intent(this, AnalysisHistoryActivity.class));
+            } else if (itemId == R.id.saved_analyses_item) {
+                startActivity(new Intent(this, SavedAnalysesActivity.class));
             } else if (itemId == R.id.feedback_item) {
                 startActivity(new Intent(this, FeedbackActivity.class));
             }

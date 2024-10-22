@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.user.ViewSavedAnalysisActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.veterinary.EditStaffActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
@@ -56,7 +59,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.EmotionAnalysisActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activities.user.CatProfileActivity"
             android:exported="false"
@@ -66,7 +70,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.user.AnalysisHistoryActivity"
+            android:name=".activities.user.SavedAnalysesActivity"
             android:exported="false" />
         <activity
             android:name=".activities.common.FeedbackActivity"
@@ -95,14 +99,16 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.UserMainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.veterinary.VetMainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.admin.AdminMainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="preloaded_fonts"
