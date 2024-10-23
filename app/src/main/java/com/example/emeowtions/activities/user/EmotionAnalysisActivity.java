@@ -37,13 +37,16 @@ import com.example.emeowtions.models.BehaviourStrategy;
 import com.example.emeowtions.models.BodyLanguage;
 import com.example.emeowtions.models.Cat;
 import com.example.emeowtions.models.Recommendation;
+import com.example.emeowtions.models.RecommendedBehaviourStrategy;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.BodyLanguageUtils;
 import com.example.emeowtions.utils.EmotionUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.example.emeowtions.utils.Recommender;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -58,6 +61,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class EmotionAnalysisActivity extends AppCompatActivity {
 
@@ -70,6 +74,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     private CollectionReference catsRef;
     private CollectionReference analysesRef;
     private CollectionReference analysisFeedbackRef;
+    private CollectionReference recommendationsRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private StorageReference tempImageRef;
@@ -87,6 +92,10 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     private Pair<String, Float> trueEmotion;
     private ArrayList<BodyLanguage> bodyLanguageList;
     private ArrayList<BehaviourStrategy> stratList;
+
+    private boolean isRated;
+    private boolean isSaved;
+    private String currentAnalysisId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +117,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         catsRef = db.collection("cats");
         analysesRef = db.collection("analyses");
         analysisFeedbackRef = db.collection("analysisFeedback");
+        recommendationsRef = db.collection("recommendations");
         // Initialize Storage references
         storageRef = storage.getReference();
         tempImageRef = storageRef.child("images/users/" + firebaseAuthUtils.getUid() + "/temp_detected_cat_image.jpg");
@@ -126,6 +136,9 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         });
 
         //region UI Setups
+        isRated = false;
+        isSaved = false;
+
         // Cat image
         Glide.with(getApplicationContext())
                 .load(tempCatImageUrl)
@@ -145,6 +158,8 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         //endregion
 
         //region Load Data
+        currentAnalysisId = null;
+
         // Extract true emotion and body languages
         BodyLanguageUtils bodyLanguageUtils = new BodyLanguageUtils(this);
         bodyLanguageList = new ArrayList<>();
@@ -201,15 +216,11 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
 
         // Load emotion text
         if (trueEmotion != null) {
-            String emotion = trueEmotion.first == null ? "None" : trueEmotion.first;
-            int probability = (int) (trueEmotion.second * 100);
-
+            String emotion = trueEmotion.first == null ? "Undetectable" : trueEmotion.first;
+            int probability = trueEmotion.second == -1 ? 0 : (int) (trueEmotion.second * 100);
+            Log.d(TAG, "onCreate: " + trueEmotion.second);
             binding.txtEmotion.setText(
-                    String.format(
-                            "%s (%s%%)",
-                            emotion.substring(0, 1).toUpperCase() + emotion.substring(1),
-                            probability
-                    )
+                    String.format("%s%s", String.format("%s ", emotion.substring(0, 1).toUpperCase() + emotion.substring(1)), trueEmotion.second == -1 ? "" : String.format("(%s%%)", probability))
             );
         } else {
             binding.txtEmotion.setText(R.string.none);
@@ -345,66 +356,82 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     }
 
     private void rateAnalysis(float rating, String description) {
+        String emotion;
+        float probability;
+
+        // Parse emotion and probability
         if (trueEmotion == null || trueEmotion.first == null) {
-            Toast.makeText(this, "Unable to rate analysis due to incomplete analysis.", Toast.LENGTH_SHORT).show();
-            return;
+            emotion = "Undetectable";
+            probability = 0;
+        } else {
+            emotion = trueEmotion.first.substring(0, 1).toUpperCase() + trueEmotion.first.substring(1);
+            probability = trueEmotion.second;
         }
 
-        // Add Analysis document (for feedback)
-        boolean forFeedback = true;
+        // Check if analysis has already been saved
+        if (isSaved) {
+            // Add new AnalysisFeedback document and link it to existing Analysis
+            createAnalysisFeedback(true, currentAnalysisId, rating, description);
+        } else {
+            // Add new Analysis document (along with AnalysisFeedback)
+            boolean rated = true;
+            boolean deleted = false;
 
-        Analysis newAnalysis = new Analysis(
-                catId == null ? null : catId,
-                firebaseAuthUtils.getUid(),
-                selectedCat == null ? null : selectedCat.getName(),
-                trueEmotion.first.substring(0, 1).toUpperCase() + trueEmotion.first.substring(1),
-                bodyLanguageList,
-                null,
-                Timestamp.now(),
-                Timestamp.now(),
-                forFeedback
-        );
+            Analysis newAnalysis = new Analysis(
+                    catId == null ? null : catId,
+                    firebaseAuthUtils.getUid(),
+                    selectedCat == null ? null : selectedCat.getName(),
+                    emotion,
+                    probability,
+                    bodyLanguageList,
+                    null,
+                    Timestamp.now(),
+                    Timestamp.now(),
+                    rated,
+                    deleted
+            );
 
-        analysesRef.add(newAnalysis)
-                .addOnSuccessListener(documentReference -> {
-                    // Upload analyzed image to Storage
-                    byte[] imageData = null;
-                    binding.imgDetectedCat.setDrawingCacheEnabled(true);
-                    binding.imgDetectedCat.buildDrawingCache();
-                    Bitmap bitmap = ((BitmapDrawable) binding.imgDetectedCat.getDrawable()).getBitmap();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    imageData = baos.toByteArray();
+            analysesRef.add(newAnalysis)
+                    .addOnSuccessListener(documentReference -> {
+                        // Upload analyzed image to Storage
+                        byte[] imageData = null;
+                        binding.imgDetectedCat.setDrawingCacheEnabled(true);
+                        binding.imgDetectedCat.buildDrawingCache();
+                        Bitmap bitmap = ((BitmapDrawable) binding.imgDetectedCat.getDrawable()).getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        imageData = baos.toByteArray();
 
-                    analyzedImageRef = storageRef.child("images/analyses/" + documentReference.getId() + "/analyzed_image.jpg");
-                    analyzedImageRef.putBytes(imageData)
-                            .continueWithTask(imageUploadTask -> {
-                                if (!imageUploadTask.isSuccessful()) {
-                                    throw imageUploadTask.getException();
-                                }
-                                return analyzedImageRef.getDownloadUrl();
-                            })
-                            .addOnCompleteListener(imageUploadTask -> {
-                                Uri imageUrl = imageUploadTask.getResult();
+                        analyzedImageRef = storageRef.child("images/analyses/" + documentReference.getId() + "/analyzed_image.jpg");
+                        analyzedImageRef.putBytes(imageData)
+                                .continueWithTask(imageUploadTask -> {
+                                    if (!imageUploadTask.isSuccessful()) {
+                                        throw imageUploadTask.getException();
+                                    }
+                                    return analyzedImageRef.getDownloadUrl();
+                                })
+                                .addOnCompleteListener(imageUploadTask -> {
+                                    Uri imageUrl = imageUploadTask.getResult();
 
-                                // Update Analysis imageUrl
-                                analysesRef.document(documentReference.getId())
-                                        .update("imageUrl", imageUrl)
-                                        .addOnSuccessListener(unused -> {
-                                            createAnalysisFeedback(documentReference.getId(), rating, description);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.w(TAG, "saveAnalysis: Failed to update Analysis imageUrl", e);
-                                        });
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "saveAnalysis: Failed to add Analysis document", e);
-                    Toast.makeText(this, "Unable to rate analysis, please try again later.", Toast.LENGTH_SHORT).show();
-                });
+                                    // Update Analysis imageUrl
+                                    analysesRef.document(documentReference.getId())
+                                            .update("imageUrl", imageUrl)
+                                            .addOnSuccessListener(unused -> {
+                                                createAnalysisFeedback(false, documentReference.getId(), rating, description);
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.w(TAG, "saveAnalysis: Failed to update Analysis imageUrl", e);
+                                            });
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "saveAnalysis: Failed to add Analysis document", e);
+                        Toast.makeText(this, "Unable to rate analysis, please try again later.", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
-    private void createAnalysisFeedback(String analysisId, float rating, String description) {
+    private void createAnalysisFeedback(boolean isAlreadySaved, String analysisId, float rating, String description) {
         // Get user data
         usersRef.document(firebaseAuthUtils.getUid())
                 .get()
@@ -427,9 +454,26 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                         analysisFeedbackRef.add(newAnalysisFeedback)
                                 .addOnSuccessListener(documentReference -> {
                                     // COMPLETE
-                                    // TODO: Save recommendation
+                                    // Set existing analysis to rated
+                                    if (isAlreadySaved) {
+                                        analysesRef.document(analysisId)
+                                                .update("rated", true, "updatedAt", Timestamp.now())
+                                                .addOnCompleteListener(task -> {
+                                                    // Error
+                                                    if (!task.isSuccessful()) {
+                                                        Log.w(TAG, "createAnalysisFeedback: Failed to update Analysis to rated", task.getException());
+                                                        return;
+                                                    }
+                                                    // Success
+                                                    Log.d(TAG, "createAnalysisFeedback: Successfully updated Analysis to rated");
+                                                });
+                                    }
+
+                                    saveRecommendation(analysisId);
                                     Toast.makeText(this, "Thank you, we have received your rating and feedback.", Toast.LENGTH_SHORT).show();
                                     disableMenuItem(R.id.action_rate_analysis);
+                                    disableMenuItem(R.id.action_save_analysis);
+                                    isRated = true;
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.w(TAG, "createAnalysisFeedback: Failed to add AnalysisFeedbackDocument", e);
@@ -442,65 +486,120 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     }
 
     private void saveAnalysis() {
+        String emotion;
+        float probability;
+
+        // Parse emotion and probability
         if (trueEmotion == null || trueEmotion.first == null) {
-            Toast.makeText(this, "Unable to save analysis due to incomplete analysis.", Toast.LENGTH_SHORT).show();
-            return;
+            emotion = "Undetectable";
+            probability = 0;
+        } else {
+            emotion = trueEmotion.first.substring(0, 1).toUpperCase() + trueEmotion.first.substring(1);
+            probability = trueEmotion.second;
         }
 
-        // Add Analysis document
-        boolean forFeedback = false;
+        // The Analysis is already saved if it has been rated
+        if (!isRated) {
+            // Add Analysis document
+            boolean rated = false;
+            boolean deleted = false;
 
-        Analysis newAnalysis = new Analysis(
-                catId == null ? null : catId,
-                firebaseAuthUtils.getUid(),
-                selectedCat == null ? null : selectedCat.getName(),
-                trueEmotion.first.substring(0, 1).toUpperCase() + trueEmotion.first.substring(1),
-                bodyLanguageList,
-                null,
+            Analysis newAnalysis =new Analysis(
+                    catId == null ? null : catId,
+                    firebaseAuthUtils.getUid(),
+                    selectedCat == null ? null : selectedCat.getName(),
+                    emotion,
+                    probability,
+                    bodyLanguageList,
+                    null,
+                    Timestamp.now(),
+                    Timestamp.now(),
+                    rated,
+                    deleted
+            );
+
+            analysesRef.add(newAnalysis)
+                    .addOnSuccessListener(documentReference -> {
+                        currentAnalysisId = documentReference.getId();
+
+                        // Upload analyzed image to Storage
+                        byte[] imageData = null;
+                        binding.imgDetectedCat.setDrawingCacheEnabled(true);
+                        binding.imgDetectedCat.buildDrawingCache();
+                        Bitmap bitmap = ((BitmapDrawable) binding.imgDetectedCat.getDrawable()).getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        imageData = baos.toByteArray();
+
+                        analyzedImageRef = storageRef.child("images/analyses/" + documentReference.getId() + "/analyzed_image.jpg");
+                        analyzedImageRef.putBytes(imageData)
+                                .continueWithTask(imageUploadTask -> {
+                                    if (!imageUploadTask.isSuccessful()) {
+                                        throw imageUploadTask.getException();
+                                    }
+                                    return analyzedImageRef.getDownloadUrl();
+                                })
+                                .addOnCompleteListener(imageUploadTask -> {
+                                    Uri imageUrl = imageUploadTask.getResult();
+
+                                    // Update Analysis imageUrl
+                                    analysesRef.document(documentReference.getId())
+                                            .update("imageUrl", imageUrl)
+                                            .addOnSuccessListener(unused -> {
+                                                // COMPLETE
+                                                saveRecommendation(documentReference.getId());
+                                                Toast.makeText(this, "Successfully saved.", Toast.LENGTH_SHORT).show();
+                                                disableMenuItem(R.id.action_save_analysis);
+                                                isSaved = true;
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.w(TAG, "saveAnalysis: Failed to update Analysis imageUrl", e);
+                                            });
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "saveAnalysis: Failed to add Analysis document", e);
+                        Toast.makeText(this, "Unable to save analysis, please try again later.", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void saveRecommendation(String analysisId) {
+        // Create RecommendedBehaviourStrategy list
+        List<RecommendedBehaviourStrategy> recommendedStratList = new ArrayList<>();
+        for (BehaviourStrategy strat : stratList) {
+            boolean rated = false;
+            boolean liked = false;
+            boolean disliked = false;
+
+            recommendedStratList.add(new RecommendedBehaviourStrategy(
+                    strat.getId(),
+                    strat.getDescription(),
+                    strat.getRecommendationFactorId(),
+                    strat.getFactorType(),
+                    strat.getFactorValue(),
+                    rated,
+                    liked,
+                    disliked,
+                    Timestamp.now(),
+                    Timestamp.now()
+            ));
+        }
+
+        // Create Recommendation
+        Recommendation newRecommendation = new Recommendation(
+                analysisId,
+                recommendedStratList,
                 Timestamp.now(),
-                Timestamp.now(),
-                forFeedback
+                Timestamp.now()
         );
 
-        analysesRef.add(newAnalysis)
+        recommendationsRef.add(newRecommendation)
                 .addOnSuccessListener(documentReference -> {
-                    // Upload analyzed image to Storage
-                    byte[] imageData = null;
-                    binding.imgDetectedCat.setDrawingCacheEnabled(true);
-                    binding.imgDetectedCat.buildDrawingCache();
-                    Bitmap bitmap = ((BitmapDrawable) binding.imgDetectedCat.getDrawable()).getBitmap();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    imageData = baos.toByteArray();
-
-                    analyzedImageRef = storageRef.child("images/analyses/" + documentReference.getId() + "/analyzed_image.jpg");
-                    analyzedImageRef.putBytes(imageData)
-                            .continueWithTask(imageUploadTask -> {
-                                if (!imageUploadTask.isSuccessful()) {
-                                    throw imageUploadTask.getException();
-                                }
-                                return analyzedImageRef.getDownloadUrl();
-                            })
-                            .addOnCompleteListener(imageUploadTask -> {
-                                Uri imageUrl = imageUploadTask.getResult();
-
-                                // Update Analysis imageUrl
-                                analysesRef.document(documentReference.getId())
-                                        .update("imageUrl", imageUrl)
-                                        .addOnSuccessListener(unused -> {
-                                            // COMPLETE
-                                            // TODO: Save recommendation
-                                            Toast.makeText(this, "Successfully saved.", Toast.LENGTH_SHORT).show();
-                                            disableMenuItem(R.id.action_save_analysis);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.w(TAG, "saveAnalysis: Failed to update Analysis imageUrl", e);
-                                        });
-                            });
+                    Log.d(TAG, "saveRecommendation: Successfully added new Recommendation");
                 })
                 .addOnFailureListener(e -> {
-                    Log.w(TAG, "saveAnalysis: Failed to add Analysis document", e);
-                    Toast.makeText(this, "Unable to save analysis, please try again later.", Toast.LENGTH_SHORT).show();
+                    Log.w(TAG, "saveRecommendation: Failed to add new Recommendation", e);
                 });
     }
 

@@ -244,4 +244,5 @@
     <string name="no_analyses_results_message">No analyses found.\nTry different cat names or search settings.</string>
     <string name="rate_analysis_message">We would love to hear from you. How was your experience with the emotion and body language analysis?</string>
     <string name="search_cat_name">Search cat name</string>
+    <string name="rate_analysis_hint">Note: A copy of this analysis will be saved for you</string>
 </resources>

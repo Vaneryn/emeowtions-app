@@ -10,24 +10,28 @@ public class Analysis {
     private String uid;
     private String catName;
     private String emotion;
+    private float probability;
     private List<BodyLanguage> bodyLanguages;
     private String imageUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private boolean forFeedback;
+    private boolean rated;
+    private boolean deleted;
 
     public Analysis() {}
 
-    public Analysis(String catId, String uid, String catName, String emotion, List<BodyLanguage> bodyLanguages, String imageUrl, Timestamp createdAt, Timestamp updatedAt, boolean forFeedback) {
+    public Analysis(String catId, String uid, String catName, String emotion, float probability, List<BodyLanguage> bodyLanguages, String imageUrl, Timestamp createdAt, Timestamp updatedAt, boolean rated, boolean deleted) {
         this.catId = catId;
         this.uid = uid;
         this.catName = catName;
         this.emotion = emotion;
+        this.probability = probability;
         this.bodyLanguages = bodyLanguages;
         this.imageUrl = imageUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.forFeedback = forFeedback;
+        this.rated = rated;
+        this.deleted = deleted;
     }
 
     public String getCatId() {
@@ -46,6 +50,10 @@ public class Analysis {
         return emotion;
     }
 
+    public float getProbability() {
+        return probability;
+    }
+
     public List<BodyLanguage> getBodyLanguages() {
         return bodyLanguages;
     }
@@ -62,8 +70,12 @@ public class Analysis {
         return updatedAt;
     }
 
-    public boolean isForFeedback() {
-        return forFeedback;
+    public boolean isRated() {
+        return rated;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public void setCatId(String catId) {
@@ -82,6 +94,10 @@ public class Analysis {
         this.emotion = emotion;
     }
 
+    public void setProbability(float probability) {
+        this.probability = probability;
+    }
+
     public void setBodyLanguages(List<BodyLanguage> bodyLanguages) {
         this.bodyLanguages = bodyLanguages;
     }
@@ -98,8 +114,12 @@ public class Analysis {
         this.updatedAt = updatedAt;
     }
 
-    public void setForFeedback(boolean forFeedback) {
-        this.forFeedback = forFeedback;
+    public void setRated(boolean rated) {
+        this.rated = rated;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override
@@ -109,11 +129,13 @@ public class Analysis {
                 ", uid='" + uid + '\'' +
                 ", catName='" + catName + '\'' +
                 ", emotion='" + emotion + '\'' +
+                ", probability=" + probability +
                 ", bodyLanguages=" + bodyLanguages +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", forFeedback=" + forFeedback +
+                ", rated=" + rated +
+                ", deleted=" + deleted +
                 '}';
     }
 }

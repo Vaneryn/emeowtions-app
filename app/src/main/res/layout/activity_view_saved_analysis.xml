@@ -1,10 +1,316 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.user.ViewSavedAnalysisActivity">
+    android:orientation="vertical"
+    tools:context=".activities.user.EmotionAnalysisActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/app_bar_emotion_analysis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:title="@string/emotion_analysis"
+            app:menu="@menu/top_app_bar_emotion_analysis" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:requiresFadingEdge="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_screen_edge"
+            android:paddingBottom="@dimen/padding_screen_edge"
+            android:paddingTop="@dimen/padding_small_1"
+            android:clipToPadding="false">
+
+            <!-- Summary -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Elevated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                app:cardBackgroundColor="@color/white"
+                app:contentPadding="@dimen/padding_medium_1"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/HeadingText2.SemiBold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/summary" />
+
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_medium_1"
+                        android:columnCount="2"
+                        android:useDefaultMargins="true">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_columnWeight="1">
+
+                            <TextView
+                                style="@style/BodyText3.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/emotion" />
+                            <TextView
+                                android:id="@+id/txt_emotion"
+                                style="BodyText2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Happy" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_columnWeight="1">
+
+                            <TextView
+                                style="@style/BodyText3.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/name" />
+                            <TextView
+                                android:id="@+id/txt_cat_name"
+                                style="BodyText2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Nekomata Okayu" />
+
+                        </LinearLayout>
+
+                    </GridLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/margin_small_1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/BodyText3.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:text="@string/image" />
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_detected_cat"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                            app:strokeColor="@color/gray_200"
+                            app:strokeWidth="1dp"
+                            tools:src="@tools:sample/avatars" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Body Language -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Elevated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                app:cardBackgroundColor="@color/white"
+                app:contentPadding="@dimen/padding_medium_1"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:layout_weight="1"
+                            android:text="@string/body_language" />
+                        <TextView
+                            android:id="@+id/txt_body_language_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="2" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_body_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:cacheColorHint="#00000000"
+                        android:fadingEdgeLength="@dimen/padding_small_2"
+                        android:requiresFadingEdge="vertical"
+                        android:visibility="visible"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <!-- No body language -->
+                    <LinearLayout
+                        android:id="@+id/layout_no_body_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            android:src="@drawable/baseline_sentiment_very_dissatisfied_24"
+                            app:tint="@color/gray_200" />
+
+                        <TextView
+                            style="@style/HeadingText3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@string/no_results" />
+
+                        <TextView
+                            style="@style/BodyText2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:textAlignment="center"
+                            android:text="@string/no_body_language_detected" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_back_body_language"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/back" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recommendations -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Elevated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                app:cardBackgroundColor="@color/white"
+                app:contentPadding="@dimen/padding_medium_1"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/HeadingText2.SemiBold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:layout_weight="1"
+                            android:text="@string/recommendations" />
+                        <TextView
+                            android:id="@+id/txt_recommendations_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="1" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_recommendations"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:requiresFadingEdge="vertical"
+                        android:visibility="visible"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <!-- No recommendations -->
+                    <LinearLayout
+                        android:id="@+id/layout_no_recommendations"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            android:src="@drawable/baseline_sentiment_very_dissatisfied_24"
+                            app:tint="@color/gray_200" />
+
+                        <TextView
+                            style="@style/HeadingText3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@string/no_results" />
+
+                        <TextView
+                            style="@style/BodyText2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small_1"
+                            android:textAlignment="center"
+                            android:text="@string/no_recommendations_message" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_back_recommendations"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/back" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

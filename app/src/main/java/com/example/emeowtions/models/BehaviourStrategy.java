@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class BehaviourStrategy {
 
-    private String title;
+    private String id;
     private String description;
     private String recommendationFactorId;
     private String factorType;
@@ -17,8 +17,8 @@ public class BehaviourStrategy {
 
     public BehaviourStrategy() {}
 
-    public BehaviourStrategy(String title, String description, String recommendationFactorId, String factorType, String factorValue, String emotionType, long likeCount, long dislikeCount, Timestamp createdAt, Timestamp updatedAt) {
-        this.title = title;
+    public BehaviourStrategy(String id, String description, String recommendationFactorId, String factorType, String factorValue, String emotionType, long likeCount, long dislikeCount, Timestamp createdAt, Timestamp updatedAt) {
+        this.id = id;
         this.description = description;
         this.recommendationFactorId = recommendationFactorId;
         this.factorType = factorType;
@@ -30,8 +30,8 @@ public class BehaviourStrategy {
         this.updatedAt = updatedAt;
     }
 
-    public String getTitle() {
-        return title;
+    public String getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -70,8 +70,8 @@ public class BehaviourStrategy {
         return updatedAt;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setDescription(String description) {
@@ -113,7 +113,7 @@ public class BehaviourStrategy {
     @Override
     public String toString() {
         return "BehaviourStrategy{" +
-                "title='" + title + '\'' +
+                "id='" + id + '\'' +
                 ", description='" + description + '\'' +
                 ", recommendationFactorId='" + recommendationFactorId + '\'' +
                 ", factorType='" + factorType + '\'' +

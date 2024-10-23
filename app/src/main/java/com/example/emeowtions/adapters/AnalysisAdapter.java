@@ -42,7 +42,7 @@ public class AnalysisAdapter extends FirestoreRecyclerAdapter<Analysis, Analysis
 
     @Override
     protected void onBindViewHolder(@NonNull AnalysisHolder holder, int position, @NonNull Analysis model) {
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
 
         // Populate data
         Glide.with(context)
@@ -50,7 +50,7 @@ public class AnalysisAdapter extends FirestoreRecyclerAdapter<Analysis, Analysis
                 .into(holder.imgAnalyzedImage);
         holder.txtCatName.setText(model.getCatName());
         holder.txtEmotion.setText(model.getEmotion());
-        holder.txtCreatedDate.setText(sdf.format(model.getCreatedAt()));
+        holder.txtCreatedDate.setText(sdf.format(model.getCreatedAt().toDate()));
 
         // Redirect to ViewSavedAnalysisActivity
         holder.body.setOnClickListener(view -> {

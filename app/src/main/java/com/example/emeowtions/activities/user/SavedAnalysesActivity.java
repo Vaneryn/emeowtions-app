@@ -49,7 +49,7 @@ public class SavedAnalysesActivity extends AppCompatActivity {
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
-        analysesRef = db.collection("analysesRef");
+        analysesRef = db.collection("analyses");
 
         // Get ViewBinding and set content view
         binding = ActivitySavedAnalysesBinding.inflate(getLayoutInflater());
@@ -87,6 +87,7 @@ public class SavedAnalysesActivity extends AppCompatActivity {
         // Query options
         Query analysesQuery = analysesRef
                 .whereEqualTo("uid", firebaseAuthUtils.getUid())
+                .whereEqualTo("deleted", false)
                 .orderBy("createdAt", Query.Direction.DESCENDING);
 
         options = new FirestoreRecyclerOptions.Builder<Analysis>()
@@ -146,6 +147,7 @@ public class SavedAnalysesActivity extends AppCompatActivity {
 
                     Query searchQuery =
                             analysesRef.whereEqualTo("uid", firebaseAuthUtils.getUid())
+                                    .whereEqualTo("deleted", false)
                                     .where(Filter.or(
                                             Filter.equalTo("catName", queryText),
                                             Filter.and(
