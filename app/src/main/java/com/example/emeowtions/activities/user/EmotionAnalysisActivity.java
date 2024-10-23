@@ -454,7 +454,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                         analysisFeedbackRef.add(newAnalysisFeedback)
                                 .addOnSuccessListener(documentReference -> {
                                     // COMPLETE
-                                    // Set existing analysis to rated
+                                    // Set existing analysis to rated (if already saved via savedAnalysis)
                                     if (isAlreadySaved) {
                                         analysesRef.document(analysisId)
                                                 .update("rated", true, "updatedAt", Timestamp.now())
@@ -565,38 +565,46 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
     }
 
     private void saveRecommendation(String analysisId) {
-        // Create RecommendedBehaviourStrategy list
-        List<RecommendedBehaviourStrategy> recommendedStratList = new ArrayList<>();
-        for (BehaviourStrategy strat : stratList) {
-            boolean rated = false;
-            boolean liked = false;
-            boolean disliked = false;
-
-            recommendedStratList.add(new RecommendedBehaviourStrategy(
-                    strat.getId(),
-                    strat.getDescription(),
-                    strat.getRecommendationFactorId(),
-                    strat.getFactorType(),
-                    strat.getFactorValue(),
-                    rated,
-                    liked,
-                    disliked,
-                    Timestamp.now(),
-                    Timestamp.now()
-            ));
-        }
-
         // Create Recommendation
         Recommendation newRecommendation = new Recommendation(
                 analysisId,
-                recommendedStratList,
+                null,
                 Timestamp.now(),
                 Timestamp.now()
         );
 
         recommendationsRef.add(newRecommendation)
                 .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "saveRecommendation: Successfully added new Recommendation");
+                    // Update RecommendedBehaviourStrategy list
+                    List<RecommendedBehaviourStrategy> recommendedStratList = new ArrayList<>();
+                    for (BehaviourStrategy strat : stratList) {
+                        boolean rated = false;
+                        boolean liked = false;
+                        boolean disliked = false;
+
+                        recommendedStratList.add(new RecommendedBehaviourStrategy(
+                                documentReference.getId(),
+                                strat.getId(),
+                                strat.getDescription(),
+                                strat.getRecommendationFactorId(),
+                                strat.getFactorType(),
+                                strat.getFactorValue(),
+                                rated,
+                                liked,
+                                disliked,
+                                Timestamp.now(),
+                                Timestamp.now()
+                        ));
+
+                        recommendationsRef.document(documentReference.getId())
+                                .update("strategies", recommendedStratList)
+                                .addOnSuccessListener(unused -> {
+                                    Log.d(TAG, "saveRecommendation: Successfully updated Recommendation strategies");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "saveRecommendation: Failed to update Recommendation strategies", e);
+                                });
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "saveRecommendation: Failed to add new Recommendation", e);

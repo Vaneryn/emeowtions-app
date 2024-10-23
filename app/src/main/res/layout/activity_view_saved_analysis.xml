@@ -13,13 +13,13 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/app_bar_emotion_analysis"
+            android:id="@+id/app_bar_view_saved_analysis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:title="@string/emotion_analysis"
-            app:menu="@menu/top_app_bar_emotion_analysis" />
+            app:title="@string/saved_analysis"
+            app:menu="@menu/top_app_bar_view_saved_analysis" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

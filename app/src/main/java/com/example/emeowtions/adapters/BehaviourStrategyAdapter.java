@@ -32,7 +32,7 @@ public class BehaviourStrategyAdapter extends RecyclerView.Adapter<RecyclerView.
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_recommended_strat, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_behaviour_strategy, parent, false);
         return new BehaviourStrategyHolder(view);
     }
 

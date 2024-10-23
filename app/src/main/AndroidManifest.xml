@@ -17,6 +17,15 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.admin.AnalysisFeedbackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.GeneralFeedbackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.RecommendationRatingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.user.ViewSavedAnalysisActivity"
             android:exported="false" />
         <activity
@@ -60,7 +69,7 @@
         <activity
             android:name=".activities.user.EmotionAnalysisActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.user.CatProfileActivity"
             android:exported="false"

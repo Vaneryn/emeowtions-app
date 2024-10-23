@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class RecommendedBehaviourStrategy {
 
+    private String recommendationId;
     private String stratId;
     private String description;
     private String recommendationFactorId;
@@ -17,7 +18,8 @@ public class RecommendedBehaviourStrategy {
 
     public RecommendedBehaviourStrategy() {}
 
-    public RecommendedBehaviourStrategy(String stratId, String description, String recommendationFactorId, String factorType, String factorValue, boolean rated, boolean liked, boolean disliked, Timestamp createdAt, Timestamp updatedAt) {
+    public RecommendedBehaviourStrategy(String recommendationId, String stratId, String description, String recommendationFactorId, String factorType, String factorValue, boolean rated, boolean liked, boolean disliked, Timestamp createdAt, Timestamp updatedAt) {
+        this.recommendationId = recommendationId;
         this.stratId = stratId;
         this.description = description;
         this.recommendationFactorId = recommendationFactorId;
@@ -28,6 +30,10 @@ public class RecommendedBehaviourStrategy {
         this.disliked = disliked;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public String getRecommendationId() {
+        return recommendationId;
     }
 
     public String getStratId() {
@@ -68,6 +74,10 @@ public class RecommendedBehaviourStrategy {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setRecommendationId(String recommendationId) {
+        this.recommendationId = recommendationId;
     }
 
     public void setStratId(String stratId) {
@@ -113,7 +123,8 @@ public class RecommendedBehaviourStrategy {
     @Override
     public String toString() {
         return "RecommendedBehaviourStrategy{" +
-                "stratId='" + stratId + '\'' +
+                "recommendationId='" + recommendationId + '\'' +
+                ", stratId='" + stratId + '\'' +
                 ", description='" + description + '\'' +
                 ", recommendationFactorId='" + recommendationFactorId + '\'' +
                 ", factorType='" + factorType + '\'' +

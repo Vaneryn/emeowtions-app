@@ -245,4 +245,6 @@
     <string name="rate_analysis_message">We would love to hear from you. How was your experience with the emotion and body language analysis?</string>
     <string name="search_cat_name">Search cat name</string>
     <string name="rate_analysis_hint">Note: A copy of this analysis will be saved for you</string>
+    <string name="saved_analysis">Saved Analysis</string>
+    <string name="delete_analysis_message">Delete this analysis? This action is irreversible!</string>
 </resources>
