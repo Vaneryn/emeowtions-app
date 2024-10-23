@@ -26,7 +26,6 @@ import com.example.emeowtions.enums.VeterinaryClinicRegistrationStatus;
 import com.example.emeowtions.fragments.admin.AdminClinicRegistrationsFragment;
 import com.example.emeowtions.fragments.admin.AdminClinicsFragment;
 import com.example.emeowtions.fragments.admin.AdminDashboardFragment;
-import com.example.emeowtions.fragments.admin.AdminFeedbackFragment;
 import com.example.emeowtions.fragments.admin.AdminUsersFragment;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
@@ -54,7 +53,6 @@ public class AdminMainActivity extends AppCompatActivity {
     public AdminClinicsFragment adminClinicsFragment;
     public AdminClinicRegistrationsFragment adminClinicRegistrationsFragment;
     public AdminUsersFragment adminUsersFragment;
-    public AdminFeedbackFragment adminFeedbackFragment;
     public BottomNavigationView adminBottomNavigation;
 
     @Override
@@ -99,13 +97,11 @@ public class AdminMainActivity extends AppCompatActivity {
         adminClinicsFragment = new AdminClinicsFragment();
         adminClinicRegistrationsFragment = new AdminClinicRegistrationsFragment();
         adminUsersFragment = new AdminUsersFragment();
-        adminFeedbackFragment = new AdminFeedbackFragment();
 
         createFragment(adminDashboardFragment);
         createFragment(adminClinicRegistrationsFragment);
         createFragment(adminClinicsFragment);
         createFragment(adminUsersFragment);
-        createFragment(adminFeedbackFragment);
 
         selectedFragment = adminDashboardFragment;
         showFragment(selectedFragment);
@@ -151,6 +147,12 @@ public class AdminMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.admin_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
+            } else if (itemId == R.id.admin_general_feedback_item) {
+                startActivity(new Intent(this, GeneralFeedbackActivity.class));
+            } else if (itemId == R.id.admin_analysis_feedback_item) {
+                startActivity(new Intent(this, AnalysisFeedbackActivity.class));
+            } else if (itemId == R.id.admin_recommendation_ratings_item) {
+                startActivity(new Intent(this, RecommendationRatingsActivity.class));
             }
 
             return false;
@@ -199,10 +201,6 @@ public class AdminMainActivity extends AppCompatActivity {
                 adminMainBinding.topAppBar.inflateMenu(R.menu.top_app_bar_user_management);
                 adminMainBinding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
                 changeFragment(adminUsersFragment, toReplace);
-                return true;
-            } else if (itemId == R.id.admin_feedback_item) {
-                adminMainBinding.topAppBar.setTitle(R.string.feedback);
-                changeFragment(adminFeedbackFragment, toReplace);
                 return true;
             }
 

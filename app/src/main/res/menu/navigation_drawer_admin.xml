@@ -9,10 +9,24 @@
         android:title="@string/profile"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/admin_feedback_item"
+        android:id="@+id/admin_general_feedback_item"
         android:enabled="true"
-        android:contentDescription="@string/navigation_drawer_feedback_item"
+        android:contentDescription="@string/navigation_drawer_general_feedback_item"
         android:icon="@drawable/baseline_feedback_24"
-        android:title="@string/feedback"
+        android:title="@string/general_feedback"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/admin_analysis_feedback_item"
+        android:enabled="true"
+        android:contentDescription="@string/navigation_drawer_analysis_feedback_item"
+        android:icon="@drawable/baseline_insights_24"
+        android:title="@string/analysis_feedback"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/admin_recommendation_ratings_item"
+        android:enabled="true"
+        android:contentDescription="@string/navigation_drawer_recommendation_ratings_item"
+        android:icon="@drawable/baseline_thumb_up_24"
+        android:title="@string/recommendation_ratings"
         app:showAsAction="ifRoom" />
 </menu>

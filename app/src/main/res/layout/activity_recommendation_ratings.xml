@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.admin.RecommendationRatingsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/app_bar_recommendation_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:title="@string/recommendation_ratings"
+            app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:paddingLeft="@dimen/padding_screen_edge"
+        android:paddingRight="@dimen/padding_large"
+        android:requiresFadingEdge="vertical"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- General -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/general" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_general"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Age -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/age" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Gender -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/gender" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Temperament -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/temperament" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_temperament"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Activity Level -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/activity_level" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_activity_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Background -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/background" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <!-- Medical Conditions -->
+            <TextView
+                style="@style/HeadingText2.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_2"
+                android:text="@string/medical_conditions" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_medical_conditions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:requiresFadingEdge="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- No Behaviour Strategies -->
+    <LinearLayout
+        android:id="@+id/layout_no_behaviour_strategies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_thumb_up_24"
+            app:tint="@color/gray_400" />
+        <TextView
+            style="@style/HeadingText2.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/no_behaviour_strategies" />
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_behaviour_strategies_message" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/back" />
+
+    </LinearLayout>
+
+</LinearLayout>

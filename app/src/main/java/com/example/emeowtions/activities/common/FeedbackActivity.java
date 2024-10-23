@@ -39,7 +39,7 @@ public class FeedbackActivity extends AppCompatActivity {
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
-    private CollectionReference feedbacksRef;
+    private CollectionReference feedbackRef;
 
     private ActivityFeedbackBinding feedbackBinding;
 
@@ -52,7 +52,7 @@ public class FeedbackActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
-        feedbacksRef = db.collection("feedbacks");
+        feedbackRef = db.collection("feedback");
 
         // Get ViewBinding and set content view
         feedbackBinding = ActivityFeedbackBinding.inflate(getLayoutInflater());
@@ -102,7 +102,7 @@ public class FeedbackActivity extends AppCompatActivity {
                                     Timestamp.now(),
                                     Timestamp.now()
                             );
-                            feedbacksRef.add(newFeedback)
+                            feedbackRef.add(newFeedback)
                                     .addOnSuccessListener(documentReference -> {
                                         // Clear inputs
                                         feedbackBinding.ratingBar.setRating(0);

@@ -247,4 +247,27 @@
     <string name="rate_analysis_hint">Note: A copy of this analysis will be saved for you</string>
     <string name="saved_analysis">Saved Analysis</string>
     <string name="delete_analysis_message">Delete this analysis? This action is irreversible!</string>
+    <string name="navigation_drawer_general_feedback_item">Navigation drawer general feedback item</string>
+    <string name="general_feedback">General Feedback</string>
+    <string name="navigation_drawer_analysis_feedback_item">Navigation drawer analysis feedback item</string>
+    <string name="analysis_feedback">Analysis Feedback</string>
+    <string name="navigation_drawer_recommendation_ratings_item">Navigation drawer recommendation ratings item</string>
+    <string name="recommendation_ratings">Recommendation Ratings</string>
+    <string name="search_username">Search username</string>
+    <string name="no_feedback">No Feedback</string>
+    <string name="no_existing_feedback">No existing feedback.</string>
+    <string name="no_feedback_results_message">No feedback found.\nTry different usernames or search settings!</string>
+    <string name="search_recommendation_factor">Search recommendation factor</string>
+    <string name="no_behaviour_strategies">No Recommendations</string>
+    <string name="no_behaviour_strategies_message">No existing recommendations.\nPlease contact support as this may\nindicate a major technical issue.</string>
+    <string name="no_behaviour_strategies_results_message">No recommendations found.\nTry different recommendation factors\nor search settings.</string>
+    <string name="feedback_details">Feedback Details</string>
+    <string name="close">Close</string>
+    <string name="rating">Rating</string>
+    <string name="user">User</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
+    <string name="activity_level">Activity Level</string>
+    <string name="temperament">Temperament</string>
+    <string name="age">Age</string>
 </resources>
