@@ -22,4 +22,11 @@
             android:checkable="true"
             android:contentDescription="@string/navigation_drawer_feedback_item"
             app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/guide_item"
+            android:icon="@drawable/baseline_book_24"
+            android:title="@string/guide"
+            android:checkable="true"
+            android:contentDescription="@string/navigation_drawer_guide_item"
+            app:showAsAction="ifRoom" />
 </menu>

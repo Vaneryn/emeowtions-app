@@ -9,19 +9,23 @@ public class VeterinaryClinic {
     private String email;
     private String phoneNumber;
     private String logoUrl;
+    private int reviewCount;
+    private float rating;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private boolean deleted;
 
     private VeterinaryClinic() {}
 
-    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
+    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, int reviewCount, float rating, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.name = name;
         this.description = description;
         this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.logoUrl = logoUrl;
+        this.reviewCount = reviewCount;
+        this.rating = rating;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
@@ -49,6 +53,14 @@ public class VeterinaryClinic {
 
     public String getLogoUrl() {
         return logoUrl;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public float getRating() {
+        return rating;
     }
 
     public Timestamp getCreatedAt() {
@@ -87,6 +99,14 @@ public class VeterinaryClinic {
         this.logoUrl = logoUrl;
     }
 
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
@@ -97,5 +117,22 @@ public class VeterinaryClinic {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "VeterinaryClinic{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", logoUrl='" + logoUrl + '\'' +
+                ", reviewCount=" + reviewCount +
+                ", rating=" + rating +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", deleted=" + deleted +
+                '}';
     }
 }

@@ -91,7 +91,7 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
         analysisFeedbackRef = db.collection("analysisFeedback");
         recommendationsRef = db.collection("recommendations");
 
-        // Get ViewBinding and st content view
+        // Get ViewBinding and set content view
         binding = ActivityViewSavedAnalysisBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -299,6 +299,7 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
                                 user.getProfilePicture(),
                                 rating,
                                 description,
+                                false,
                                 Timestamp.now(),
                                 Timestamp.now()
                         );

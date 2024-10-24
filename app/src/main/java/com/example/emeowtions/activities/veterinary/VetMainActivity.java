@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.activities.admin.AddUserActivity;
+import com.example.emeowtions.activities.common.FeedbackActivity;
 import com.example.emeowtions.activities.common.LoginActivity;
 import com.example.emeowtions.activities.common.ProfileActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
@@ -212,6 +213,10 @@ public class VetMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.vet_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
+            } else if (itemId == R.id.vet_feedback_item) {
+                startActivity(new Intent(this, FeedbackActivity.class));
+            } else if (itemId == R.id.vet_clinic_inbox_item) {
+                startActivity(new Intent(this, ClinicInboxActivity.class));
             }
 
             return false;

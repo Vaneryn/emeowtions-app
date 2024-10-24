@@ -1,6 +1,7 @@
 package com.example.emeowtions.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.BehaviourStrategy;
 import com.example.emeowtions.models.Recommendation;
 import com.example.emeowtions.models.RecommendedBehaviourStrategy;
@@ -36,6 +38,8 @@ import java.util.List;
 public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "RecommendedBehaviourStrategyAdapter";
+    private SharedPreferences sharedPreferences;
+    private String currentUserRole;
 
     private FirebaseFirestore db;
     private CollectionReference behaviourStratsRef;
@@ -45,6 +49,8 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
     private Context context;
 
     public RecommendedBehaviourStrategyAdapter(ArrayList<RecommendedBehaviourStrategy> stratList, Context context) {
+        this.sharedPreferences = context.getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        this.currentUserRole = this.sharedPreferences.getString("role", "User");
         this.db = FirebaseFirestore.getInstance();
         this.behaviourStratsRef = db.collection("behaviourStrategies");
         this.recommendationsRef = db.collection("recommendations");
@@ -56,8 +62,7 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_recommended_behaviour_strategy, parent, false);
-        return new RecommendedBehaviourStrategyHolder(view) {
-        };
+        return new RecommendedBehaviourStrategyHolder(view);
     }
 
     @Override
@@ -115,7 +120,7 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
                         long likeCount = behaviourStrategy.getLikeCount();
                         long dislikeCount = behaviourStrategy.getDislikeCount();
                         long totalCount = likeCount + dislikeCount;
-                        int percentage = totalCount == 0 ? 0 : ((int) (likeCount / totalCount) * 100);
+                        int percentage = totalCount == 0 ? 0 : ((int) (((double) likeCount / (double) totalCount) * 100));
 
                         stratHolder.txtRating.setText(String.format("%s%%", percentage));
                     }
@@ -125,301 +130,304 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
                 });
 
         // Listeners for like and dislike button
-        // Like
-        stratHolder.imgLike.setOnClickListener(view -> {
-            toggleButtons(stratHolder.imgLike, stratHolder.imgDislike);
+        // Do not allow Admin or Super Admin to use these buttons
+        if (!currentUserRole.equals(Role.ADMIN.getTitle()) && !currentUserRole.equals(Role.SUPER_ADMIN.getTitle())) {
+            // Like
+            stratHolder.imgLike.setOnClickListener(view -> {
+                toggleButtons(stratHolder.imgLike, stratHolder.imgDislike);
 
-            Log.d(TAG, "onBindViewHolder: position=" + position);
-            Log.d(TAG, "onBindViewHolder: liked=" + liked[0]);
-            Log.d(TAG, "onBindViewHolder: disliked=" + disliked[0]);
-            Log.d(TAG, "onBindViewHolder: rated=" + rated[0]);
+                Log.d(TAG, "onBindViewHolder: position=" + position);
+                Log.d(TAG, "onBindViewHolder: liked=" + liked[0]);
+                Log.d(TAG, "onBindViewHolder: disliked=" + disliked[0]);
+                Log.d(TAG, "onBindViewHolder: rated=" + rated[0]);
 
-            // rated = false    (LIKE 1: Not Liked neither Disliked)
-            if (!rated[0]) {
-                // set like=true, set rated=true, increment like count
-                liked[0] = true;
-                disliked[0] = false;
-                rated[0] = true;
+                // rated = false    (LIKE 1: Not Liked neither Disliked)
+                if (!rated[0]) {
+                    // set like=true, set rated=true, increment like count
+                    liked[0] = true;
+                    disliked[0] = false;
+                    rated[0] = true;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("likeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                           if (updateLikeCountTask.isSuccessful()) {
-                                                               Log.d(TAG, "onBindViewHolder: Successfully updated likeCount");
-                                                           } else {
-                                                               Log.w(TAG, "onBindViewHolder: Failed to update likeCount", updateLikeCountTask.getException());
-                                                           }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after liking", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-            // rated = true; liked = true   (LIKE 2: Unlike)
-            else if (rated[0] && liked[0]) {
-                toggleButtons(stratHolder.imgLike, stratHolder.imgLike);
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("likeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated likeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update likeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after liking", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+                // rated = true; liked = true   (LIKE 2: Unlike)
+                else if (rated[0] && liked[0]) {
+                    toggleButtons(stratHolder.imgLike, stratHolder.imgLike);
 
-                // set liked=false, set rated=false, decrement like count
-                liked[0] = false;
-                disliked[0] = false;
-                rated[0] = false;
+                    // set liked=false, set rated=false, decrement like count
+                    liked[0] = false;
+                    disliked[0] = false;
+                    rated[0] = false;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("likeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                            if (updateLikeCountTask.isSuccessful()) {
-                                                                Log.d(TAG, "onBindViewHolder: Successfully updated likeCount");
-                                                            } else {
-                                                                Log.w(TAG, "onBindViewHolder: Failed to update likeCount", updateLikeCountTask.getException());
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after unliking", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-            // rated = true; disliked = true    (LIKE 3: Change from Dislike to Like)
-            else if (rated[0] && disliked[0]) {
-                // set liked=true, disliked=false, increment like count, decrement dislike count
-                liked[0] = true;
-                disliked[0] = false;
-                rated[0] = true;
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("likeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated likeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update likeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after unliking", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+                // rated = true; disliked = true    (LIKE 3: Change from Dislike to Like)
+                else if (rated[0] && disliked[0]) {
+                    // set liked=true, disliked=false, increment like count, decrement dislike count
+                    liked[0] = true;
+                    disliked[0] = false;
+                    rated[0] = true;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("likeCount", FieldValue.increment(1), "dislikeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                            if (updateLikeCountTask.isSuccessful()) {
-                                                                Log.d(TAG, "onBindViewHolder: Successfully updated likeCount and dislikeCount");
-                                                            } else {
-                                                                Log.w(TAG, "onBindViewHolder: Failed to update likeCount and dislikeCount", updateLikeCountTask.getException());
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after changing dislike to like", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-        });
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("likeCount", FieldValue.increment(1), "dislikeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated likeCount and dislikeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update likeCount and dislikeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after changing dislike to like", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+            });
 
-        // Dislike
-        stratHolder.imgDislike.setOnClickListener(view -> {
-            toggleButtons(stratHolder.imgDislike, stratHolder.imgLike);
+            // Dislike
+            stratHolder.imgDislike.setOnClickListener(view -> {
+                toggleButtons(stratHolder.imgDislike, stratHolder.imgLike);
 
-            Log.d(TAG, "onBindViewHolder: position=" + position);
-            Log.d(TAG, "onBindViewHolder: liked=" + liked[0]);
-            Log.d(TAG, "onBindViewHolder: disliked=" + disliked[0]);
-            Log.d(TAG, "onBindViewHolder: rated=" + rated[0]);
+                Log.d(TAG, "onBindViewHolder: position=" + position);
+                Log.d(TAG, "onBindViewHolder: liked=" + liked[0]);
+                Log.d(TAG, "onBindViewHolder: disliked=" + disliked[0]);
+                Log.d(TAG, "onBindViewHolder: rated=" + rated[0]);
 
-            // rated = false    (DISLIKE 1: Not Liked neither Disliked)
-            if (!rated[0]) {
-                // set disliked=true, set rated=true, increment dislike count
-                liked[0] = false;
-                disliked[0] = true;
-                rated[0] = true;
+                // rated = false    (DISLIKE 1: Not Liked neither Disliked)
+                if (!rated[0]) {
+                    // set disliked=true, set rated=true, increment dislike count
+                    liked[0] = false;
+                    disliked[0] = true;
+                    rated[0] = true;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("dislikeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                            if (updateLikeCountTask.isSuccessful()) {
-                                                                Log.d(TAG, "onBindViewHolder: Successfully updated dislikeCount");
-                                                            } else {
-                                                                Log.w(TAG, "onBindViewHolder: Failed to update dislikeCount", updateLikeCountTask.getException());
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after disliking", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-            // rated = true; disliked = true (DISLIKE 2: Un-dislike)
-            else if (rated[0] && disliked[0]) {
-                toggleButtons(stratHolder.imgDislike, stratHolder.imgDislike);
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("dislikeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated dislikeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update dislikeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after disliking", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+                // rated = true; disliked = true (DISLIKE 2: Un-dislike)
+                else if (rated[0] && disliked[0]) {
+                    toggleButtons(stratHolder.imgDislike, stratHolder.imgDislike);
 
-                // Set disliked=false, set rated=false, decrement dislike count
-                liked[0] = false;
-                disliked[0] = false;
-                rated[0] = false;
+                    // Set disliked=false, set rated=false, decrement dislike count
+                    liked[0] = false;
+                    disliked[0] = false;
+                    rated[0] = false;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("dislikeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                            if (updateLikeCountTask.isSuccessful()) {
-                                                                Log.d(TAG, "onBindViewHolder: Successfully updated dislikeCount");
-                                                            } else {
-                                                                Log.w(TAG, "onBindViewHolder: Failed to update dislikeCount", updateLikeCountTask.getException());
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after un-disliking", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-            // rated = true; liked = true (LIKE 3: Change from Like to Dislike)
-            else if (rated[0] && liked[0]) {
-                // Set liked=false, disliked=true, decrement like count, increment dislike count
-                liked[0] = false;
-                disliked[0] = true;
-                rated[0] = true;
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("dislikeCount", FieldValue.increment(-1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated dislikeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update dislikeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after un-disliking", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+                // rated = true; liked = true (LIKE 3: Change from Like to Dislike)
+                else if (rated[0] && liked[0]) {
+                    // Set liked=false, disliked=true, decrement like count, increment dislike count
+                    liked[0] = false;
+                    disliked[0] = true;
+                    rated[0] = true;
 
-                // Retrieve the parent Recommendation document that contains this strategy
-                recommendationsRef.document(item.getRecommendationId())
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                // Update the liked strategy item
-                                Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
-                                List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
+                    // Retrieve the parent Recommendation document that contains this strategy
+                    recommendationsRef.document(item.getRecommendationId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Update the liked strategy item
+                                    Recommendation recommendation = documentSnapshot.toObject(Recommendation.class);
+                                    List<RecommendedBehaviourStrategy> recommendedBehaviourStrategyList = recommendation.getStrategies();
 
-                                recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
-                                recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
-                                recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
+                                    recommendedBehaviourStrategyList.get(position).setLiked(liked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setDisliked(disliked[0]);
+                                    recommendedBehaviourStrategyList.get(position).setRated(rated[0]);
 
-                                // Update the entire strategies list in the parent Recommendation document
-                                recommendationsRef.document(item.getRecommendationId())
-                                        .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
-                                        .addOnCompleteListener(updateStratsTask -> {
-                                            if (updateStratsTask.isSuccessful()) {
-                                                // Update Like count
-                                                behaviourStratsRef.document(item.getStratId())
-                                                        .update("likeCount", FieldValue.increment(-1), "dislikeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
-                                                        .addOnCompleteListener(updateLikeCountTask -> {
-                                                            if (updateLikeCountTask.isSuccessful()) {
-                                                                Log.d(TAG, "onBindViewHolder: Successfully updated likeCount and dislikeCount");
-                                                            } else {
-                                                                Log.w(TAG, "onBindViewHolder: Failed to update likeCount and dislikeCount", updateLikeCountTask.getException());
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after changing like to dislike", updateStratsTask.getException());
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
-                        });
-            }
-        });
+                                    // Update the entire strategies list in the parent Recommendation document
+                                    recommendationsRef.document(item.getRecommendationId())
+                                            .update("strategies", recommendedBehaviourStrategyList, "updatedAt", Timestamp.now())
+                                            .addOnCompleteListener(updateStratsTask -> {
+                                                if (updateStratsTask.isSuccessful()) {
+                                                    // Update Like count
+                                                    behaviourStratsRef.document(item.getStratId())
+                                                            .update("likeCount", FieldValue.increment(-1), "dislikeCount", FieldValue.increment(1), "updatedAt", Timestamp.now())
+                                                            .addOnCompleteListener(updateLikeCountTask -> {
+                                                                if (updateLikeCountTask.isSuccessful()) {
+                                                                    Log.d(TAG, "onBindViewHolder: Successfully updated likeCount and dislikeCount");
+                                                                } else {
+                                                                    Log.w(TAG, "onBindViewHolder: Failed to update likeCount and dislikeCount", updateLikeCountTask.getException());
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.w(TAG, "onBindViewHolder: Failed to update Recommendation strategies after changing like to dislike", updateStratsTask.getException());
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "onBindViewHolder: Failed to retrieve Recommendation data", e);
+                            });
+                }
+            });
+        }
     }
 
     private void loadIcon(Drawable icon, ImageView imageView) {

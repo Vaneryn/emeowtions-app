@@ -447,6 +447,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                                 user.getProfilePicture(),
                                 rating,
                                 description,
+                                false,
                                 Timestamp.now(),
                                 Timestamp.now()
                         );

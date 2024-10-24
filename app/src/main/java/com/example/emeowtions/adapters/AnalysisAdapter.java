@@ -48,7 +48,7 @@ public class AnalysisAdapter extends FirestoreRecyclerAdapter<Analysis, Analysis
         Glide.with(context)
                 .load(model.getImageUrl())
                 .into(holder.imgAnalyzedImage);
-        holder.txtCatName.setText(model.getCatName());
+        holder.txtCatName.setText(model.getCatName() == null ? "Unspecified" : model.getCatName());
         holder.txtEmotion.setText(model.getEmotion());
         holder.txtCreatedDate.setText(sdf.format(model.getCreatedAt().toDate()));
 

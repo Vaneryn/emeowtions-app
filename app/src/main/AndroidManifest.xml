@@ -17,6 +17,15 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.user.GuideActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.veterinary.ClinicInboxActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.ViewAnalysisFeedbackActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.admin.AnalysisFeedbackActivity"
             android:exported="false" />
         <activity

@@ -107,7 +107,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
             } else if (itemId == R.id.action_review_clinic) {
                 // TODO
             } else if (itemId == R.id.action_request_consultation) {
-
+                // TODO
             }
 
             return false;

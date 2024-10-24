@@ -460,6 +460,8 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                 email,
                 phoneNumber,
                 null,
+                0,
+                0,
                 Timestamp.now(),
                 Timestamp.now(),
                 false

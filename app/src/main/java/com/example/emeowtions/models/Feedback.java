@@ -9,17 +9,19 @@ public class Feedback {
     private String userProfilePicture;
     private float rating;
     private String description;
+    private boolean read;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public Feedback() {}
 
-    public Feedback(String uid, String userDisplayName, String userProfilePicture, float rating, String description, Timestamp createdAt, Timestamp updatedAt) {
+    public Feedback(String uid, String userDisplayName, String userProfilePicture, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
         this.uid = uid;
         this.userDisplayName = userDisplayName;
         this.userProfilePicture = userProfilePicture;
         this.rating = rating;
         this.description = description;
+        this.read = read;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -42,6 +44,10 @@ public class Feedback {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isRead() {
+        return read;
     }
 
     public Timestamp getCreatedAt() {
@@ -72,11 +78,29 @@ public class Feedback {
         this.description = description;
     }
 
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "uid='" + uid + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", userProfilePicture='" + userProfilePicture + '\'' +
+                ", rating=" + rating +
+                ", description='" + description + '\'' +
+                ", read=" + read +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

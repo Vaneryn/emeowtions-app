@@ -2,34 +2,25 @@ package com.example.emeowtions.models;
 
 import com.google.firebase.Timestamp;
 
-public class AnalysisFeedback {
-
-    private String analysisId;
+public class ChatRequest {
     private String uid;
     private String userDisplayName;
     private String userPfpUrl;
-    private float rating;
     private String description;
-    private boolean read;
+    private boolean accepted;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public AnalysisFeedback() {}
+    public ChatRequest() {}
 
-    public AnalysisFeedback(String analysisId, String uid, String userDisplayName, String userPfpUrl, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
-        this.analysisId = analysisId;
+    public ChatRequest(String uid, String userDisplayName, String userPfpUrl, String description, boolean accepted, Timestamp createdAt, Timestamp updatedAt) {
         this.uid = uid;
         this.userDisplayName = userDisplayName;
         this.userPfpUrl = userPfpUrl;
-        this.rating = rating;
         this.description = description;
-        this.read = read;
+        this.accepted = accepted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public String getAnalysisId() {
-        return analysisId;
     }
 
     public String getUid() {
@@ -44,16 +35,12 @@ public class AnalysisFeedback {
         return userPfpUrl;
     }
 
-    public float getRating() {
-        return rating;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isAccepted() {
+        return accepted;
     }
 
     public Timestamp getCreatedAt() {
@@ -62,10 +49,6 @@ public class AnalysisFeedback {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setAnalysisId(String analysisId) {
-        this.analysisId = analysisId;
     }
 
     public void setUid(String uid) {
@@ -80,16 +63,12 @@ public class AnalysisFeedback {
         this.userPfpUrl = userPfpUrl;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
@@ -102,14 +81,12 @@ public class AnalysisFeedback {
 
     @Override
     public String toString() {
-        return "AnalysisFeedback{" +
-                "analysisId='" + analysisId + '\'' +
-                ", uid='" + uid + '\'' +
+        return "ChatRequest{" +
+                "uid='" + uid + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +
-                ", rating=" + rating +
                 ", description='" + description + '\'' +
-                ", read=" + read +
+                ", accepted=" + accepted +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

@@ -62,7 +62,7 @@ public class BehaviourStrategyAdapter extends RecyclerView.Adapter<RecyclerView.
 
         // Populate data
         long totalCount = item.getLikeCount() + item.getDislikeCount();
-        int percentage = totalCount == 0 ? 0 : ((int) (item.getLikeCount() / totalCount) * 100);
+        int percentage = totalCount == 0 ? 0 : ((int) (((double) item.getLikeCount() / (double) totalCount) * 100));
 
         if (item.getFactorType() == null) {
             stratHolder.txtFactorType.setText(R.string.none);

@@ -238,12 +238,27 @@
                             android:paddingTop="@dimen/padding_medium_1"
                             android:paddingBottom="@dimen/padding_medium_2">
 
-                            <TextView
-                                style="@style/HeadingText2.SemiBold"
+                            <!-- Subheading and Review Count -->
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/veterinarians"/>
+                                android:orientation="horizontal">
 
+                                <TextView
+                                    style="@style/HeadingText2.SemiBold"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginRight="@dimen/margin_large"
+                                    android:text="@string/veterinarians"/>
+
+                                <TextView
+                                    android:id="@+id/txt_vet_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="0"/>
+
+                            </LinearLayout>
                             <!-- Veterinarian List -->
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recyclerview_vets"
@@ -307,11 +322,27 @@
                             android:paddingTop="@dimen/padding_medium_1"
                             android:paddingBottom="@dimen/padding_medium_2">
 
-                            <TextView
-                                style="@style/HeadingText2.SemiBold"
+                            <!-- Subheading and Review Count -->
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/reviews"/>
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    style="@style/HeadingText2.SemiBold"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginRight="@dimen/margin_large"
+                                    android:text="@string/reviews"/>
+
+                                <TextView
+                                    android:id="@+id/txt_review_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="0"/>
+
+                            </LinearLayout>
 
                             <!-- Review List -->
                             <androidx.recyclerview.widget.RecyclerView
