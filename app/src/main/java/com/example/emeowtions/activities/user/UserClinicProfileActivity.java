@@ -1,6 +1,8 @@
 package com.example.emeowtions.activities.user;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,7 @@ import com.example.emeowtions.R;
 import com.example.emeowtions.adapters.VeterinarianAdapter;
 import com.example.emeowtions.adapters.VeterinaryClinicAdapter;
 import com.example.emeowtions.databinding.ActivityUserClinicProfileBinding;
+import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.Veterinarian;
 import com.example.emeowtions.models.VeterinaryClinic;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
@@ -35,6 +38,7 @@ import java.util.Locale;
 public class UserClinicProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "UserClinicProfileActivity";
+    private SharedPreferences sharedPreferences;
 
     // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
@@ -47,6 +51,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
     private VeterinarianAdapter vetAdapter;
 
     // Private variables
+    private String currentUserRole;
     private String clinicId;
     private String clinicName;
     private String clinicAddress;
@@ -54,6 +59,10 @@ public class UserClinicProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Shared preferences
+        sharedPreferences = getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        currentUserRole = sharedPreferences.getString("role", "User");
 
         // Get intent data
         Intent passedIntent = getIntent();
@@ -80,6 +89,11 @@ public class UserClinicProfileActivity extends AppCompatActivity {
         });
 
         //region UI Setups
+        // Hide review and request consultation button if the user is a Veterinarian or Veterinary Staff
+        if (currentUserRole.equals(Role.VETERINARIAN.getTitle()) || currentUserRole.equals(Role.VETERINARY_STAFF.getTitle())) {
+            binding.appBarClinicProfile.getMenu().removeItem(R.id.action_review_clinic);
+            binding.appBarClinicProfile.getMenu().removeItem(R.id.action_request_consultation);
+        }
         //endregion
 
         //region Navigation Listeners
@@ -92,6 +106,8 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                 openGoogleMaps(clinicName, clinicAddress);
             } else if (itemId == R.id.action_review_clinic) {
                 // TODO
+            } else if (itemId == R.id.action_request_consultation) {
+
             }
 
             return false;
