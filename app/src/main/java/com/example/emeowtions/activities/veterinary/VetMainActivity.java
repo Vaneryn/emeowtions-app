@@ -217,6 +217,8 @@ public class VetMainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, FeedbackActivity.class));
             } else if (itemId == R.id.vet_clinic_inbox_item) {
                 startActivity(new Intent(this, ClinicInboxActivity.class));
+            } else if (itemId == R.id.vet_clinic_reviews_item) {
+                startActivity(new Intent(this, ClinicReviewsActivity.class));
             }
 
             return false;

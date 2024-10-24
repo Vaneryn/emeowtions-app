@@ -214,6 +214,10 @@ public class UserClinicProfileActivity extends AppCompatActivity {
 
     // Updates veterinarian or review lists results view
     private void updateResultsView() {
+        // Update counts
+        binding.txtVetCount.setText(vetAdapter.getItemCount());
+        // binding.txtReviewCount.setText(); // TODO: Reviews
+
         // Reset visibility
         binding.layoutNoVets.setVisibility(View.GONE);
         // binding.layoutNoReviews.setVisibility(View.VISIBLE); // TODO: Reviews

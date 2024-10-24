@@ -16,7 +16,7 @@
     <item
         android:id="@+id/action_request_consultation"
         android:title="@string/consult"
-        android:icon="@drawable/baseline_chat_bubble_24"
+        android:icon="@drawable/baseline_chat_24"
         app:iconTint="@color/white"
         app:showAsAction="ifRoom"/>
 </menu>

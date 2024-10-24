@@ -271,8 +271,11 @@
     <string name="temperament">Temperament</string>
     <string name="age">Age</string>
     <string name="consult">Consult</string>
-    <string name="guide">Guide</string>
-    <string name="navigation_drawer_guide_item">Navigation drawer guide item</string>
+    <string name="guides">Guides</string>
+    <string name="navigation_drawer_guides_item">Navigation drawer guides item</string>
     <string name="clinic_inbox">Clinic Inbox</string>
     <string name="navigation_drawer_clinic_inbox_item">Navigation drawer clinic inbox item</string>
+    <string name="clinic_reviews">Clinic Reviews</string>
+    <string name="navigation_drawer_clinic_reviews_item">Navigation drawer clinic reviews item</string>
+    <string name="emotion_analyzer">Emotion Analyzer</string>
 </resources>

@@ -165,7 +165,7 @@ public class UserMainActivity extends AppCompatActivity {
             } else if (itemId == R.id.feedback_item) {
                 startActivity(new Intent(this, FeedbackActivity.class));
             } else if (itemId == R.id.guide_item) {
-                startActivity(new Intent(this, GuideActivity.class));
+                startActivity(new Intent(this, GuidesActivity.class));
             }
 
             return false;

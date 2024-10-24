@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,12 +34,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class AdminMainActivity extends AppCompatActivity {
 
     private static final String TAG = "AdminMainActivity";
-    private ActivityAdminMainBinding adminMainBinding;
+    private ActivityAdminMainBinding binding;
     private Fragment selectedFragment;
 
     // Firebase variables
@@ -47,6 +51,8 @@ public class AdminMainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference usersRef;
     private CollectionReference vetRegsRef;
+    private CollectionReference feedbackRef;
+    private CollectionReference analysisFeedbackRef;
 
     // Public variables
     public AdminDashboardFragment adminDashboardFragment;
@@ -75,8 +81,8 @@ public class AdminMainActivity extends AppCompatActivity {
         vetRegsRef = db.collection("veterinaryClinicRegistrations");
 
         // Get ViewBinding and set content view
-        adminMainBinding = ActivityAdminMainBinding.inflate(getLayoutInflater());
-        setContentView(adminMainBinding.getRoot());
+        binding = ActivityAdminMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Enable edge-to-edge layout
         EdgeToEdge.enable(this);
@@ -84,13 +90,13 @@ public class AdminMainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            adminMainBinding.layoutLogout.setPadding(0, 0, 0, systemBars.bottom);
+            binding.layoutLogout.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
 
         //region UI Setups
-        adminMainBinding.adminBottomNavigation.setOnApplyWindowInsetsListener(null);
-        adminMainBinding.adminBottomNavigation.setPadding(0, 0, 0, 0);
+        binding.adminBottomNavigation.setOnApplyWindowInsetsListener(null);
+        binding.adminBottomNavigation.setPadding(0, 0, 0, 0);
 
         // Initialize Fragments
         adminDashboardFragment = new AdminDashboardFragment();
@@ -138,12 +144,12 @@ public class AdminMainActivity extends AppCompatActivity {
 
         //region Navigation Listeners
         // topAppBar navigationIcon: open navigation drawer
-        adminMainBinding.topAppBar.setNavigationOnClickListener(view -> adminMainBinding.adminDrawerLayout.open());
+        binding.topAppBar.setNavigationOnClickListener(view -> binding.adminDrawerLayout.open());
 
         // drawerNavigationView item: redirect to selected screen
-        adminMainBinding.drawerNavigationView.setNavigationItemSelectedListener(item -> {
+        binding.drawerNavigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            adminMainBinding.adminDrawerLayout.close();
+            binding.adminDrawerLayout.close();
 
             if (itemId == R.id.admin_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -159,7 +165,7 @@ public class AdminMainActivity extends AppCompatActivity {
         });
 
         // topAppBar menu: manage action buttons for each fragment's respective action menu
-        adminMainBinding.topAppBar.setOnMenuItemClickListener(item -> {
+        binding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
             // AdminUsersFragment
@@ -171,35 +177,35 @@ public class AdminMainActivity extends AppCompatActivity {
         });
 
         // adminBottomNavigation item: change to selected fragment
-        adminBottomNavigation = adminMainBinding.adminBottomNavigation;
+        adminBottomNavigation = binding.adminBottomNavigation;
         adminBottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            adminMainBinding.topAppBar.getMenu().clear();
+            binding.topAppBar.getMenu().clear();
 
             // Top app bar scaling
             float scale = getResources().getDisplayMetrics().density;
-            adminMainBinding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            binding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
             // No need for fragment replacement in Admin view
             boolean toReplace = false;
 
             if (itemId == R.id.admin_dashboard_item) {
-                adminMainBinding.topAppBar.setTitle(R.string.dashboard);
+                binding.topAppBar.setTitle(R.string.dashboard);
                 changeFragment(adminDashboardFragment, toReplace);
                 return true;
             } else if (itemId == R.id.admin_clinics_item) {
-                adminMainBinding.topAppBar.setTitle(R.string.clinics);
+                binding.topAppBar.setTitle(R.string.clinics);
                 changeFragment(adminClinicsFragment, toReplace);
                 return true;
             } else if (itemId == R.id.admin_vet_registrations_item) {
-                adminMainBinding.topAppBar.setTitle(R.string.clinic_registrations);
-                adminMainBinding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
+                binding.topAppBar.setTitle(R.string.clinic_registrations);
+                binding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
                 changeFragment(adminClinicRegistrationsFragment, toReplace);
                 return true;
             } else if (itemId == R.id.admin_users_item) {
-                adminMainBinding.topAppBar.setTitle(R.string.users);
-                adminMainBinding.topAppBar.inflateMenu(R.menu.top_app_bar_user_management);
-                adminMainBinding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
+                binding.topAppBar.setTitle(R.string.users);
+                binding.topAppBar.inflateMenu(R.menu.top_app_bar_user_management);
+                binding.topAppBar.getLayoutParams().height = (int) (40 * scale + 0.5f);    // Make app bar smaller cause the tabs are chonky
                 changeFragment(adminUsersFragment, toReplace);
                 return true;
             }
@@ -210,7 +216,7 @@ public class AdminMainActivity extends AppCompatActivity {
 
         //region Load Data
         // Get drawer header views
-        View drawerHeader = adminMainBinding.drawerNavigationView.getHeaderView(0);
+        View drawerHeader = binding.drawerNavigationView.getHeaderView(0);
         ImageView imgDrawerProfilePicture = drawerHeader.findViewById(R.id.img_profile_picture);
         TextView txtDrawerDisplayName = drawerHeader.findViewById(R.id.txt_drawer_username);
         TextView txtDrawerEmail = drawerHeader.findViewById(R.id.txt_drawer_email);
@@ -237,29 +243,48 @@ public class AdminMainActivity extends AppCompatActivity {
                     // Error
                     if (error != null) {
                         Log.w(TAG, "onViewCreated: Failed to retrieve pending veterinaryClinicRegistrations", error);
+                        return;
                     }
                     // Success
                     if (values.isEmpty()) {
-                        // No pending registrations
-                        // Update tab badge
-                        adminMainBinding.adminBottomNavigation.removeBadge(R.id.admin_vet_registrations_item);
+                        // Update badge: No pending registrations
+                        binding.adminBottomNavigation.removeBadge(R.id.admin_vet_registrations_item);
                     } else {
-                        // Existing pending registrations
-                        // Update tab badge
-                        adminMainBinding.adminBottomNavigation.getOrCreateBadge(R.id.admin_vet_registrations_item).setNumber(values.size());
+                        // Update badge: Existing pending registrations
+                        binding.adminBottomNavigation.getOrCreateBadge(R.id.admin_vet_registrations_item).setNumber(values.size());
                     }
                 });
+        
+        // Retrieve general Feedback
+        feedbackRef.whereEqualTo("read", false)
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onCreate: Failed to retrieve unread Feedback", error);
+                        return;
+                    }
+                    // Success
+                    if (values.isEmpty()) {
+                        // Update badge: No unread Feedback
+
+                    } else {
+                        // Update badge: Existing unread Feedback
+                    }
+                });
+        
+        // Retrieve AnalysisFeedback
+        
 
         //endregion
 
         //region onClick Listeners
         // Switch to User view
-        adminMainBinding.txtSwitchUserView.setOnClickListener(view -> {
+        binding.txtSwitchUserView.setOnClickListener(view -> {
             switchUserViewDialog.show();
         });
 
         // Log the user out from account
-        adminMainBinding.txtLogout.setOnClickListener(view -> {
+        binding.txtLogout.setOnClickListener(view -> {
             logoutDialog.show();
         });
         //endregion

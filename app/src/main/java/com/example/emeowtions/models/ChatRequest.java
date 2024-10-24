@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class ChatRequest {
     private String uid;
+    private String userEmail;
     private String userDisplayName;
     private String userPfpUrl;
     private String description;
@@ -13,8 +14,9 @@ public class ChatRequest {
 
     public ChatRequest() {}
 
-    public ChatRequest(String uid, String userDisplayName, String userPfpUrl, String description, boolean accepted, Timestamp createdAt, Timestamp updatedAt) {
+    public ChatRequest(String uid, String userEmail, String userDisplayName, String userPfpUrl, String description, boolean accepted, Timestamp createdAt, Timestamp updatedAt) {
         this.uid = uid;
+        this.userEmail = userEmail;
         this.userDisplayName = userDisplayName;
         this.userPfpUrl = userPfpUrl;
         this.description = description;
@@ -25,6 +27,10 @@ public class ChatRequest {
 
     public String getUid() {
         return uid;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
     }
 
     public String getUserDisplayName() {
@@ -55,6 +61,10 @@ public class ChatRequest {
         this.uid = uid;
     }
 
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public void setUserDisplayName(String userDisplayName) {
         this.userDisplayName = userDisplayName;
     }
@@ -83,6 +93,7 @@ public class ChatRequest {
     public String toString() {
         return "ChatRequest{" +
                 "uid='" + uid + '\'' +
+                ", userEmail='" + userEmail + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +
                 ", description='" + description + '\'' +

@@ -22,4 +22,11 @@
         android:checkable="true"
         android:contentDescription="@string/navigation_drawer_clinic_inbox_item"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/vet_clinic_reviews_item"
+        android:icon="@drawable/baseline_reviews_24"
+        android:title="@string/clinic_reviews"
+        android:checkable="true"
+        android:contentDescription="@string/navigation_drawer_clinic_reviews_item"
+        app:showAsAction="ifRoom" />
 </menu>
