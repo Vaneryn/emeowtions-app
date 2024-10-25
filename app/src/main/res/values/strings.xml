@@ -285,4 +285,20 @@
     <string name="submitted">Submitted</string>
     <string name="last_read">Last Read</string>
     <string name="review_details">Review Details</string>
+    <string name="request_consultation">Request Consultation</string>
+    <string name="request_consultation_instruction">Briefly describe your cat\'s condition or concerns so the clinic can prepare for your consultation. Include any relevant issues or questions you have.</string>
+    <string name="request_consultation_duplicate_confirmation">You have already requested consultation from this clinic. Request again?</string>
+    <string name="no_consultation_requests">No Consultation Requests</string>
+    <string name="no_chat_requests_message">No consultation requests found.\nTry different usernames, content, or search settings.</string>
+    <string name="accepted">Accepted</string>
+    <string name="accept">Accept</string>
+    <string name="request_details">Request Details</string>
+    <string name="existing_chat">Existing Chat</string>
+    <string name="redirect_existing_chat_message">You have already accepted this request. Go to your existing chat with this user?</string>
+    <string name="consultation_requests">Consultation Requests</string>
+    <string name="navigation_drawer_consultation_requests_item">Navigation drawer consultation requests item</string>
+    <string name="no_chats">No Chats</string>
+    <string name="no_existing_chats_vet_message">No existing chats.\nCheck clinic inbox?</string>
+    <string name="go_to_clinic_inbox">Go to Clinic Inbox</string>
+    <string name="no_chats_results_message">No chats found.\nTry different usernames or search settings.</string>
 </resources>

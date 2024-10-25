@@ -10,10 +10,12 @@ public class Chat {
     private String vetId;
     private String vetDisplayName;
     private String vetPfpUrl;
+    private int vetUnreadCount;
     private boolean readByVet;
     private String userId;
     private String userDisplayName;
     private String userPfpUrl;
+    private int userUnreadCount;
     private boolean readByUser;
     private String latestMessageText;
     private Timestamp createdAt;
@@ -21,15 +23,17 @@ public class Chat {
 
     public Chat() {}
 
-    public Chat(String chatRequestId, String vetId, String vetDisplayName, String vetPfpUrl, boolean readByVet, String userId, String userDisplayName, String userPfpUrl, boolean readByUser, String latestMessageText, Timestamp createdAt, Timestamp updatedAt) {
+    public Chat(String chatRequestId, String vetId, String vetDisplayName, String vetPfpUrl, int vetUnreadCount, boolean readByVet, String userId, String userDisplayName, String userPfpUrl, int userUnreadCount, boolean readByUser, String latestMessageText, Timestamp createdAt, Timestamp updatedAt) {
         this.chatRequestId = chatRequestId;
         this.vetId = vetId;
         this.vetDisplayName = vetDisplayName;
         this.vetPfpUrl = vetPfpUrl;
+        this.vetUnreadCount = vetUnreadCount;
         this.readByVet = readByVet;
         this.userId = userId;
         this.userDisplayName = userDisplayName;
         this.userPfpUrl = userPfpUrl;
+        this.userUnreadCount = userUnreadCount;
         this.readByUser = readByUser;
         this.latestMessageText = latestMessageText;
         this.createdAt = createdAt;
@@ -52,6 +56,10 @@ public class Chat {
         return vetPfpUrl;
     }
 
+    public int getVetUnreadCount() {
+        return vetUnreadCount;
+    }
+
     public boolean isReadByVet() {
         return readByVet;
     }
@@ -66,6 +74,10 @@ public class Chat {
 
     public String getUserPfpUrl() {
         return userPfpUrl;
+    }
+
+    public int getUserUnreadCount() {
+        return userUnreadCount;
     }
 
     public boolean isReadByUser() {
@@ -100,6 +112,10 @@ public class Chat {
         this.vetPfpUrl = vetPfpUrl;
     }
 
+    public void setVetUnreadCount(int vetUnreadCount) {
+        this.vetUnreadCount = vetUnreadCount;
+    }
+
     public void setReadByVet(boolean readByVet) {
         this.readByVet = readByVet;
     }
@@ -114,6 +130,10 @@ public class Chat {
 
     public void setUserPfpUrl(String userPfpUrl) {
         this.userPfpUrl = userPfpUrl;
+    }
+
+    public void setUserUnreadCount(int userUnreadCount) {
+        this.userUnreadCount = userUnreadCount;
     }
 
     public void setReadByUser(boolean readByUser) {
@@ -139,10 +159,12 @@ public class Chat {
                 ", vetId='" + vetId + '\'' +
                 ", vetDisplayName='" + vetDisplayName + '\'' +
                 ", vetPfpUrl='" + vetPfpUrl + '\'' +
+                ", vetUnreadCount='" + vetUnreadCount + '\'' +
                 ", readByVet=" + readByVet +
                 ", userId='" + userId + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +
+                ", userUnreadCount='" + userUnreadCount + '\'' +
                 ", readByUser=" + readByUser +
                 ", latestMessageText='" + latestMessageText + '\'' +
                 ", createdAt=" + createdAt +

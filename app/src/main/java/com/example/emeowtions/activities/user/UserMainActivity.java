@@ -162,10 +162,10 @@ public class UserMainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ProfileActivity.class));
             } else if (itemId == R.id.saved_analyses_item) {
                 startActivity(new Intent(this, SavedAnalysesActivity.class));
+            }  else if (itemId == R.id.guide_item) {
+                startActivity(new Intent(this, GuidesActivity.class));
             } else if (itemId == R.id.feedback_item) {
                 startActivity(new Intent(this, FeedbackActivity.class));
-            } else if (itemId == R.id.guide_item) {
-                startActivity(new Intent(this, GuidesActivity.class));
             }
 
             return false;
@@ -175,9 +175,12 @@ public class UserMainActivity extends AppCompatActivity {
         userMainBinding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
-            // UserMyCatsFragment
-            if (itemId == R.id.action_add_cat) {
-                startActivity(new Intent(UserMainActivity.this, AddCatActivity.class));
+            if (itemId == R.id.consultation_requests) {
+                // UserChatListFragment
+                startActivity(new Intent(this, ConsultationRequestsActivity.class));
+            } else if (itemId == R.id.action_add_cat) {
+                // UserMyCatsFragment
+                startActivity(new Intent(this, AddCatActivity.class));
             }
 
             return false;
@@ -207,6 +210,7 @@ public class UserMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.chat_item) {
                 userMainBinding.topAppBar.setTitle(R.string.chat);
+                userMainBinding.topAppBar.inflateMenu(R.menu.top_app_bar_user_chat);
                 changeFragment(userChatListFragment, toReplace);
                 return true;
             } else if (itemId == R.id.my_cats_item) {

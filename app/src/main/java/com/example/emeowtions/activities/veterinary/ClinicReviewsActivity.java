@@ -86,6 +86,13 @@ public class ClinicReviewsActivity extends AppCompatActivity {
         firebaseAuthUtils.checkSignedIn(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (reviewAdapter != null)
+            reviewAdapter.notifyDataSetChanged();
+    }
+
     private void setupUi() {
 
     }
@@ -193,6 +200,7 @@ public class ClinicReviewsActivity extends AppCompatActivity {
     private void updateResultsView(boolean isInitialLoad) {
         // Reset visibility
         binding.layoutNoReviews.setVisibility(View.GONE);
+        binding.layoutNoResults.setVisibility(View.GONE);
 
         // Determine no existing items or no query results
         if (reviewAdapter == null || reviewAdapter.getItemCount() == 0) {

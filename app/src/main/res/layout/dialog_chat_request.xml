@@ -70,7 +70,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/layout_review_datetimes"
+            android:id="@+id/layout_submitted_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_medium_2"
@@ -84,7 +84,7 @@
                 android:layout_marginBottom="@dimen/margin_small_1"
                 android:text="@string/submitted"/>
             <TextView
-                android:id="@+id/txt_created_date"
+                android:id="@+id/txt_submitted_date"
                 style="@style/BodyText2.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,6 +94,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_accepted_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -104,24 +105,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_1"
-                android:text="@string/rating"/>
-            <LinearLayout
+                android:text="@string/accepted"/>
+            <TextView
+                android:id="@+id/txt_accepted_date"
+                style="@style/BodyText2.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/baseline_star_half_24"
-                    app:tint="@color/tertiary_200"/>
-                <TextView
-                    android:id="@+id/txt_rating"
-                    style="@style/BodyText2.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/tertiary_200"
-                    tools:text="5.0"/>
-            </LinearLayout>
+                android:layout_marginBottom="@dimen/margin_small_1"
+                tools:text="0 Jan 0000, 00:00 am"/>
 
         </LinearLayout>
 

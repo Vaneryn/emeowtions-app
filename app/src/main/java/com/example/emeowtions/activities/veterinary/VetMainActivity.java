@@ -213,12 +213,12 @@ public class VetMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.vet_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
-            } else if (itemId == R.id.vet_feedback_item) {
-                startActivity(new Intent(this, FeedbackActivity.class));
             } else if (itemId == R.id.vet_clinic_inbox_item) {
                 startActivity(new Intent(this, ClinicInboxActivity.class));
             } else if (itemId == R.id.vet_clinic_reviews_item) {
                 startActivity(new Intent(this, ClinicReviewsActivity.class));
+            } else if (itemId == R.id.vet_feedback_item) {
+                startActivity(new Intent(this, FeedbackActivity.class));
             }
 
             return false;
@@ -228,7 +228,10 @@ public class VetMainActivity extends AppCompatActivity {
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.action_add_staff) {
+            if (itemId == R.id.action_clinic_inbox) {
+                // VetChatFragment
+                startActivity(new Intent(this, ClinicInboxActivity.class));
+            } else if (itemId == R.id.action_add_staff) {
                 // VetStaffFragment
                 startActivity(new Intent(this, AddStaffActivity.class));
             } else if (itemId == R.id.action_edit_vet_clinic_profile) {
@@ -264,6 +267,7 @@ public class VetMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.vet_chat_item) {
                 binding.topAppBar.setTitle(R.string.chat);
+                binding.topAppBar.inflateMenu(R.menu.top_app_bar_vet_chat);
                 changeFragment(vetChatFragment, toReplace);
                 return true;
             } else if (itemId == R.id.vet_staff_item) {

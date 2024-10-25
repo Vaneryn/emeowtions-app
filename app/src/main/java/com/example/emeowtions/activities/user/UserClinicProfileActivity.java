@@ -32,6 +32,7 @@ import com.example.emeowtions.adapters.VeterinarianAdapter;
 import com.example.emeowtions.adapters.VeterinaryClinicAdapter;
 import com.example.emeowtions.databinding.ActivityUserClinicProfileBinding;
 import com.example.emeowtions.enums.Role;
+import com.example.emeowtions.models.ChatRequest;
 import com.example.emeowtions.models.Review;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.models.Veterinarian;
@@ -52,6 +53,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -138,7 +140,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
             } else if (itemId == R.id.action_review_clinic) {
                 showReviewDialog();
             } else if (itemId == R.id.action_request_consultation) {
-                requestConsultation();
+                checkDuplicateRequest();
             }
 
             return false;
@@ -352,9 +354,128 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                 });
     }
 
-    // Creates a new ChatRequest
-    private void requestConsultation() {
+    // Checks if user has already submitted a request before
+    private void checkDuplicateRequest() {
+        chatRequestsRef
+                .whereEqualTo("veterinaryClinicId", clinicId)
+                .whereEqualTo("uid", firebaseAuthUtils.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // COMPLETE
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        // No prior requests
+                        showConsultDialog();
+                    } else {
+                        // Existing request
+                        showConsultConfirmDialog();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "checkDuplicateRequest: Failed to retrieve ChatRequests", e);
+                    Toast.makeText(this, "Consultation requests are unavailable at the moment. Please try again later.", Toast.LENGTH_SHORT).show();
+                });
+    }
 
+    // Opens request consultation dialog if user has already requested before
+    private void showConsultConfirmDialog() {
+        MaterialAlertDialogBuilder confirmConsultDialog =
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.request_consultation)
+                        .setMessage(R.string.request_consultation_duplicate_confirmation)
+                        .setNegativeButton(R.string.no, (dialogInterface, i) -> {})
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            showConsultDialog();
+                        });
+
+        confirmConsultDialog.show();
+    }
+
+    // Opens request consultation dialog
+    private void showConsultDialog() {
+        View consultDialogLayout = LayoutInflater.from(this).inflate(R.layout.dialog_request_consultation, null);
+        TextInputLayout txtfieldDescription = consultDialogLayout.findViewById(R.id.txtfield_description);
+        TextInputEditText edtDescription = consultDialogLayout.findViewById(R.id.edt_description);
+
+        MaterialAlertDialogBuilder consultDialogBuilder =
+                new MaterialAlertDialogBuilder(this)
+                        .setView(consultDialogLayout)
+                        .setTitle(R.string.request_consultation)
+                        .setMessage(R.string.request_consultation_instruction)
+                        .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                            // Do nothing
+                        })
+                        .setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
+                            // Unused
+                        });
+
+        AlertDialog consultDialog = consultDialogBuilder.create();
+        consultDialog.show();
+
+        // Override the positive button's click behavior
+        consultDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Validate inputs
+            String description = edtDescription.getText().toString();
+
+            if (description.isBlank()) {
+                txtfieldDescription.setError(getString(R.string.description_required_error));
+            } else {
+                // Valid
+                requestConsultation(description);
+                consultDialog.dismiss();
+            }
+        });
+
+        // Reset error when text is changed
+        edtDescription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                txtfieldDescription.setErrorEnabled(false);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    // Creates a new ChatRequest
+    private void requestConsultation(String description) {
+        // Retrieve user data
+        usersRef.document(firebaseAuthUtils.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        User user = documentSnapshot.toObject(User.class);
+
+                        ChatRequest newChatRequest = new ChatRequest(
+                                clinicId,
+                                firebaseAuthUtils.getUid(),
+                                user.getEmail(),
+                                user.getDisplayName(),
+                                user.getProfilePicture(),
+                                description,
+                                false,
+                                Timestamp.now(),
+                                Timestamp.now()
+                        );
+
+                        // Add new ChatRequest
+                        chatRequestsRef.add(newChatRequest)
+                                .addOnCompleteListener(task -> {
+                                    if (!task.isSuccessful()) {
+                                        Log.w(TAG, "requestConsultation: Failed to add new ChatRequest", task.getException());
+                                        Toast.makeText(this, "Failed to submit consultation request, please try again later.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    } else {
+                                        // COMPLETE
+                                        Toast.makeText(this, "Successfully submitted consultation request. Please await response from the clinic and refrain from spamming requests.", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "requestConsultation: Failed to retrieve User data", e);
+                });
     }
 
     // Disables menu action item

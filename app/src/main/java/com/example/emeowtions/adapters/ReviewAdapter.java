@@ -54,8 +54,8 @@ public class ReviewAdapter extends FirestoreRecyclerAdapter<Review, ReviewAdapte
         SimpleDateFormat sdfDate = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
         SimpleDateFormat sdfDatetime = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
 
-        // Set style based on read status
-        if (model.isRead())
+        // Set style based on read status (only for ClinicReviewsActivity)
+        if (context instanceof ClinicReviewsActivity && model.isRead())
             setViewOpacity(holder, 0.6f);
         else
             setViewOpacity(holder, 1);
