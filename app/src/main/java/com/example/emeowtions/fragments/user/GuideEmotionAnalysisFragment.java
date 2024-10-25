@@ -12,10 +12,10 @@ import com.example.emeowtions.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link GuideEmotionAnalyzerFragment#newInstance} factory method to
+ * Use the {@link GuideEmotionAnalysisFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GuideEmotionAnalyzerFragment extends Fragment {
+public class GuideEmotionAnalysisFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class GuideEmotionAnalyzerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public GuideEmotionAnalyzerFragment() {
+    public GuideEmotionAnalysisFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class GuideEmotionAnalyzerFragment extends Fragment {
      * @return A new instance of fragment GuideEmotionAnalyzerFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GuideEmotionAnalyzerFragment newInstance(String param1, String param2) {
-        GuideEmotionAnalyzerFragment fragment = new GuideEmotionAnalyzerFragment();
+    public static GuideEmotionAnalysisFragment newInstance(String param1, String param2) {
+        GuideEmotionAnalysisFragment fragment = new GuideEmotionAnalysisFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class GuideEmotionAnalyzerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_guide_emotion_analyzer, container, false);
+        return inflater.inflate(R.layout.fragment_guide_emotion_analysis, container, false);
     }
 }

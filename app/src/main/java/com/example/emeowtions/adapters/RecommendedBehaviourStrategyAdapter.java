@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.user.ViewSavedAnalysisActivity;
 import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.BehaviourStrategy;
 import com.example.emeowtions.models.Recommendation;
@@ -130,8 +131,8 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
                 });
 
         // Listeners for like and dislike button
-        // Do not allow Admin or Super Admin to use these buttons
-        if (!currentUserRole.equals(Role.ADMIN.getTitle()) && !currentUserRole.equals(Role.SUPER_ADMIN.getTitle())) {
+        // Only allow usage of these buttons in User view of saved analysis
+        if (context instanceof ViewSavedAnalysisActivity) {
             // Like
             stratHolder.imgLike.setOnClickListener(view -> {
                 toggleButtons(stratHolder.imgLike, stratHolder.imgDislike);

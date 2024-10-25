@@ -75,7 +75,6 @@ public class AdminMainActivity extends AppCompatActivity {
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
-
         // Initialize Firestore references
         usersRef = db.collection("users");
         vetRegsRef = db.collection("veterinaryClinicRegistrations");
@@ -254,27 +253,6 @@ public class AdminMainActivity extends AppCompatActivity {
                         binding.adminBottomNavigation.getOrCreateBadge(R.id.admin_vet_registrations_item).setNumber(values.size());
                     }
                 });
-        
-        // Retrieve general Feedback
-        feedbackRef.whereEqualTo("read", false)
-                .addSnapshotListener((values, error) -> {
-                    // Error
-                    if (error != null) {
-                        Log.w(TAG, "onCreate: Failed to retrieve unread Feedback", error);
-                        return;
-                    }
-                    // Success
-                    if (values.isEmpty()) {
-                        // Update badge: No unread Feedback
-
-                    } else {
-                        // Update badge: Existing unread Feedback
-                    }
-                });
-        
-        // Retrieve AnalysisFeedback
-        
-
         //endregion
 
         //region onClick Listeners

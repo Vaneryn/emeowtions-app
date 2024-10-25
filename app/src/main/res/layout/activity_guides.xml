@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/app_bar_guides"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:title="@string/guides"
             app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance" />
@@ -27,21 +27,25 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small_2">
+        android:layout_marginBottom="@dimen/margin_small_2"
+        app:tabMode="scrollable">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/emotion_analyzer" />
+            android:icon="@drawable/outline_happy_cat"
+            android:text="@string/emotion_analysis" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/baseline_full_cat_24"
             android:text="@string/body_language" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/baseline_thumb_up_24"
             android:text="@string/recommendations" />
 
     </com.google.android.material.tabs.TabLayout>
@@ -52,6 +56,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        tools:layout="@layout/fragment_guide_emotion_analyzer" />
+        tools:layout="@layout/fragment_guide_emotion_analysis" />
 
 </LinearLayout>

@@ -175,7 +175,7 @@ public class GeneralFeedbackActivity extends AppCompatActivity {
         binding.layoutNoGeneralFeedback.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (feedbackAdapter == null || feedbackAdapter.getItemCount() == 0) {
             if (isInitialLoad)
                 binding.layoutNoGeneralFeedback.setVisibility(View.VISIBLE);

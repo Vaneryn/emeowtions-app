@@ -175,7 +175,7 @@ public class AnalysisFeedbackActivity extends AppCompatActivity {
         binding.layoutNoAnalysisFeedback.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (adapter == null || adapter.getItemCount() == 0) {
             if (isInitialLoad)
                 binding.layoutNoAnalysisFeedback.setVisibility(View.VISIBLE);

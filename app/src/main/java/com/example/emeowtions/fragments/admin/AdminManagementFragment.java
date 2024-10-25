@@ -167,7 +167,7 @@ public class AdminManagementFragment extends Fragment {
         binding.layoutNoAdmins.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (userAdapter == null || userAdapter.getItemCount() == 0) {
             if (isInitialLoad)
                 binding.layoutNoAdmins.setVisibility(View.VISIBLE);

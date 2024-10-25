@@ -10,14 +10,15 @@ public class VeterinaryClinic {
     private String phoneNumber;
     private String logoUrl;
     private int reviewCount;
-    private float rating;
+    private float totalRating;
+    private float averageRating;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private boolean deleted;
 
     private VeterinaryClinic() {}
 
-    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, int reviewCount, float rating, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
+    public VeterinaryClinic(String name, String description, String address, String email, String phoneNumber, String logoUrl, int reviewCount, float totalRating, float averageRating, Timestamp createdAt, Timestamp updatedAt, boolean deleted) {
         this.name = name;
         this.description = description;
         this.address = address;
@@ -25,7 +26,8 @@ public class VeterinaryClinic {
         this.phoneNumber = phoneNumber;
         this.logoUrl = logoUrl;
         this.reviewCount = reviewCount;
-        this.rating = rating;
+        this.totalRating = totalRating;
+        this.averageRating = averageRating;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
@@ -59,8 +61,12 @@ public class VeterinaryClinic {
         return reviewCount;
     }
 
-    public float getRating() {
-        return rating;
+    public float getTotalRating() {
+        return totalRating;
+    }
+
+    public float getAverageRating() {
+        return averageRating;
     }
 
     public Timestamp getCreatedAt() {
@@ -103,8 +109,12 @@ public class VeterinaryClinic {
         this.reviewCount = reviewCount;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
+    public void setTotalRating(float totalRating) {
+        this.totalRating = totalRating;
+    }
+
+    public void setAverageRating(float averageRating) {
+        this.averageRating = averageRating;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
@@ -129,7 +139,8 @@ public class VeterinaryClinic {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", reviewCount=" + reviewCount +
-                ", rating=" + rating +
+                ", totalRating=" + totalRating +
+                ", averageRating=" + averageRating +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", deleted=" + deleted +

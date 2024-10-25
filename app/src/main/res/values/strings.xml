@@ -277,5 +277,6 @@
     <string name="navigation_drawer_clinic_inbox_item">Navigation drawer clinic inbox item</string>
     <string name="clinic_reviews">Clinic Reviews</string>
     <string name="navigation_drawer_clinic_reviews_item">Navigation drawer clinic reviews item</string>
-    <string name="emotion_analyzer">Emotion Analyzer</string>
+    <string name="review_dialog_message">Tell us about your experience with this clinic.</string>
+    <string name="review_clinic_note">You may only review this clinic once.</string>
 </resources>

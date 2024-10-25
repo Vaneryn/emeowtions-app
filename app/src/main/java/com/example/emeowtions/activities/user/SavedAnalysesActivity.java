@@ -177,7 +177,7 @@ public class SavedAnalysesActivity extends AppCompatActivity {
         binding.layoutNoAnalyses.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (analysisAdapter == null || analysisAdapter.getItemCount() == 0) {
             if (isInitialLoad)
                 binding.layoutNoAnalyses.setVisibility(View.VISIBLE);

@@ -173,7 +173,7 @@ public class VetManagementFragment extends Fragment {
         binding.layoutNoVets.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (userAdapter == null || userAdapter.getItemCount() == 0) {
             if (isInitialLoad)
                 binding.layoutNoVets.setVisibility(View.VISIBLE);

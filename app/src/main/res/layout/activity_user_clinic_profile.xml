@@ -70,7 +70,7 @@
                 style="@style/BodyText3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small_2"
+                android:layout_marginTop="@dimen/margin_small_1"
                 android:gravity="end"
                 android:textColor="@color/white"
                 tools:text="Joined 1 Jan 2000, 0:00 AM" />
@@ -80,10 +80,34 @@
                 style="@style/BodyText3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small_2"
+                android:layout_marginTop="@dimen/margin_small_1"
                 android:gravity="end"
                 android:textColor="@color/white"
                 tools:text="Updated 1 Jan 2000, 0:00 AM" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="@dimen/margin_small_1"
+                    android:src="@drawable/baseline_star_half_24"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/txt_rating"
+                    style="@style/BodyText2.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="0" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -98,27 +122,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_screen_edge">
+            android:orientation="vertical">
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:padding="@dimen/padding_screen_edge"
+                android:paddingHorizontal="@dimen/padding_small_2"
+                android:paddingVertical="@dimen/padding_screen_edge"
                 android:scrollbarStyle="outsideInset">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="2dp">
 
                     <!-- About Us -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_medium_1"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="2dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -225,10 +253,12 @@
 
                     <!-- Veterinarians -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_medium_1"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="2dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -254,11 +284,13 @@
 
                                 <TextView
                                     android:id="@+id/txt_vet_count"
+                                    style="@style/BodyText2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     tools:text="0"/>
 
                             </LinearLayout>
+
                             <!-- Veterinarian List -->
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recyclerview_vets"
@@ -310,9 +342,12 @@
 
                     <!-- Reviews -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/white">
+                        android:layout_marginBottom="@dimen/margin_medium_2"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="2dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -338,6 +373,7 @@
 
                                 <TextView
                                     android:id="@+id/txt_review_count"
+                                    style="@style/BodyText2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     tools:text="0"/>
@@ -360,7 +396,7 @@
                                 android:layout_marginBottom="@dimen/margin_small_1"
                                 android:gravity="center"
                                 android:orientation="vertical"
-                                android:visibility="visible" >
+                                android:visibility="gone" >
 
                                 <ImageView
                                     android:layout_width="75dp"

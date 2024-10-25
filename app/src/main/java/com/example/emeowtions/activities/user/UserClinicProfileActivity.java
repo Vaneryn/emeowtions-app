@@ -5,12 +5,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,15 +27,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.ReviewAdapter;
 import com.example.emeowtions.adapters.VeterinarianAdapter;
 import com.example.emeowtions.adapters.VeterinaryClinicAdapter;
 import com.example.emeowtions.databinding.ActivityUserClinicProfileBinding;
 import com.example.emeowtions.enums.Role;
+import com.example.emeowtions.models.Review;
+import com.example.emeowtions.models.User;
 import com.example.emeowtions.models.Veterinarian;
 import com.example.emeowtions.models.VeterinaryClinic;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,18 +66,23 @@ public class UserClinicProfileActivity extends AppCompatActivity {
     // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
+    private CollectionReference usersRef;
     private CollectionReference clinicsRef;
     private CollectionReference vetsRef;
+    private CollectionReference reviewsRef;
+    private CollectionReference chatRequestsRef;
 
     // Layout variables
     private ActivityUserClinicProfileBinding binding;
     private VeterinarianAdapter vetAdapter;
+    private ReviewAdapter reviewAdapter;
 
     // Private variables
     private String currentUserRole;
     private String clinicId;
     private String clinicName;
     private String clinicAddress;
+    private float currentTotalRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +100,11 @@ public class UserClinicProfileActivity extends AppCompatActivity {
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
+        usersRef = db.collection("users");
         clinicsRef = db.collection("veterinaryClinics");
         vetsRef = db.collection("veterinarians");
+        reviewsRef = clinicsRef.document(clinicId).collection("reviews");
+        chatRequestsRef = db.collection("chatRequests");
 
         // Get ViewBinding and set content view
         binding = ActivityUserClinicProfileBinding.inflate(getLayoutInflater());
@@ -105,9 +136,9 @@ public class UserClinicProfileActivity extends AppCompatActivity {
             if (itemId == R.id.action_get_directions) {
                 openGoogleMaps(clinicName, clinicAddress);
             } else if (itemId == R.id.action_review_clinic) {
-                // TODO
+                showReviewDialog();
             } else if (itemId == R.id.action_request_consultation) {
-                // TODO
+                requestConsultation();
             }
 
             return false;
@@ -135,12 +166,15 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                         String phoneNumber = clinic.getPhoneNumber();
                         clinicAddress = clinic.getAddress();
                         String description = clinic.getDescription();
+                        currentTotalRating = clinic.getTotalRating();
+                        float averageRating = clinic.getAverageRating();
 
                         // Load banner
                         loadLogo(logoUrl);
                         binding.txtBannerName.setText(clinicName);
                         binding.txtBannerJoinedDate.setText(String.format("Joined %s", sdf.format(clinic.getCreatedAt().toDate())));
                         binding.txtBannerUpdatedDate.setText(String.format("Updated %s", sdf.format(clinic.getUpdatedAt().toDate())));
+                        binding.txtRating.setText(String.format("%s", averageRating));
 
                         // Load fields
                         binding.txtEmail.setText(email);
@@ -150,19 +184,26 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                     }
                 });
 
-        // Load veterinarians data
-        Query vetsQuery =
-                vetsRef.whereEqualTo("veterinaryClinicId", clinicId)
-                        .whereEqualTo("deleted", false);
+        // Load veterinarians and reviews data
+        Query vetQuery = vetsRef.whereEqualTo("veterinaryClinicId", clinicId).whereEqualTo("deleted", false);
+        Query reviewQuery = reviewsRef.orderBy("updatedAt", Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<Veterinarian> options =
+        FirestoreRecyclerOptions<Veterinarian> vetOptions =
                 new FirestoreRecyclerOptions.Builder<Veterinarian>()
-                        .setQuery(vetsQuery, Veterinarian.class)
+                        .setQuery(vetQuery, Veterinarian.class)
+                        .setLifecycleOwner(this)
+                        .build();
+        FirestoreRecyclerOptions<Review> reviewOptions =
+                new FirestoreRecyclerOptions.Builder<Review>()
+                        .setQuery(reviewQuery, Review.class)
                         .setLifecycleOwner(this)
                         .build();
 
-        vetAdapter = new VeterinarianAdapter(options, this);
+        vetAdapter = new VeterinarianAdapter(vetOptions, this);
+        reviewAdapter = new ReviewAdapter(reviewOptions, this);
+
         binding.recyclerviewVets.setAdapter(vetAdapter);
+        binding.recyclerviewReviews.setAdapter(reviewAdapter);
 
         vetAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -171,9 +212,13 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                 updateResultsView();
             }
         });
-        //endregion
-
-        //region onClick Listeners
+        reviewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                updateResultsView();
+            }
+        });
         //endregion
     }
 
@@ -197,6 +242,128 @@ public class UserClinicProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void showReviewDialog() {
+        View reviewDialogLayout = LayoutInflater.from(this).inflate(R.layout.dialog_review_clinic, null);
+        RatingBar ratingBar = reviewDialogLayout.findViewById(R.id.rating_bar);
+        TextInputLayout txtfieldDescription = reviewDialogLayout.findViewById(R.id.txtfield_description);
+        TextInputEditText edtDescription = reviewDialogLayout.findViewById(R.id.edt_description);
+
+        MaterialAlertDialogBuilder reviewDialogBuilder =
+                new MaterialAlertDialogBuilder(this)
+                        .setView(reviewDialogLayout)
+                        .setTitle(R.string.review)
+                        .setMessage(R.string.review_dialog_message)
+                        .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                            // Do nothing
+                        })
+                        .setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
+                            // Unused
+                        });
+
+        AlertDialog reviewDialog = reviewDialogBuilder.create();
+        reviewDialog.show();
+
+        // Override the positive button's click behavior
+        reviewDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Validate inputs
+            float rating = ratingBar.getRating();
+            String description = edtDescription.getText().toString();
+
+            if (rating == 0) {
+                // No rating
+                Toast.makeText(this, "Please select a rating", Toast.LENGTH_LONG).show();
+            } else if (description.isBlank()) {
+                txtfieldDescription.setError(getString(R.string.description_required_error));
+            } else {
+                // Valid
+                reviewClinic(rating, description);
+                reviewDialog.dismiss();
+            }
+        });
+
+        // Reset error when text is changed
+        edtDescription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                txtfieldDescription.setErrorEnabled(false);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    // Creates a new Review
+    private void reviewClinic(float rating, String description) {
+        int reviewCount = reviewAdapter.getItemCount();
+
+        // Retrieve user data
+        usersRef.document(firebaseAuthUtils.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        User user = documentSnapshot.toObject(User.class);
+                        Review newReview = new Review(
+                                clinicId,
+                                firebaseAuthUtils.getUid(),
+                                user.getEmail(),
+                                user.getDisplayName(),
+                                user.getProfilePicture(),
+                                rating,
+                                description,
+                                false,
+                                Timestamp.now(),
+                                Timestamp.now()
+                        );
+
+                        // Add new Review
+                        reviewsRef.add(newReview)
+                                .addOnCompleteListener(task -> {
+                                    if (!task.isSuccessful()) {
+                                        Log.w(TAG, "reviewClinic: Failed to add new Review", task.getException());
+                                        Toast.makeText(this, "Failed to submit review, please try again later.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    } else {
+                                        // Update VeterinaryClinic reviewCount and rating
+                                        clinicsRef.document(clinicId)
+                                                .update(
+                                                        "reviewCount", FieldValue.increment(1),
+                                                        "totalRating", FieldValue.increment(rating),
+                                                        "averageRating", (currentTotalRating + rating) / (reviewCount + 1)
+                                                )
+                                                .addOnCompleteListener(task1 -> {
+                                                    // COMPLETE
+                                                    if (!task.isSuccessful()) {
+                                                        Log.w(TAG, "reviewClinic: Failed to updated VeterinaryClinic reviewCount and rating", task.getException());
+                                                        Toast.makeText(this, "Failed to update Veterinary Clinic rating, please try again later.", Toast.LENGTH_SHORT).show();
+                                                        return;
+                                                    } else {
+                                                        Toast.makeText(this, "Successfully submitted review.", Toast.LENGTH_SHORT).show();
+                                                        disableMenuItem(R.id.action_review_clinic);
+                                                    }
+                                                });
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "reviewClinic: Failed to retrieve User data", e);
+                });
+    }
+
+    // Creates a new ChatRequest
+    private void requestConsultation() {
+
+    }
+
+    // Disables menu action item
+    private void disableMenuItem(int itemId) {
+        MenuItem menuItem = binding.appBarClinicProfile.getMenu().findItem(itemId);
+        menuItem.setEnabled(false);
+        menuItem.setIconTintList(ContextCompat.getColorStateList(this, R.color.gray_200));
+    }
+
     // Loads logo into ImageView
     private void loadLogo(String logoUrl) {
         if (logoUrl == null) {
@@ -214,17 +381,28 @@ public class UserClinicProfileActivity extends AppCompatActivity {
 
     // Updates veterinarian or review lists results view
     private void updateResultsView() {
-        // Update counts
-        binding.txtVetCount.setText(vetAdapter.getItemCount());
-        // binding.txtReviewCount.setText(); // TODO: Reviews
-
         // Reset visibility
         binding.layoutNoVets.setVisibility(View.GONE);
-        // binding.layoutNoReviews.setVisibility(View.VISIBLE); // TODO: Reviews
+        binding.layoutNoReviews.setVisibility(View.GONE);
 
-        // Determine no users or no query results
+        // Determine no existing items or no query results
         if (vetAdapter == null || vetAdapter.getItemCount() == 0) {
             binding.layoutNoVets.setVisibility(View.VISIBLE);
+        } else {
+            binding.txtVetCount.setText(String.format("%s", vetAdapter.getItemCount()));
+        }
+
+        if (reviewAdapter == null || reviewAdapter.getItemCount() == 0) {
+            binding.layoutNoReviews.setVisibility(View.VISIBLE);
+        } else {
+            // Check if user has already reviewed this clinic
+            for (int i = 0; i < reviewAdapter.getItemCount(); i++) {
+                Review review = reviewAdapter.getItem(i);
+                if (review.getUid().equals(firebaseAuthUtils.getUid())) {
+                    disableMenuItem(R.id.action_review_clinic);
+                }
+                binding.txtReviewCount.setText(String.format("%s", reviewAdapter.getItemCount()));
+            }
         }
     }
 }

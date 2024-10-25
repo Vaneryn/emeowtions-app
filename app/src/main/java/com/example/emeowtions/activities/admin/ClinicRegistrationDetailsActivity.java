@@ -462,6 +462,7 @@ public class ClinicRegistrationDetailsActivity extends AppCompatActivity {
                 null,
                 0,
                 0,
+                0,
                 Timestamp.now(),
                 Timestamp.now(),
                 false
