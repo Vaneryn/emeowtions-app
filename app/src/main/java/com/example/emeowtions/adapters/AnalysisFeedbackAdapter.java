@@ -39,6 +39,8 @@ public class AnalysisFeedbackAdapter extends FirestoreRecyclerAdapter<AnalysisFe
     public static final String KEY_ANALYSIS_ID = "analysisId";
     public static final String KEY_ANALYSIS_FEEDBACK_ID = "analysisFeedbackId";
     public static final String KEY_USER_DISPLAY_NAME = "userDisplayName";
+    public static final String KEY_USER_EMAIL = "userEmail";
+    public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_RATING = "rating";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_READ = "read";
@@ -87,6 +89,8 @@ public class AnalysisFeedbackAdapter extends FirestoreRecyclerAdapter<AnalysisFe
             intent.putExtra(KEY_ANALYSIS_ID, model.getAnalysisId());
             intent.putExtra(KEY_ANALYSIS_FEEDBACK_ID, getSnapshots().getSnapshot(position).getId());
             intent.putExtra(KEY_USER_DISPLAY_NAME, model.getUserDisplayName());
+            intent.putExtra(KEY_USER_EMAIL, model.getUserEmail());
+            intent.putExtra(KEY_CREATED_AT, model.getCreatedAt());
             intent.putExtra(KEY_RATING, model.getRating());
             intent.putExtra(KEY_DESCRIPTION, model.getDescription());
             intent.putExtra(KEY_READ, model.isRead());

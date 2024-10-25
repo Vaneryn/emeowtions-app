@@ -6,6 +6,7 @@ public class AnalysisFeedback {
 
     private String analysisId;
     private String uid;
+    private String userEmail;
     private String userDisplayName;
     private String userPfpUrl;
     private float rating;
@@ -16,9 +17,10 @@ public class AnalysisFeedback {
 
     public AnalysisFeedback() {}
 
-    public AnalysisFeedback(String analysisId, String uid, String userDisplayName, String userPfpUrl, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
+    public AnalysisFeedback(String analysisId, String uid, String userEmail, String userDisplayName, String userPfpUrl, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
         this.analysisId = analysisId;
         this.uid = uid;
+        this.userEmail = userEmail;
         this.userDisplayName = userDisplayName;
         this.userPfpUrl = userPfpUrl;
         this.rating = rating;
@@ -34,6 +36,10 @@ public class AnalysisFeedback {
 
     public String getUid() {
         return uid;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
     }
 
     public String getUserDisplayName() {
@@ -72,6 +78,10 @@ public class AnalysisFeedback {
         this.uid = uid;
     }
 
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public void setUserDisplayName(String userDisplayName) {
         this.userDisplayName = userDisplayName;
     }
@@ -105,6 +115,7 @@ public class AnalysisFeedback {
         return "AnalysisFeedback{" +
                 "analysisId='" + analysisId + '\'' +
                 ", uid='" + uid + '\'' +
+                ", userEmail='" + userEmail + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +
                 ", rating=" + rating +

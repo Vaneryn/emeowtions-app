@@ -113,13 +113,13 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/baseline_star_half_24"
-                    app:tint="@color/primary_300"/>
+                    app:tint="@color/tertiary_200"/>
                 <TextView
                     android:id="@+id/txt_rating"
                     style="@style/BodyText2.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/primary_300"
+                    android:textColor="@color/tertiary_200"
                     tools:text="5.0"/>
             </LinearLayout>
 

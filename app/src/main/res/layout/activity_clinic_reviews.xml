@@ -1,10 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.veterinary.ClinicReviewsActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/app_bar_clinic_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:title="@string/clinic_reviews"
+            app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Searchbar and Options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding_screen_edge"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txtfield_searchbar"
+            style="@style/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_reviews"
+            android:layout_weight="1"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_searchbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSearchOptions"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/baseline_tune_24"
+            app:iconSize="30sp"
+            app:iconTint="@color/gray_500" />
+
+    </LinearLayout>
+
+    <!-- Results -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_screen_edge"
+        android:requiresFadingEdge="vertical"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <!-- No Reviews -->
+    <LinearLayout
+        android:id="@+id/layout_no_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_reviews_24"
+            app:tint="@color/gray_400" />
+        <TextView
+            style="@style/HeadingText2.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/no_reviews" />
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_existing_reviews_message" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/back" />
+
+    </LinearLayout>
+
+    <!-- No Results -->
+    <LinearLayout
+        android:id="@+id/layout_no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen_edge"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_search_off_24"
+            app:tint="@color/gray_400" />
+
+        <TextView
+            style="@style/HeadingText2.SemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/results_not_found" />
+
+        <TextView
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_1"
+            android:textAlignment="center"
+            android:text="@string/no_reviews_found_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_clear_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="50dp"
+            android:text="@string/clear_all" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -6,6 +6,7 @@ public class Feedback {
 
     private String uid;
     private String userDisplayName;
+    private String userEmail;
     private String userProfilePicture;
     private float rating;
     private String description;
@@ -15,9 +16,10 @@ public class Feedback {
 
     public Feedback() {}
 
-    public Feedback(String uid, String userDisplayName, String userProfilePicture, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
+    public Feedback(String uid, String userDisplayName, String userEmail, String userProfilePicture, float rating, String description, boolean read, Timestamp createdAt, Timestamp updatedAt) {
         this.uid = uid;
         this.userDisplayName = userDisplayName;
+        this.userEmail = userEmail;
         this.userProfilePicture = userProfilePicture;
         this.rating = rating;
         this.description = description;
@@ -32,6 +34,10 @@ public class Feedback {
 
     public String getUserDisplayName() {
         return userDisplayName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
     }
 
     public String getUserProfilePicture() {
@@ -66,6 +72,10 @@ public class Feedback {
         this.userDisplayName = userDisplayName;
     }
 
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public void setUserProfilePicture(String userProfilePicture) {
         this.userProfilePicture = userProfilePicture;
     }
@@ -95,6 +105,7 @@ public class Feedback {
         return "Feedback{" +
                 "uid='" + uid + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
+                ", userEmail='" + userEmail + '\'' +
                 ", userProfilePicture='" + userProfilePicture + '\'' +
                 ", rating=" + rating +
                 ", description='" + description + '\'' +

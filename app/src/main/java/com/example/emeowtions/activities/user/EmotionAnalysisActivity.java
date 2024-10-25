@@ -443,6 +443,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
                         AnalysisFeedback newAnalysisFeedback = new AnalysisFeedback(
                                 analysisId,
                                 firebaseAuthUtils.getUid(),
+                                user.getEmail(),
                                 user.getDisplayName(),
                                 user.getProfilePicture(),
                                 rating,

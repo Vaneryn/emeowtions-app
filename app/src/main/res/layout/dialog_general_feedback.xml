@@ -10,13 +10,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small_2"
+        android:layout_marginBottom="@dimen/margin_medium_2"
         android:weightSum="2"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_medium_2"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -33,6 +34,62 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_1"
                 android:text="John Smith"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/BodyText3.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_1"
+                android:text="@string/email"/>
+            <TextView
+                android:id="@+id/txt_email"
+                style="@style/BodyText2.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_1"
+                android:text="john.smith@gmail.com"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_review_datetimes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_medium_2"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_medium_2"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/BodyText3.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_1"
+                android:text="@string/submitted"/>
+            <TextView
+                android:id="@+id/txt_created_date"
+                style="@style/BodyText2.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_1"
+                tools:text="0 Jan 0000, 00:00 am"/>
 
         </LinearLayout>
 

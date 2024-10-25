@@ -96,10 +96,15 @@ public class FeedbackAdapter extends FirestoreRecyclerAdapter<Feedback, Feedback
             // Open details dialog
             View feedbackDialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_general_feedback, null);
             TextView txtDisplayName = feedbackDialogLayout.findViewById(R.id.txt_display_name);
+            TextView txtEmail = feedbackDialogLayout.findViewById(R.id.txt_email);
+            TextView txtSubmitted = feedbackDialogLayout.findViewById(R.id.txt_created_date);
             TextView txtRating = feedbackDialogLayout.findViewById(R.id.txt_rating);
             TextView txtDescription = feedbackDialogLayout.findViewById(R.id.txt_description);
 
+            // Set fields
             txtDisplayName.setText(model.getUserDisplayName());
+            txtEmail.setText(model.getUserEmail());
+            txtSubmitted.setText(String.format("%s", sdf.format(model.getCreatedAt().toDate())));
             txtRating.setText(String.format("%s", model.getRating()));
             txtDescription.setText(model.getDescription());
 

@@ -33,7 +33,9 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
 
@@ -53,6 +55,8 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
     private String analysisId;
     private String analysisFeedbackId;
     private String userDisplayName;
+    private String userEmail;
+    private Timestamp createdAt;
     private float rating;
     private String description;
     private boolean read;
@@ -69,6 +73,8 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
         analysisId = passedIntent.getStringExtra(AnalysisFeedbackAdapter.KEY_ANALYSIS_ID);
         analysisFeedbackId = passedIntent.getStringExtra(AnalysisFeedbackAdapter.KEY_ANALYSIS_FEEDBACK_ID);
         userDisplayName = passedIntent.getStringExtra(AnalysisFeedbackAdapter.KEY_USER_DISPLAY_NAME);
+        userEmail = passedIntent.getStringExtra(AnalysisFeedbackAdapter.KEY_USER_EMAIL);
+        createdAt = passedIntent.getParcelableExtra(AnalysisFeedbackAdapter.KEY_CREATED_AT);
         rating = passedIntent.getFloatExtra(AnalysisFeedbackAdapter.KEY_RATING, 0);
         description = passedIntent.getStringExtra(AnalysisFeedbackAdapter.KEY_DESCRIPTION);
         read = passedIntent.getBooleanExtra(AnalysisFeedbackAdapter.KEY_READ, false);
@@ -128,7 +134,7 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
                                         analysis.getProbability() == 0 ? "" : String.format("(%s%%)", (int) (analysis.getProbability() * 100))
                                 )
                         );
-                        binding.txtCatName.setText(analysis.getCatName());
+                        binding.txtCatName.setText(analysis.getCatName() == null ? "Unspecified" : analysis.getCatName());
                         Glide.with(getApplicationContext())
                                 .load(analysis.getImageUrl())
                                 .into(binding.imgDetectedCat);
@@ -189,13 +195,20 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
         binding.btnBackRecommendations.setOnClickListener(view-> finish());
 
         binding.fabDetails.setOnClickListener(view -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
+
             // Open details dialog
             View feedbackDialogLayout = LayoutInflater.from(this).inflate(R.layout.dialog_analysis_feedback, null);
             TextView txtDisplayName = feedbackDialogLayout.findViewById(R.id.txt_display_name);
+            TextView txtEmail = feedbackDialogLayout.findViewById(R.id.txt_email);
+            TextView txtSubmitted = feedbackDialogLayout.findViewById(R.id.txt_created_date);
             TextView txtRating = feedbackDialogLayout.findViewById(R.id.txt_rating);
             TextView txtDescription = feedbackDialogLayout.findViewById(R.id.txt_description);
 
+            // Set fields
             txtDisplayName.setText(userDisplayName);
+            txtEmail.setText(userEmail);
+            txtSubmitted.setText(String.format("%s", sdf.format(createdAt.toDate())));
             txtRating.setText(String.format("%s", rating));
             txtDescription.setText(description);
 

@@ -153,6 +153,8 @@ public class GeneralFeedbackActivity extends AppCompatActivity {
                                                     Filter.lessThanOrEqualTo("userDisplayName", queryText + "\uf8ff")
                                             )
                                     ))
+                                    .orderBy("read", Query.Direction.ASCENDING)
+                                    .orderBy("userDisplayName", Query.Direction.ASCENDING)
                                     .orderBy("createdAt", Query.Direction.DESCENDING);
 
                     FirestoreRecyclerOptions<Feedback> searchOptions =

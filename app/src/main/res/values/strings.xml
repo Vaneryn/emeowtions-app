@@ -279,4 +279,10 @@
     <string name="navigation_drawer_clinic_reviews_item">Navigation drawer clinic reviews item</string>
     <string name="review_dialog_message">Tell us about your experience with this clinic.</string>
     <string name="review_clinic_note">You may only review this clinic once.</string>
+    <string name="search_reviews">Search username or content</string>
+    <string name="no_reviews_found_message">No reviews found.\nTry different names, content, or search settings.</string>
+    <string name="no_existing_reviews_message">No existing reviews.\nConsider reaching out to your clients for reviews.</string>
+    <string name="submitted">Submitted</string>
+    <string name="last_read">Last Read</string>
+    <string name="review_details">Review Details</string>
 </resources>

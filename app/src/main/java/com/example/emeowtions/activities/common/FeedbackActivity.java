@@ -96,6 +96,7 @@ public class FeedbackActivity extends AppCompatActivity {
                             Feedback newFeedback = new Feedback(
                                     documentSnapshot.getId(),
                                     user.getDisplayName(),
+                                    user.getEmail(),
                                     user.getProfilePicture(),
                                     rating,
                                     description,

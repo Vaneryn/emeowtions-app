@@ -295,6 +295,7 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
                         AnalysisFeedback newAnalysisFeedback = new AnalysisFeedback(
                                 analysisId,
                                 firebaseAuthUtils.getUid(),
+                                user.getEmail(),
                                 user.getDisplayName(),
                                 user.getProfilePicture(),
                                 rating,

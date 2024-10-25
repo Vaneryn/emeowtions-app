@@ -73,8 +73,8 @@ public class RecommendationRatingAdapter extends FirestoreRecyclerAdapter<Behavi
         long likeCount = model.getLikeCount();
         long dislikeCount = model.getDislikeCount();
         long totalCount = likeCount + dislikeCount;
-        int likePercentage = totalCount == 0 ? 0 : ((int) (likeCount / totalCount) * 100);
-        int dislikePercentage = totalCount == 0 ? 0 : ((int) (dislikeCount / totalCount) * 100);
+        int likePercentage = totalCount == 0 ? 0 : ((int) (((double) likeCount / (double) totalCount) * 100));
+        int dislikePercentage = totalCount == 0 ? 0 : ((int) (((double) dislikeCount / (double) totalCount) * 100));
 
         if (model.getFactorType() == null) {
             holder.txtFactorType.setText(R.string.none);
