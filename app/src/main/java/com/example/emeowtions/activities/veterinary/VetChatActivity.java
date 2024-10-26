@@ -177,7 +177,6 @@ public class VetChatActivity extends AppCompatActivity {
         bindNavigationListeners();
         bindOnClickListeners();
         bindTextChangeListeners();
-        bindOtherListeners();
     }
 
     private void bindNavigationListeners() {
@@ -265,14 +264,6 @@ public class VetChatActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {}
-        });
-    }
-
-    private void bindOtherListeners() {
-        binding.recyclerviewChatMessages.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            if ( bottom < oldBottom) {
-                binding.recyclerviewChatMessages.postDelayed(() -> binding.recyclerviewChatMessages.smoothScrollToPosition(adapter.getItemCount()), 100);
-            }
         });
     }
 
