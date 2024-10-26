@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.adapters.AnalysisAdapter;
 import com.example.emeowtions.adapters.BodyLanguageAdapter;
+import com.example.emeowtions.adapters.ChatMessageAdapter;
 import com.example.emeowtions.adapters.RecommendedBehaviourStrategyAdapter;
 import com.example.emeowtions.databinding.ActivityViewSavedAnalysisBinding;
 import com.example.emeowtions.models.Analysis;
@@ -71,6 +72,8 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
 
     // Private variables
     private String analysisId;
+    private String previousActivityContext;
+    private String analysisAttachmentName;
     private BodyLanguageAdapter bodyLanguageAdapter;
     private RecommendedBehaviourStrategyAdapter recommendedBehaviourStrategyAdapter;
 
@@ -80,7 +83,13 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
 
         // Get intent data
         Intent passedIntent = getIntent();
-        analysisId = passedIntent.getStringExtra(AnalysisAdapter.KEY_ANALYSIS_ID);
+        previousActivityContext = passedIntent.getStringExtra(ChatMessageAdapter.KEY_ACTIVITY_CONTEXT);
+        analysisId = (previousActivityContext != null && previousActivityContext.equals("ChatActivity"))
+                ? passedIntent.getStringExtra(ChatMessageAdapter.KEY_ANALYSIS_ID)
+                : passedIntent.getStringExtra(AnalysisAdapter.KEY_ANALYSIS_ID);
+        analysisAttachmentName = (previousActivityContext != null && previousActivityContext.equals("ChatActivity"))
+                ? passedIntent.getStringExtra(ChatMessageAdapter.KEY_ANALYSIS_ATTACHMENT_NAME)
+                : null;
 
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
@@ -116,6 +125,14 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
     }
 
     private void setupUi() {
+        // If the previous context was UserChatActivity or VetChatActivity
+        // - Change title
+        // - Remove app bar action items
+        if (previousActivityContext != null && previousActivityContext.equals("ChatActivity")) {
+            binding.appBarViewSavedAnalysis.setTitle(analysisAttachmentName);
+            binding.appBarViewSavedAnalysis.getMenu().clear();
+        }
+
         // Delete dialog
         deleteDialog =
                 new MaterialAlertDialogBuilder(this)
@@ -153,7 +170,7 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
                                         analysis.getProbability() == 0 ? "" : String.format("(%s%%)", (int) (analysis.getProbability() * 100))
                                 )
                         );
-                        binding.txtCatName.setText(analysis.getCatName());
+                        binding.txtCatName.setText(analysis.getCatName() == null ? "Unspecified" : analysis.getCatName());
                         Glide.with(getApplicationContext())
                                 .load(analysis.getImageUrl())
                                 .into(binding.imgDetectedCat);
@@ -178,14 +195,16 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                                         Recommendation recommendation = queryDocumentSnapshots.getDocuments().get(0).toObject(Recommendation.class);
-                                        ArrayList<RecommendedBehaviourStrategy> stratList = new ArrayList<>(recommendation.getStrategies());
+                                        ArrayList<RecommendedBehaviourStrategy> stratList = recommendation.getStrategies() == null ? new ArrayList<>() : new ArrayList<>(recommendation.getStrategies());
 
                                         if (stratList.isEmpty()) {
                                             // No results
                                             binding.recyclerviewRecommendations.setVisibility(View.GONE);
                                             binding.layoutNoRecommendations.setVisibility(View.VISIBLE);
                                         } else {
-                                            recommendedBehaviourStrategyAdapter = new RecommendedBehaviourStrategyAdapter(stratList, this);
+                                            boolean enableRating = previousActivityContext == null || !previousActivityContext.equals("ChatActivity");
+
+                                            recommendedBehaviourStrategyAdapter = new RecommendedBehaviourStrategyAdapter(stratList, this, enableRating);
                                             binding.recyclerviewRecommendations.setAdapter(recommendedBehaviourStrategyAdapter);
                                             binding.txtRecommendationsCount.setText(String.format("%s", recommendedBehaviourStrategyAdapter.getItemCount()));
                                             binding.layoutNoRecommendations.setVisibility(View.GONE);
@@ -345,7 +364,11 @@ public class ViewSavedAnalysisActivity extends AppCompatActivity {
 
     private void disableMenuItem(int itemId) {
         MenuItem menuItem = binding.appBarViewSavedAnalysis.getMenu().findItem(itemId);
-        menuItem.setEnabled(false);
-        menuItem.setIconTintList(ContextCompat.getColorStateList(this, R.color.gray_200));
+
+        // In the event that menuItem is removed for Analysis Attachment view
+        if (menuItem != null) {
+            menuItem.setEnabled(false);
+            menuItem.setIconTintList(ContextCompat.getColorStateList(this, R.color.gray_200));
+        }
     }
 }

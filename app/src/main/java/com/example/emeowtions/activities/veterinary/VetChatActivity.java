@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -24,9 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.AnalysisAdapter;
 import com.example.emeowtions.adapters.ChatAdapter;
 import com.example.emeowtions.adapters.ChatMessageAdapter;
 import com.example.emeowtions.databinding.ActivityVetChatBinding;
+import com.example.emeowtions.models.Analysis;
 import com.example.emeowtions.models.Chat;
 import com.example.emeowtions.models.ChatMessage;
 import com.example.emeowtions.models.User;
@@ -34,6 +39,7 @@ import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -57,6 +63,7 @@ public class VetChatActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private CollectionReference chatsRef;
     private CollectionReference chatMessagesRef;
+    private CollectionReference analysesRef;
 
     // Layout variables
     private ActivityVetChatBinding binding;
@@ -82,6 +89,7 @@ public class VetChatActivity extends AppCompatActivity {
         usersRef = db.collection("users");
         chatsRef = db.collection("chats");
         chatMessagesRef = chatsRef.document(chatId).collection("chatMessages");
+        analysesRef = db.collection("analyses");
 
         // Get ViewBinding and set content view
         binding = ActivityVetChatBinding.inflate(getLayoutInflater());
@@ -108,7 +116,7 @@ public class VetChatActivity extends AppCompatActivity {
         // Update unread count and read status
         chatsRef.document(chatId)
                 .update(
-                        "vetReadCount", 0,
+                        "vetUnreadCount", 0,
                         "readByVet", true
                 )
                 .addOnSuccessListener(unused -> {
@@ -190,7 +198,51 @@ public class VetChatActivity extends AppCompatActivity {
     private void bindOnClickListeners() {
         // Attach analysis report
         binding.btnAttach.setOnClickListener(view -> {
-            // Add new "analysis" type ChatMessage
+            // Inflate analysis attachment dialog
+            View analysisDialogLayout = LayoutInflater.from(this).inflate(R.layout.dialog_attach_analysis, null);
+            RecyclerView recyclerviewAnalysisList = analysisDialogLayout.findViewById(R.id.recyclerview_analysis_list);
+            LinearLayout lytNoAnalyses = analysisDialogLayout.findViewById(R.id.layout_no_analyses_dialog);
+
+            // Show dialog
+            MaterialAlertDialogBuilder analysisDialogBuilder =
+                    new MaterialAlertDialogBuilder(this)
+                            .setView(analysisDialogLayout)
+                            .setTitle(R.string.attachment)
+                            .setMessage(R.string.attach_an_analysis_report_of_your_cat)
+                            .setPositiveButton(R.string.close, (dialogInterface, i) -> {
+                                // Unused
+                            });
+
+            AlertDialog attachmentDialog = analysisDialogBuilder.create();
+            attachmentDialog.show();
+
+            // Query analyses options
+            Query analysesQuery = analysesRef
+                    .whereEqualTo("uid", firebaseAuthUtils.getUid())
+                    .whereEqualTo("deleted", false)
+                    .orderBy("createdAt", Query.Direction.DESCENDING);
+
+            FirestoreRecyclerOptions<Analysis> analysesOptions =
+                    new FirestoreRecyclerOptions.Builder<Analysis>()
+                            .setQuery(analysesQuery, Analysis.class)
+                            .setLifecycleOwner(this)
+                            .build();
+
+            AnalysisAdapter analysisAdapter = new AnalysisAdapter(analysesOptions, this, chatId, attachmentDialog);
+            recyclerviewAnalysisList.setAdapter(analysisAdapter);
+            analysisAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (analysisAdapter.getItemCount() == 0) {
+                        recyclerviewAnalysisList.setVisibility(View.GONE);
+                        lytNoAnalyses.setVisibility(View.VISIBLE);
+                    } else {
+                        recyclerviewAnalysisList.setVisibility(View.VISIBLE);
+                        lytNoAnalyses.setVisibility(View.GONE);
+                    }
+                }
+            });
         });
 
         // Send message

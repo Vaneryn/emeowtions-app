@@ -312,4 +312,7 @@
     <string name="attach_analysis">Attach Analysis</string>
     <string name="no_messages">No Messages</string>
     <string name="no_chat_messages_message">No existing messages in this chat.\nSend a message and start chatting!</string>
+    <string name="attach_analysis_report">Attach Analysis Report</string>
+    <string name="attachment">Attachment</string>
+    <string name="attach_an_analysis_report_of_your_cat">Attach an analysis report of your cat.</string>
 </resources>
