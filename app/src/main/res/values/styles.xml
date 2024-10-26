@@ -105,4 +105,12 @@
         <item name="boxCornerRadiusBottomStart">40dp</item>
         <item name="boxCornerRadiusBottomEnd">40dp</item>
     </style>
+    <style name="messageBox" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxCornerRadiusTopStart">30dp</item>
+        <item name="boxCornerRadiusTopEnd">30dp</item>
+        <item name="boxCornerRadiusBottomStart">30dp</item>
+        <item name="boxCornerRadiusBottomEnd">30dp</item>
+    </style>
 </resources>

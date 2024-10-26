@@ -157,6 +157,7 @@ public class VeterinaryStaffManagementFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         if (userAdapter != null)
             userAdapter.notifyDataSetChanged();
     }

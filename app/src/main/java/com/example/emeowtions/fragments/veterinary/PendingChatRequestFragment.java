@@ -1,6 +1,7 @@
 package com.example.emeowtions.fragments.veterinary;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,10 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.emeowtions.R;
-import com.example.emeowtions.activities.veterinary.ClinicInboxActivity;
-import com.example.emeowtions.adapters.ChatAdapter;
-import com.example.emeowtions.databinding.FragmentVetChatBinding;
-import com.example.emeowtions.models.Chat;
+import com.example.emeowtions.adapters.ChatRequestAdapter;
+import com.example.emeowtions.databinding.FragmentPendingChatRequestBinding;
+import com.example.emeowtions.models.ChatRequest;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
@@ -27,26 +27,26 @@ import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+public class PendingChatRequestFragment extends Fragment {
 
-public class VetChatFragment extends Fragment {
-
-    private static final String TAG = "VetChatFragment";
+    private static final String TAG = "PendingChatRequestFragment";
+    private SharedPreferences sharedPreferences;
 
     // Firebase variables
-    private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
-    private CollectionReference chatsRef;
+    private CollectionReference chatRequestsRef;
 
     // Layout variables
-    private FragmentVetChatBinding binding;
+    private FragmentPendingChatRequestBinding binding;
 
     // Private variables
-    private FirestoreRecyclerOptions<Chat> options;
-    private ChatAdapter adapter;
+    private String veterinaryClinicId;
+    private FirestoreRecyclerOptions<ChatRequest> options;
+    private ChatRequestAdapter adapter;
     private boolean isInitialLoad;
 
-    public VetChatFragment() {
-        super(R.layout.fragment_vet_chat);
+    public PendingChatRequestFragment() {
+        super(R.layout.fragment_pending_chat_request);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class VetChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentVetChatBinding.inflate(inflater, container, false);
+        binding = FragmentPendingChatRequestBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -65,13 +65,15 @@ public class VetChatFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Shared preferences
+        sharedPreferences = getContext().getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        veterinaryClinicId = sharedPreferences.getString("veterinaryClinicId", null);
+
         // Initialize Firebase service instances
-        firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
-        chatsRef = db.collection("chats");
+        chatRequestsRef = db.collection("chatRequests");
 
-        setupUi();
         loadData();
         bindListeners();
     }
@@ -79,37 +81,28 @@ public class VetChatFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (adapter != null)
             adapter.notifyDataSetChanged();
-    }
-
-    private void setupUi() {
-
     }
 
     private void loadData() {
         isInitialLoad = true;
 
-        LifecycleOwner lifecycleOwner = this;
+        Query query = chatRequestsRef
+                .whereEqualTo("veterinaryClinicId", veterinaryClinicId)
+                .whereEqualTo("accepted", false)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .orderBy("updatedAt", Query.Direction.DESCENDING);
 
-        // Query options
-        Query query =
-                chatsRef.whereEqualTo("vetId", firebaseAuthUtils.getUid())
-                        .orderBy("readByVet", Query.Direction.ASCENDING)
-                        .orderBy("updatedAt", Query.Direction.DESCENDING)
-                        .orderBy("userDisplayName", Query.Direction.ASCENDING);
+        options = new FirestoreRecyclerOptions.Builder<ChatRequest>()
+                .setQuery(query, ChatRequest.class)
+                .setLifecycleOwner(this)
+                .build();
 
-        options = new FirestoreRecyclerOptions.Builder<Chat>()
-                        .setQuery(query, Chat.class)
-                        .setLifecycleOwner(lifecycleOwner)
-                        .build();
+        adapter = new ChatRequestAdapter(options, getContext());
 
-        // Create and set adapter
-        adapter = new ChatAdapter(options, getContext());
-        binding.recyclerviewChats.setAdapter(adapter);
+        binding.recyclerviewChatRequests.setAdapter(adapter);
 
-        // Listen for changes to options
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
@@ -125,8 +118,8 @@ public class VetChatFragment extends Fragment {
     }
 
     private void bindOnClickListeners() {
-        binding.btnGoToClinicInbox.setOnClickListener(view -> {
-            startActivity(new Intent(getContext(), ClinicInboxActivity.class));
+        binding.btnBack.setOnClickListener(view -> {
+            getActivity().finish();
         });
 
         binding.btnClearSearch.setOnClickListener(view -> {
@@ -152,22 +145,33 @@ public class VetChatFragment extends Fragment {
                 } else {
                     isInitialLoad = false;
 
-                    Query searchQuery =
-                            chatsRef.whereEqualTo("vetId", firebaseAuthUtils.getUid())
-                                    .where(Filter.or(
-                                            Filter.equalTo("userDisplayName", queryText),
-                                            Filter.and(
-                                                    Filter.greaterThanOrEqualTo("userDisplayName", queryText),
-                                                    Filter.lessThanOrEqualTo("userDisplayName", queryText + "\uf8ff")
+                    Query searchQuery = chatRequestsRef
+                            .whereEqualTo("veterinaryClinicId", veterinaryClinicId)
+                            .whereEqualTo("accepted", false)
+                            .where(
+                                    Filter.or(
+                                            Filter.or(
+                                                    Filter.equalTo("userDisplayName", queryText),
+                                                    Filter.and(
+                                                            Filter.greaterThanOrEqualTo("userDisplayName", queryText),
+                                                            Filter.lessThanOrEqualTo("userDisplayName", queryText + "\uf8ff")
+                                                    )
+                                            ),
+                                            Filter.or(
+                                                    Filter.equalTo("description", queryText),
+                                                    Filter.and(
+                                                            Filter.greaterThanOrEqualTo("description", queryText),
+                                                            Filter.lessThanOrEqualTo("description", queryText + "\uf8ff")
+                                                    )
                                             )
-                                    ))
-                                    .orderBy("readByVet", Query.Direction.ASCENDING)
-                                    .orderBy("updatedAt", Query.Direction.DESCENDING)
-                                    .orderBy("userDisplayName", Query.Direction.ASCENDING);
+                                    )
+                            )
+                            .orderBy("createdAt", Query.Direction.DESCENDING)
+                            .orderBy("updatedAt", Query.Direction.DESCENDING);
 
-                    FirestoreRecyclerOptions<Chat> searchOptions =
-                            new FirestoreRecyclerOptions.Builder<Chat>()
-                                    .setQuery(searchQuery, Chat.class)
+                    FirestoreRecyclerOptions<ChatRequest> searchOptions =
+                            new FirestoreRecyclerOptions.Builder<ChatRequest>()
+                                    .setQuery(searchQuery, ChatRequest.class)
                                     .setLifecycleOwner(lifecycleOwner)
                                     .build();
 
@@ -182,13 +186,13 @@ public class VetChatFragment extends Fragment {
 
     private void updateResultsView(boolean isInitialLoad) {
         // Reset visibility
-        binding.layoutNoChats.setVisibility(View.GONE);
+        binding.layoutNoChatRequests.setVisibility(View.GONE);
         binding.layoutNoResults.setVisibility(View.GONE);
 
         // Determine no existing items or no query results
         if (adapter == null || adapter.getItemCount() == 0) {
             if (isInitialLoad)
-                binding.layoutNoChats.setVisibility(View.VISIBLE);
+                binding.layoutNoChatRequests.setVisibility(View.VISIBLE);
             else
                 binding.layoutNoResults.setVisibility(View.VISIBLE);
         }

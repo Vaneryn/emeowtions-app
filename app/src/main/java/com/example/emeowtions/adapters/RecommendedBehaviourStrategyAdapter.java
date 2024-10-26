@@ -48,8 +48,9 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
 
     private ArrayList<RecommendedBehaviourStrategy> stratList;
     private Context context;
+    private boolean enableRating;
 
-    public RecommendedBehaviourStrategyAdapter(ArrayList<RecommendedBehaviourStrategy> stratList, Context context) {
+    public RecommendedBehaviourStrategyAdapter(ArrayList<RecommendedBehaviourStrategy> stratList, Context context, boolean enableRating) {
         this.sharedPreferences = context.getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
         this.currentUserRole = this.sharedPreferences.getString("role", "User");
         this.db = FirebaseFirestore.getInstance();
@@ -57,6 +58,7 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
         this.recommendationsRef = db.collection("recommendations");
         this.stratList = stratList;
         this.context = context;
+        this.enableRating = enableRating;
     }
 
     @NonNull
@@ -95,6 +97,9 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
             }
         }
 
+        // Set rating buttons opacity
+        setRatingButtonsOpacity(stratHolder, this.enableRating);
+
         // Populate text fields
         if (item.getFactorType() == null) {
             stratHolder.txtFactorType.setText(R.string.none);
@@ -132,7 +137,7 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
 
         // Listeners for like and dislike button
         // Only allow usage of these buttons in User view of saved analysis
-        if (context instanceof ViewSavedAnalysisActivity) {
+        if (context instanceof ViewSavedAnalysisActivity && enableRating) {
             // Like
             stratHolder.imgLike.setOnClickListener(view -> {
                 toggleButtons(stratHolder.imgLike, stratHolder.imgDislike);
@@ -439,6 +444,18 @@ public class RecommendedBehaviourStrategyAdapter extends RecyclerView.Adapter<Re
     private void toggleButtons(ImageView btnOn, ImageView btnOff) {
         btnOn.setImageTintList(ContextCompat.getColorStateList(context, R.color.primary_400));
         btnOff.setImageTintList(ContextCompat.getColorStateList(context, R.color.gray_200));
+    }
+
+    private void setRatingButtonsOpacity(RecommendedBehaviourStrategyHolder holder, boolean enabled) {
+        float alpha = 0.6f;
+
+        if (enabled) {
+            holder.imgLike.setAlpha(1f);
+            holder.imgDislike.setAlpha(1f);
+        } else {
+            holder.imgLike.setAlpha(alpha);
+            holder.imgDislike.setAlpha(alpha);
+        }
     }
 
     @Override

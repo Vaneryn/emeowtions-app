@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="75dp"
+    android:layout_marginBottom="@dimen/margin_small_2"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/background_chat_bubble_outgoing"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/padding_small_2"
+        android:paddingLeft="@dimen/padding_medium_1"
+        android:paddingRight="@dimen/padding_large">
+
+        <TextView
+            android:id="@+id/txt_message"
+            style="@style/BodyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small_2"
+            android:textColor="@color/white"
+            tools:text="Lorem ipsum dolor sit amet"/>
+
+        <TextView
+            android:id="@+id/txt_datetime"
+            style="@style/BodyText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_100"
+            android:layout_gravity="end"
+            tools:text="1/11/2000  0:00 AM"/>
+
+    </LinearLayout>
+
+</LinearLayout>

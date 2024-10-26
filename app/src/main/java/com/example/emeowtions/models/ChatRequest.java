@@ -3,6 +3,7 @@ package com.example.emeowtions.models;
 import com.google.firebase.Timestamp;
 
 public class ChatRequest {
+    private String veterinaryClinicId;
     private String uid;
     private String userEmail;
     private String userDisplayName;
@@ -14,7 +15,8 @@ public class ChatRequest {
 
     public ChatRequest() {}
 
-    public ChatRequest(String uid, String userEmail, String userDisplayName, String userPfpUrl, String description, boolean accepted, Timestamp createdAt, Timestamp updatedAt) {
+    public ChatRequest(String veterinaryClinicId, String uid, String userEmail, String userDisplayName, String userPfpUrl, String description, boolean accepted, Timestamp createdAt, Timestamp updatedAt) {
+        this.veterinaryClinicId = veterinaryClinicId;
         this.uid = uid;
         this.userEmail = userEmail;
         this.userDisplayName = userDisplayName;
@@ -23,6 +25,10 @@ public class ChatRequest {
         this.accepted = accepted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public String getVeterinaryClinicId() {
+        return veterinaryClinicId;
     }
 
     public String getUid() {
@@ -55,6 +61,10 @@ public class ChatRequest {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setVeterinaryClinicId(String veterinaryClinicId) {
+        this.veterinaryClinicId = veterinaryClinicId;
     }
 
     public void setUid(String uid) {
@@ -92,7 +102,8 @@ public class ChatRequest {
     @Override
     public String toString() {
         return "ChatRequest{" +
-                "uid='" + uid + '\'' +
+                "veterinaryClinicId='" + veterinaryClinicId + '\'' +
+                ", uid='" + uid + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +

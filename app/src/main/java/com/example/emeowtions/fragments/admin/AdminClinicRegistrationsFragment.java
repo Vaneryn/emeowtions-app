@@ -104,6 +104,7 @@ public class AdminClinicRegistrationsFragment extends Fragment {
             // Error
             if (error != null) {
                 Log.w(TAG, "onViewCreated: Failed to retrieve pending veterinaryClinicRegistrations", error);
+                return;
             }
             // Success
             if (values.isEmpty()) {

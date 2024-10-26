@@ -45,6 +45,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class VetMainActivity extends AppCompatActivity {
 
@@ -58,6 +59,7 @@ public class VetMainActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private CollectionReference vetsRef;
     private CollectionReference vetStaffRef;
+    private CollectionReference chatsRef;
 
     // Layout variables
     public ActivityVetMainBinding binding;
@@ -85,6 +87,7 @@ public class VetMainActivity extends AppCompatActivity {
         usersRef = db.collection("users");
         vetsRef = db.collection("veterinarians");
         vetStaffRef = db.collection("veterinaryStaff");
+        chatsRef = db.collection("chats");
 
         //region Shared preferences
         // Get user role
@@ -213,12 +216,12 @@ public class VetMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.vet_profile_item) {
                 startActivity(new Intent(this, ProfileActivity.class));
-            } else if (itemId == R.id.vet_feedback_item) {
-                startActivity(new Intent(this, FeedbackActivity.class));
             } else if (itemId == R.id.vet_clinic_inbox_item) {
                 startActivity(new Intent(this, ClinicInboxActivity.class));
             } else if (itemId == R.id.vet_clinic_reviews_item) {
                 startActivity(new Intent(this, ClinicReviewsActivity.class));
+            } else if (itemId == R.id.vet_feedback_item) {
+                startActivity(new Intent(this, FeedbackActivity.class));
             }
 
             return false;
@@ -228,7 +231,10 @@ public class VetMainActivity extends AppCompatActivity {
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.action_add_staff) {
+            if (itemId == R.id.action_clinic_inbox) {
+                // VetChatFragment
+                startActivity(new Intent(this, ClinicInboxActivity.class));
+            } else if (itemId == R.id.action_add_staff) {
                 // VetStaffFragment
                 startActivity(new Intent(this, AddStaffActivity.class));
             } else if (itemId == R.id.action_edit_vet_clinic_profile) {
@@ -264,6 +270,7 @@ public class VetMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.vet_chat_item) {
                 binding.topAppBar.setTitle(R.string.chat);
+                binding.topAppBar.inflateMenu(R.menu.top_app_bar_vet_chat);
                 changeFragment(vetChatFragment, toReplace);
                 return true;
             } else if (itemId == R.id.vet_staff_item) {
@@ -311,6 +318,25 @@ public class VetMainActivity extends AppCompatActivity {
                         loadProfilePicture(user.getProfilePicture(), imgDrawerProfilePicture);
                         txtDrawerDisplayName.setText(user.getDisplayName());
                         txtDrawerEmail.setText(firebaseAuthUtils.getFirebaseEmail());
+                    }
+                });
+
+        // Retrieve unread chats
+        chatsRef.whereEqualTo("vetId", firebaseAuthUtils.getUid())
+                .whereEqualTo("readByVet", false)
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onCreate: Failed to listen on Chat changes", error);
+                        return;
+                    }
+                    // Success
+                    if (values.isEmpty()) {
+                        // Update Chat badge: no unread chats
+                        binding.vetBottomNavigation.removeBadge(R.id.vet_chat_item);
+                    } else {
+                        // Update Chat badge: Existing unread chats
+                        binding.vetBottomNavigation.getOrCreateBadge(R.id.vet_chat_item).setNumber(values.size());
                     }
                 });
         //endregion

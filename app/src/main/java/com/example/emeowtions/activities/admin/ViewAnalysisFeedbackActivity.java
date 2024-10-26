@@ -166,7 +166,7 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
                                             binding.recyclerviewRecommendations.setVisibility(View.GONE);
                                             binding.layoutNoRecommendations.setVisibility(View.VISIBLE);
                                         } else {
-                                            rbsAdapter = new RecommendedBehaviourStrategyAdapter(stratList, this);
+                                            rbsAdapter = new RecommendedBehaviourStrategyAdapter(stratList, this, false);
                                             binding.recyclerviewRecommendations.setAdapter(rbsAdapter);
                                             binding.txtRecommendationsCount.setText(String.format("%s", rbsAdapter.getItemCount()));
                                             binding.layoutNoRecommendations.setVisibility(View.GONE);
