@@ -19,11 +19,11 @@
         <activity
             android:name=".activities.user.UserChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.veterinary.VetChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.user.ConsultationRequestsActivity"
             android:exported="false" />

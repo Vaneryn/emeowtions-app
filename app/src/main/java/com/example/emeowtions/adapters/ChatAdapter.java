@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.user.UserChatActivity;
 import com.example.emeowtions.activities.user.UserMainActivity;
 import com.example.emeowtions.activities.veterinary.VetChatActivity;
 import com.example.emeowtions.activities.veterinary.VetMainActivity;
@@ -78,12 +79,23 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat, ChatAdapter.Chat
             }
 
             holder.txtDisplayName.setText(model.getVetDisplayName());
-            holder.txtLatestMessageText.setText(model.getLatestMessageText());
+            holder.txtLatestMessageText.setText(
+                    model.getLatestMessageSenderUid() != null && model.getLatestMessageSenderUid().equals(firebaseAuthUtils.getUid())
+                    ? String.format("You: %s", model.getLatestMessageText())
+                    : model.getLatestMessageText()
+            );
             holder.txtLatestMessageDate.setText(String.format("%s", sdfDate.format(model.getUpdatedAt().toDate())));
             holder.txtUnreadCount.setText(String.format("%s", model.getUserUnreadCount()));
 
             // Set style based on read status
             toggleChatStyle(holder, model.isReadByUser());
+
+            // body onClick: open UserChatActivity
+            holder.body.setOnClickListener(view -> {
+                Intent intent = new Intent(context, UserChatActivity.class);
+                intent.putExtra(KEY_CHAT_ID, getSnapshots().getSnapshot(position).getId());
+                context.startActivity(intent);
+            });
         } else if (context instanceof VetMainActivity) {
             // Veterinarian or VeterinaryStaff
             // Populate data
@@ -96,7 +108,11 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat, ChatAdapter.Chat
             }
 
             holder.txtDisplayName.setText(model.getUserDisplayName());
-            holder.txtLatestMessageText.setText(model.getLatestMessageText());
+            holder.txtLatestMessageText.setText(
+                    model.getLatestMessageSenderUid() != null && model.getLatestMessageSenderUid().equals(firebaseAuthUtils.getUid())
+                            ? String.format("You: %s", model.getLatestMessageText())
+                            : model.getLatestMessageText()
+            );
             holder.txtLatestMessageDate.setText(String.format("%s", sdfDate.format(model.getUpdatedAt().toDate())));
             holder.txtUnreadCount.setText(String.format("%s", model.getVetUnreadCount()));
 

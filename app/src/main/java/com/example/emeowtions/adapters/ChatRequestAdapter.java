@@ -228,6 +228,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
                                 1,
                                 false,
                                 "Request accepted. Start chatting!",
+                                null,
                                 Timestamp.now(),
                                 Timestamp.now()
                         );

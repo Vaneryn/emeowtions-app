@@ -80,7 +80,7 @@
                 android:layout_gravity="end"
                 android:background="@drawable/background_rounded_corners"
                 android:textColor="@color/white"
-                android:paddingHorizontal="@dimen/padding_small_1"
+                android:paddingHorizontal="6dp"
                 tools:text="1" />
 
         </LinearLayout>

@@ -18,12 +18,13 @@ public class Chat {
     private int userUnreadCount;
     private boolean readByUser;
     private String latestMessageText;
+    private String latestMessageSenderUid;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public Chat() {}
 
-    public Chat(String chatRequestId, String vetId, String vetDisplayName, String vetPfpUrl, int vetUnreadCount, boolean readByVet, String userId, String userDisplayName, String userPfpUrl, int userUnreadCount, boolean readByUser, String latestMessageText, Timestamp createdAt, Timestamp updatedAt) {
+    public Chat(String chatRequestId, String vetId, String vetDisplayName, String vetPfpUrl, int vetUnreadCount, boolean readByVet, String userId, String userDisplayName, String userPfpUrl, int userUnreadCount, boolean readByUser, String latestMessageText, String latestMessageSenderUid, Timestamp createdAt, Timestamp updatedAt) {
         this.chatRequestId = chatRequestId;
         this.vetId = vetId;
         this.vetDisplayName = vetDisplayName;
@@ -36,6 +37,7 @@ public class Chat {
         this.userUnreadCount = userUnreadCount;
         this.readByUser = readByUser;
         this.latestMessageText = latestMessageText;
+        this.latestMessageSenderUid = latestMessageSenderUid;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -86,6 +88,10 @@ public class Chat {
 
     public String getLatestMessageText() {
         return latestMessageText;
+    }
+
+    public String getLatestMessageSenderUid() {
+        return latestMessageSenderUid;
     }
 
     public Timestamp getCreatedAt() {
@@ -144,6 +150,10 @@ public class Chat {
         this.latestMessageText = latestMessageText;
     }
 
+    public void setLatestMessageSenderUid(String latestMessageSenderUid) {
+        this.latestMessageSenderUid = latestMessageSenderUid;
+    }
+
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
@@ -159,14 +169,15 @@ public class Chat {
                 ", vetId='" + vetId + '\'' +
                 ", vetDisplayName='" + vetDisplayName + '\'' +
                 ", vetPfpUrl='" + vetPfpUrl + '\'' +
-                ", vetUnreadCount='" + vetUnreadCount + '\'' +
+                ", vetUnreadCount=" + vetUnreadCount +
                 ", readByVet=" + readByVet +
                 ", userId='" + userId + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", userPfpUrl='" + userPfpUrl + '\'' +
-                ", userUnreadCount='" + userUnreadCount + '\'' +
+                ", userUnreadCount=" + userUnreadCount +
                 ", readByUser=" + readByUser +
                 ", latestMessageText='" + latestMessageText + '\'' +
+                ", latestMessageSenderUid='" + latestMessageSenderUid + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

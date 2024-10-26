@@ -308,4 +308,8 @@
     <string name="message">Message</string>
     <string name="view_consultation_requests">View Consultation Requests</string>
     <string name="chat_request_already_accepted_message">This request has already been accepted by another staff. Do you want to re-accept and create a new chat with this user?</string>
+    <string name="send">Send</string>
+    <string name="attach_analysis">Attach Analysis</string>
+    <string name="no_messages">No Messages</string>
+    <string name="no_chat_messages_message">No existing messages in this chat.\nSend a message and start chatting!</string>
 </resources>
