@@ -1,6 +1,8 @@
 package com.example.emeowtions.activities.user;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,27 +36,43 @@ import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class UserMainActivity extends AppCompatActivity {
 
     private static final String TAG = "UserMainActivity";
+    private SharedPreferences sharedPreferences;
+
+    // Layout variables
     private ActivityUserMainBinding userMainBinding;
     private Fragment selectedFragment;
 
+    // Firebase variables
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
+    private CollectionReference chatsRef;
+
+    // Private variables
+    private String currentUserRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Shared preferences
+        sharedPreferences = getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        currentUserRole = sharedPreferences.getString("role", "User");
 
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
+        chatsRef = db.collection("chats");
 
         // Get ViewBinding and set content view
         userMainBinding = ActivityUserMainBinding.inflate(getLayoutInflater());
@@ -70,6 +89,18 @@ public class UserMainActivity extends AppCompatActivity {
         });
 
         //region UI setups
+        // Remove menu items that are not supposed to be used by Veterinarians or VeterinaryStaff
+        if (currentUserRole.equals(Role.VETERINARIAN.getTitle()) || currentUserRole.equals(Role.VETERINARY_STAFF.getTitle())) {
+            userMainBinding.drawerNavigationView.getMenu().removeItem(R.id.consultation_requests_item);
+            userMainBinding.userBottomNavigation.getMenu().removeItem(R.id.chat_item);
+        }
+        // Only show view switchers to authorized roles
+        if (currentUserRole.equals(Role.SUPER_ADMIN.getTitle()) || currentUserRole.equals(Role.ADMIN.getTitle())) {
+            userMainBinding.txtSwitchAdminView.setVisibility(View.VISIBLE);
+        } else if (currentUserRole.equals(Role.VETERINARY_STAFF.getTitle()) || currentUserRole.equals(Role.VETERINARIAN.getTitle())) {
+            userMainBinding.txtSwitchVetView.setVisibility(View.VISIBLE);
+        }
+
         // Fix bottom navigation broken padding
         userMainBinding.userBottomNavigation.setOnApplyWindowInsetsListener(null);
         userMainBinding.userBottomNavigation.setPadding(0,0,0,0);
@@ -162,6 +193,8 @@ public class UserMainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ProfileActivity.class));
             } else if (itemId == R.id.saved_analyses_item) {
                 startActivity(new Intent(this, SavedAnalysesActivity.class));
+            } else if (itemId == R.id.consultation_requests_item) {
+                startActivity(new Intent(this, ConsultationRequestsActivity.class));
             }  else if (itemId == R.id.guide_item) {
                 startActivity(new Intent(this, GuidesActivity.class));
             } else if (itemId == R.id.feedback_item) {
@@ -175,7 +208,7 @@ public class UserMainActivity extends AppCompatActivity {
         userMainBinding.topAppBar.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.consultation_requests) {
+            if (itemId == R.id.action_view_consultation_requests) {
                 // UserChatListFragment
                 startActivity(new Intent(this, ConsultationRequestsActivity.class));
             } else if (itemId == R.id.action_add_cat) {
@@ -235,7 +268,7 @@ public class UserMainActivity extends AppCompatActivity {
         TextView txtDrawerDisplayName = drawerHeader.findViewById(R.id.txt_drawer_username);
         TextView txtDrawerEmail = drawerHeader.findViewById(R.id.txt_drawer_email);
 
-        // Load user information in drawer header / View switching management
+        // Load user information in drawer header
         usersRef.document(firebaseAuthUtils.getUid())
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
@@ -249,14 +282,25 @@ public class UserMainActivity extends AppCompatActivity {
                         loadProfilePicture(user.getProfilePicture(), imgDrawerProfilePicture);
                         txtDrawerDisplayName.setText(user.getDisplayName());
                         txtDrawerEmail.setText(firebaseAuthUtils.getFirebaseEmail());
+                    }
+                });
 
-                        // Only show view switcher to authorized roles
-                        String role = user.getRole();
-                        if (role.equals(Role.SUPER_ADMIN.getTitle()) || role.equals(Role.ADMIN.getTitle())) {
-                            userMainBinding.txtSwitchAdminView.setVisibility(View.VISIBLE);
-                        } else if (role.equals(Role.VETERINARY_STAFF.getTitle()) || role.equals(Role.VETERINARIAN.getTitle())) {
-                            userMainBinding.txtSwitchVetView.setVisibility(View.VISIBLE);
-                        }
+        // Retrieve unread chats
+        chatsRef.whereEqualTo("userId", firebaseAuthUtils.getUid())
+                .whereEqualTo("readByUser", false)
+                .addSnapshotListener((values, error) -> {
+                    // Error
+                    if (error != null) {
+                        Log.w(TAG, "onCreate: Failed to listen on Chat changes", error);
+                        return;
+                    }
+                    // Success
+                    if (values.isEmpty()) {
+                        // Update Chat badge: no unread chats
+                        userMainBinding.userBottomNavigation.removeBadge(R.id.chat_item);
+                    } else {
+                        // Update Chat badge: Existing unread chats
+                        userMainBinding.userBottomNavigation.getOrCreateBadge(R.id.chat_item).setNumber(values.size());
                     }
                 });
         //endregion

@@ -15,134 +15,38 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/app_bar_clinic_inbox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:title="@string/clinic_inbox"
             app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Searchbar and Options -->
-    <LinearLayout
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/padding_screen_edge"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginBottom="@dimen/margin_small_2">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtfield_searchbar"
-            style="@style/searchBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/search_reviews"
-            android:layout_weight="1"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_searchbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSearchOptions"
-            style="@style/Widget.Material3.Button.IconButton"
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/baseline_tune_24"
-            app:iconSize="30sp"
-            app:iconTint="@color/gray_500" />
+            android:text="@string/pending" />
 
-    </LinearLayout>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accepted" />
 
-    <!-- Results -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_chat_requests"
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- Tab Fragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/clinic_inbox_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_screen_edge"
-        android:requiresFadingEdge="vertical"
-        android:visibility="visible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <!-- No ChatRequests -->
-    <LinearLayout
-        android:id="@+id/layout_no_chat_requests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_screen_edge"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/baseline_reviews_24"
-            app:tint="@color/gray_400" />
-        <TextView
-            style="@style/HeadingText2.SemiBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/no_consultation_requests" />
-        <TextView
-            style="@style/BodyText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium_1"
-            android:textAlignment="center"
-            android:text="No existing consultation requests.\nConsider checking your clinic details, veterinarian details, and reviews." />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="50dp"
-            android:text="@string/back" />
-
-    </LinearLayout>
-
-    <!-- No Results -->
-    <LinearLayout
-        android:id="@+id/layout_no_results"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_screen_edge"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/baseline_search_off_24"
-            app:tint="@color/gray_400" />
-
-        <TextView
-            style="@style/HeadingText2.SemiBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/results_not_found" />
-
-        <TextView
-            style="@style/BodyText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium_1"
-            android:textAlignment="center"
-            android:text="@string/no_chat_requests_message" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_clear_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="50dp"
-            android:text="@string/clear_all" />
-
-    </LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_pending_chat_request" />
 
 </LinearLayout>

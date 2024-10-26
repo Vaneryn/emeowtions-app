@@ -1,6 +1,7 @@
 package com.example.emeowtions.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
+import com.example.emeowtions.activities.veterinary.VetChatActivity;
 import com.example.emeowtions.models.Chat;
 import com.example.emeowtions.models.ChatRequest;
 import com.example.emeowtions.models.User;
@@ -39,11 +41,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, ChatRequestAdapter.ChatRequestHolder> {
 
     private static final String TAG = "ChatRequestAdapter";
+    public static final String KEY_CHAT_ID = "chatId";
+
     private Context context;
 
     private FirebaseAuthUtils firebaseAuthUtils;
@@ -67,11 +72,9 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
         SimpleDateFormat sdfDate = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
         SimpleDateFormat sdfDatetime = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
 
-        // Set style based on accepted status
-        if (model.isAccepted()) {
-            setViewOpacity(holder, 0.7f);
-        } else {
-            setViewOpacity(holder, 1);
+        // Set styles based on accepted state
+        if (!model.isAccepted()) {
+            holder.txtAcceptedDate.setVisibility(View.GONE);
         }
 
         // Populate chat request data
@@ -151,24 +154,43 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
         Log.e(TAG, "onError: ", e);
     }
 
-    // Checks if the vet has already accepted this request before (ie. the vet already has a chat with this user)
+    // Checks if THIS vet or ANOTHER vet has already accepted this request before (ie. the vet already has a chat with this user)
     private void processRequest(String chatRequestId, ChatRequest chatRequest) {
-        chatsRef.whereEqualTo("vetId", firebaseAuthUtils.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    // COMPLETE
-                    if (queryDocumentSnapshots.isEmpty()) {
-                        // No existing Chat
-                        acceptRequest(chatRequestId, chatRequest);
-                    } else {
-                        // Existing Chat
-                        redirectToChat();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "processRequest: Failed to retrieve Chat data", e);
-                    Toast.makeText(context, "Unable to accept request, please try again later.", Toast.LENGTH_SHORT).show();
-                });
+        // Check if request is already accepted
+        if (chatRequest.isAccepted()) {
+            // Already accepted
+            // Check if it was THIS vet or ANOTHER vet that accepted it
+            chatsRef.whereEqualTo("chatRequestId", chatRequestId)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        // COMPLETE
+                        boolean thisVet = false;
+                        String chatId = null;
+
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                            Chat chat = documentSnapshot.toObject(Chat.class);
+                            if (chat.getVetId().equals(firebaseAuthUtils.getUid())) {
+                                thisVet = true;
+                                chatId = documentSnapshot.getId();
+                            }
+                        }
+
+                        if (thisVet) {
+                            // THIS vet
+                            redirectToChat(chatId, true);
+                        } else {
+                            // ANOTHER vet
+                            reacceptRequest(chatRequestId, chatRequest);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "processRequest: Failed to retrieve Chat data", e);
+                        Toast.makeText(context, "Unable to accept request, please try again later.", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            // Not yet accepted
+            acceptRequest(chatRequestId, chatRequest);
+        }
     }
 
     // Updates ChatRequest to accepted
@@ -176,7 +198,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
         chatRequestsRef.document(chatRequestId)
                 .update("accepted", true, "updatedAt", Timestamp.now())
                 .addOnSuccessListener(unused -> {
-                    //createChat(chatRequestId, chatRequest);
+                    createChat(chatRequestId, chatRequest);
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "acceptRequest: Failed to accept Request", e);
@@ -203,9 +225,9 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
                                 chatRequest.getUid(),
                                 chatRequest.getUserDisplayName(),
                                 chatRequest.getUserPfpUrl(),
-                                0,
-                                true,
-                                "",
+                                1,
+                                false,
+                                "Request accepted. Start chatting!",
                                 Timestamp.now(),
                                 Timestamp.now()
                         );
@@ -213,7 +235,8 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
                         // Add new Chat
                         chatsRef.add(newChat)
                                 .addOnSuccessListener(documentReference -> {
-                                    // TODO: Redirect to new chat
+                                    // COMPLETE
+                                    redirectToChat(documentReference.getId(), false);
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.w(TAG, "createChat: Failed to add new Chat", e);
@@ -227,25 +250,41 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
                 });
     }
 
-    // Redirect to existing Chat on confirmation
-    private void redirectToChat() {
-        MaterialAlertDialogBuilder redirectDialog =
+    // Handles accepting request if it has already been accepted by another vet
+    private void reacceptRequest(String chatRequestId, ChatRequest chatRequest) {
+        MaterialAlertDialogBuilder reacceptDialog =
                 new MaterialAlertDialogBuilder(context)
                         .setTitle(R.string.existing_chat)
-                        .setMessage(R.string.redirect_existing_chat_message)
+                        .setMessage(R.string.chat_request_already_accepted_message)
                         .setNegativeButton(R.string.no, (dialogInterface, i) -> {})
                         .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                            // TODO: Redirect to Chat
+                            createChat(chatRequestId, chatRequest);
                         });
+
+        reacceptDialog.show();
     }
 
-    private void setViewOpacity(ChatRequestHolder holder, float alpha) {
-        holder.body.setAlpha(alpha);
-        holder.imgPfp.setAlpha(alpha);
-        holder.txtDisplayName.setAlpha(alpha);
-        holder.txtDescription.setAlpha(alpha);
-        holder.txtSubmittedDate.setAlpha(alpha);
-        holder.txtAcceptedDate.setAlpha(alpha);
+    // Redirect to existing Chat
+    private void redirectToChat(String chatId, boolean existing) {
+        if (existing) {
+            MaterialAlertDialogBuilder redirectDialog =
+                    new MaterialAlertDialogBuilder(context)
+                            .setTitle(R.string.existing_chat)
+                            .setMessage(R.string.redirect_existing_chat_message)
+                            .setNegativeButton(R.string.no, (dialogInterface, i) -> {
+                            })
+                            .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                                Intent newIntent = new Intent(context, VetChatActivity.class);
+                                newIntent.putExtra(KEY_CHAT_ID, chatId);
+                                context.startActivity(newIntent);
+                            });
+
+            redirectDialog.show();
+        } else {
+            Intent newIntent = new Intent(context, VetChatActivity.class);
+            newIntent.putExtra(KEY_CHAT_ID, chatId);
+            context.startActivity(newIntent);
+        }
     }
 
     private void loadImage(Drawable icon, ImageView imageView) {

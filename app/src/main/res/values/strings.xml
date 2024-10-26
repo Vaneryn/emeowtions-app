@@ -301,4 +301,11 @@
     <string name="no_existing_chats_vet_message">No existing chats.\nCheck clinic inbox?</string>
     <string name="go_to_clinic_inbox">Go to Clinic Inbox</string>
     <string name="no_chats_results_message">No chats found.\nTry different usernames or search settings.</string>
+    <string name="no_accepted_requests">No Accepted Requests</string>
+    <string name="no_accepted_requests_message">No accepted requests.\nCheck your pending consultation requests.</string>
+    <string name="no_pending_requests">No Pending Requests</string>
+    <string name="no_pending_requests_message">No pending consultation requests.\nYou\'re all caught up!</string>
+    <string name="message">Message</string>
+    <string name="view_consultation_requests">View Consultation Requests</string>
+    <string name="chat_request_already_accepted_message">This request has already been accepted by another staff. Do you want to re-accept and create a new chat with this user?</string>
 </resources>

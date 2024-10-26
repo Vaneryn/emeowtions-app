@@ -16,7 +16,7 @@
             android:contentDescription="@string/navigation_drawer_saved_analyses_item"
             app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/consultation_requests"
+            android:id="@+id/consultation_requests_item"
             android:icon="@drawable/baseline_pending_24"
             android:title="@string/consultation_requests"
             android:checkable="true"
