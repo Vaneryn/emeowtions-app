@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -58,6 +59,7 @@ public class UserChatActivity extends AppCompatActivity {
 
     // Layout variables
     private ActivityUserChatBinding binding;
+    private boolean isAtBottom;
 
     // Private variables
     private String chatId;
@@ -118,6 +120,7 @@ public class UserChatActivity extends AppCompatActivity {
     }
 
     private void setupUi() {
+        isAtBottom = false;
         toggleSendButton(false);
     }
 
@@ -177,6 +180,7 @@ public class UserChatActivity extends AppCompatActivity {
         bindNavigationListeners();
         bindOnClickListeners();
         bindTextChangeListeners();
+        bindOtherListeners();
     }
 
     private void bindNavigationListeners() {
@@ -270,9 +274,31 @@ public class UserChatActivity extends AppCompatActivity {
     }
 
     private void bindOtherListeners() {
-        binding.recyclerviewChatMessages.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            if (bottom < oldBottom) {
-                binding.recyclerviewChatMessages.postDelayed(() -> binding.recyclerviewChatMessages.smoothScrollToPosition(adapter.getItemCount()), 100);
+        // Keep track of scroll position
+        binding.recyclerviewChatMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // Check if the user is at the bottom of the RecyclerView
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                    int itemCount = layoutManager.getItemCount();
+
+                    // If the last item is visible, set isAtBottom to true
+                    isAtBottom = (lastVisibleItemPosition == itemCount - 1);
+                }
+            }
+        });
+
+        binding.edtMessage.setOnClickListener(view -> {
+            scrollToBottomIfAtBottom();
+        });
+
+        binding.edtMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                scrollToBottomIfAtBottom();
             }
         });
     }
@@ -297,6 +323,14 @@ public class UserChatActivity extends AppCompatActivity {
         } else {
             binding.recyclerviewChatMessages.setVisibility(View.VISIBLE);
             binding.recyclerviewChatMessages.scrollToPosition(adapter.getItemCount() - 1);
+        }
+    }
+
+    private void scrollToBottomIfAtBottom() {
+        if (isAtBottom) {
+            binding.recyclerviewChatMessages.postDelayed(() -> {
+                binding.recyclerviewChatMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+            }, 250);
         }
     }
 }

@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -58,6 +60,7 @@ public class VetChatActivity extends AppCompatActivity {
 
     // Layout variables
     private ActivityVetChatBinding binding;
+    private boolean isAtBottom;
 
     // Private variables
     private String chatId;
@@ -177,6 +180,7 @@ public class VetChatActivity extends AppCompatActivity {
         bindNavigationListeners();
         bindOnClickListeners();
         bindTextChangeListeners();
+        bindOtherListeners();
     }
 
     private void bindNavigationListeners() {
@@ -267,6 +271,36 @@ public class VetChatActivity extends AppCompatActivity {
         });
     }
 
+    private void bindOtherListeners() {
+        // Keep track of scroll position
+        binding.recyclerviewChatMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // Check if the user is at the bottom of the RecyclerView
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                    int itemCount = layoutManager.getItemCount();
+
+                    // If the last item is visible, set isAtBottom to true
+                    isAtBottom = (lastVisibleItemPosition == itemCount - 1);
+                }
+            }
+        });
+
+        binding.edtMessage.setOnClickListener(view -> {
+            scrollToBottomIfAtBottom();
+        });
+
+        binding.edtMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                scrollToBottomIfAtBottom();
+            }
+        });
+    }
+
     private void toggleSendButton(boolean enabled) {
         binding.btnSend.setEnabled(enabled);
         binding.btnSend.setIconTint(ContextCompat.getColorStateList(this, R.color.white));
@@ -287,6 +321,15 @@ public class VetChatActivity extends AppCompatActivity {
         } else {
             binding.recyclerviewChatMessages.setVisibility(View.VISIBLE);
             binding.recyclerviewChatMessages.scrollToPosition(adapter.getItemCount() - 1);
+            isAtBottom = true;
+        }
+    }
+
+    private void scrollToBottomIfAtBottom() {
+        if (isAtBottom) {
+            binding.recyclerviewChatMessages.postDelayed(() -> {
+                binding.recyclerviewChatMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+            }, 250);
         }
     }
 }
