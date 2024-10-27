@@ -315,4 +315,6 @@
     <string name="attach_analysis_report">Attach Analysis Report</string>
     <string name="attachment">Attachment</string>
     <string name="attach_an_analysis_report_of_your_cat">Attach an analysis report of your cat.</string>
+    <string name="no_consult_request_results_message">No consultation requests found.\nTry different clinic names or search settings.</string>
+    <string name="request_description">Request Description</string>
 </resources>

@@ -3,37 +3,23 @@ package com.example.emeowtions.activities.veterinary;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.emeowtions.R;
-import com.example.emeowtions.adapters.ChatRequestAdapter;
 import com.example.emeowtions.databinding.ActivityClinicInboxBinding;
 import com.example.emeowtions.fragments.veterinary.AcceptedChatRequestFragment;
 import com.example.emeowtions.fragments.veterinary.PendingChatRequestFragment;
-import com.example.emeowtions.models.ChatRequest;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class ClinicInboxActivity extends AppCompatActivity {
 

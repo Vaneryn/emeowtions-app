@@ -26,14 +26,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_1"
-                android:text="@string/user"/>
+                android:text="@string/name"/>
             <TextView
-                android:id="@+id/txt_display_name"
+                android:id="@+id/txt_clinic_name"
                 style="@style/BodyText2.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_1"
-                android:text="John Smith"/>
+                tools:text="Neko Inu Veterinary Centre"/>
 
         </LinearLayout>
 
@@ -51,12 +51,12 @@
                 android:layout_marginBottom="@dimen/margin_small_1"
                 android:text="@string/email"/>
             <TextView
-                android:id="@+id/txt_email"
+                android:id="@+id/txt_clinic_email"
                 style="@style/BodyText2.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small_1"
-                android:text="john.smith@gmail.com"/>
+                android:text="nekoinu@gmail.com"/>
 
         </LinearLayout>
 
@@ -127,14 +127,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small_1"
-            android:text="@string/description"/>
+            android:text="@string/request_description"/>
         <TextView
             android:id="@+id/txt_description"
             style="@style/BodyText2.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small_1"
-            android:text="Lorem ipsum dolor sit amet"/>
+            tools:text="Lorem ipsum dolor sit amet"/>
     </LinearLayout>
 
 </LinearLayout>

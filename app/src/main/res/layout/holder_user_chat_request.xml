@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small_1"
+    android:clipToPadding="false"
+    android:orientation="horizontal"
+    android:padding="1dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/body"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small_2"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_clinic_logo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="@dimen/margin_small_2"
+                android:background="@color/primary_200"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_local_hospital_24"
+                app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
+                app:strokeColor="@color/gray_200"
+                app:strokeWidth="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_clinic_name"
+                    style="@style/BodyText2.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    tools:text="Neko Inu Veterinary Centre" />
+
+                <TextView
+                    android:id="@+id/txt_description"
+                    style="@style/BodyText3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    tools:text="Lorem ipsum dolor sit amet" />
+
+                <TextView
+                    android:id="@+id/txt_submitted_date"
+                    style="@style/BodyText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/gray_300"
+                    tools:text="Submitted: 0 Jan 2000, 0:00 am" />
+
+                <TextView
+                    android:id="@+id/txt_accepted_date"
+                    style="@style/BodyText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/primary_300"
+                    tools:text="Accepted: 0 Jan 2000, 0:00 am" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
