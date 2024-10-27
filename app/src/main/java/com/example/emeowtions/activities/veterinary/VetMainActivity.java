@@ -254,9 +254,7 @@ public class VetMainActivity extends AppCompatActivity {
             binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
             // Reset top app bar
             binding.topAppBar.getMenu().clear();
-            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.gray_700));
-            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray_700));
+            togglePrimaryTheme(false);
             // Top app bar scaling
             float scale = getResources().getDisplayMetrics().density;
             binding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -266,6 +264,7 @@ public class VetMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.vet_dashboard_item) {
                 binding.topAppBar.setTitle(R.string.dashboard);
+                togglePrimaryTheme(true);
                 changeFragment(vetDashboardFragment, toReplace);
                 return true;
             } else if (itemId == R.id.vet_chat_item) {
@@ -281,15 +280,8 @@ public class VetMainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.vet_clinic_profile_item) {
                 binding.topAppBar.setTitle(R.string.clinic_profile);
-
-                // Set background
-                binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
-                // Update top app bar style
                 binding.topAppBar.inflateMenu(R.menu.top_app_bar_vet_clinic_profile);
-                binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
-                binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.white));
-                binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
-
+                togglePrimaryTheme(true);
                 changeFragment(vetClinicProfileFragment, toReplace);
                 return true;
             }
@@ -423,5 +415,23 @@ public class VetMainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void togglePrimaryTheme(boolean enabled) {
+        if (enabled) {
+            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+        } else {
+            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.gray_700));
+            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray_700));
+        }
+    }
+
+    public void selectBottomNavigationMenuItem(int itemId) {
+        binding.vetBottomNavigation.setSelectedItemId(itemId);
     }
 }

@@ -367,7 +367,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                         showConsultDialog();
                     } else {
                         // Existing request
-                        showConsultConfirmDialog();
+                        showDuplicateRequestDialog();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -376,15 +376,14 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                 });
     }
 
-    // Opens request consultation dialog if user has already requested before
-    private void showConsultConfirmDialog() {
+    // Notify the user that
+    private void showDuplicateRequestDialog() {
         MaterialAlertDialogBuilder confirmConsultDialog =
                 new MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.request_consultation)
-                        .setMessage(R.string.request_consultation_duplicate_confirmation)
-                        .setNegativeButton(R.string.no, (dialogInterface, i) -> {})
-                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                            showConsultDialog();
+                        .setMessage(R.string.request_consultation_duplicate)
+                        .setPositiveButton(R.string.close, (dialogInterface, i) -> {
+                            // Do nothing
                         });
 
         confirmConsultDialog.show();

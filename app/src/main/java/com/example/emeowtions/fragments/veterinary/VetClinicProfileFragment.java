@@ -131,7 +131,6 @@ public class VetClinicProfileFragment extends Fragment {
 
         //region Load Data
         isLogoChanged = false;
-        toggleEditMode(false);
 
         clinicsRef.document(veterinaryClinicId)
                 .addSnapshotListener((value, error) -> {
@@ -158,6 +157,7 @@ public class VetClinicProfileFragment extends Fragment {
                         binding.txtBannerName.setText(originalName);
                         binding.txtBannerJoinedDate.setText(String.format("Joined %s", sdf.format(clinic.getCreatedAt().toDate())));
                         binding.txtBannerUpdatedDate.setText(String.format("Updated %s", sdf.format(clinic.getUpdatedAt().toDate())));
+                        binding.txtRating.setText(String.format("%s", clinic.getAverageRating()));
 
                         // Load fields
                         binding.edtName.setText(originalName);

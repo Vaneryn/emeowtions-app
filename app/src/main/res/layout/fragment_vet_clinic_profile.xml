@@ -96,7 +96,7 @@
                 style="@style/BodyText3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small_2"
+                android:layout_marginTop="@dimen/margin_small_1"
                 android:gravity="end"
                 android:textColor="@color/white"
                 tools:text="Joined 1 Jan 2000, 0:00 AM" />
@@ -106,10 +106,34 @@
                 style="@style/BodyText3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small_2"
+                android:layout_marginTop="@dimen/margin_small_1"
                 android:gravity="end"
                 android:textColor="@color/white"
                 tools:text="Updated 1 Jan 2000, 0:00 AM" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_2"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="@dimen/margin_small_1"
+                    android:src="@drawable/baseline_star_half_24"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/txt_rating"
+                    style="@style/BodyText2.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="0" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -148,7 +172,6 @@
                         android:enabled="false"
                         android:hint="@string/name"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="100"
                         app:endIconMode="clear_text">
 
@@ -226,7 +249,6 @@
                         android:enabled="false"
                         android:hint="@string/address"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="200"
                         app:endIconMode="clear_text">
 
@@ -258,7 +280,6 @@
                         android:enabled="false"
                         android:hint="@string/description"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="300"
                         app:endIconMode="clear_text">
 
