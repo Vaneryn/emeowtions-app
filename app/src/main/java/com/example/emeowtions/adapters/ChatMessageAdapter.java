@@ -171,10 +171,10 @@ public class ChatMessageAdapter extends FirestoreRecyclerAdapter<ChatMessage, Ch
                 // Outgoing Text
                 return VIEW_TYPE_OUTGOING_ANALYSIS_ATTACHMENT;
             }
-        } else {
-            // Default
-            return VIEW_TYPE_OUTGOING_TEXT;
         }
+
+        // Default
+        return VIEW_TYPE_OUTGOING_TEXT;
     }
 
     private void loadImage(Drawable icon, ImageView imageView) {

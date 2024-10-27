@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_small_2"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small_1"
-    android:clipToPadding="false">
+    android:paddingVertical="@dimen/padding_small_1">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/clinic_holder_body"
@@ -32,7 +34,7 @@
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/img_clinic_logo"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_height="100dp"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/baseline_local_hospital_24" />
 
@@ -55,7 +57,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:lines="3"
+                        android:lines="2"
                         android:ellipsize="end"
                         tools:text="Neko Inu Veterinary Centre" />
 

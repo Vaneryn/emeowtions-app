@@ -11,14 +11,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/body"
-        style="@style/Widget.Material3.CardView.Outlined"
+        style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="@color/white"
-        app:strokeColor="@color/gray_100"
-        app:strokeWidth="1dp">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,13 +24,13 @@
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_pfp"
+                android:id="@+id/img_clinic_logo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="@dimen/margin_small_2"
                 android:background="@color/primary_200"
                 android:scaleType="centerCrop"
-                android:src="@drawable/baseline_person_24"
+                android:src="@drawable/baseline_local_hospital_24"
                 app:shapeAppearanceOverlay="@style/roundedRectangleImageView"
                 app:strokeColor="@color/gray_200"
                 app:strokeWidth="1dp" />
@@ -43,34 +40,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_clinic_name"
+                    style="@style/BodyText2.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txt_display_name"
-                        style="@style/BodyText2.Medium"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginBottom="@dimen/margin_small_1"
-                        tools:text="John Smith" />
-                    <ImageView
-                        android:id="@+id/img_star"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/baseline_star_half_24"
-                        app:tint="@color/rating"/>
-                    <TextView
-                        android:id="@+id/txt_rating"
-                        style="@style/BodyText2.Medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/gray_400"
-                        tools:text="5.0"/>
-
-                </LinearLayout>
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    tools:text="Neko Inu Veterinary Centre" />
 
                 <TextView
                     android:id="@+id/txt_description"
@@ -84,13 +60,22 @@
                     tools:text="Lorem ipsum dolor sit amet" />
 
                 <TextView
-                    android:id="@+id/txt_created_date"
+                    android:id="@+id/txt_submitted_date"
                     style="@style/BodyText3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:textColor="@color/gray_300"
-                    tools:text="0 Jan 2000" />
+                    tools:text="Submitted: 0 Jan 2000, 0:00 am" />
+
+                <TextView
+                    android:id="@+id/txt_accepted_date"
+                    style="@style/BodyText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/primary_300"
+                    tools:text="Accepted: 0 Jan 2000, 0:00 am" />
 
             </LinearLayout>
 

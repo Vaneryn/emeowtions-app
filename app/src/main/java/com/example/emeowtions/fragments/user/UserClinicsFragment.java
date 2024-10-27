@@ -81,6 +81,8 @@ public class UserClinicsFragment extends Fragment {
         // Query options
         Query clinicQuery =
                 clinicsRef.whereEqualTo("deleted", false)
+                        .orderBy("averageRating", Query.Direction.DESCENDING)
+                        .orderBy("name", Query.Direction.DESCENDING)
                         .orderBy("updatedAt", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<VeterinaryClinic> options =
@@ -90,7 +92,7 @@ public class UserClinicsFragment extends Fragment {
                         .build();
 
         // Create and set adapter
-        clinicAdapter = new VeterinaryClinicAdapter(options, getContext());
+        clinicAdapter = new VeterinaryClinicAdapter(options, getContext(), VeterinaryClinicAdapter.VIEW_TYPE_NORMAL);
         binding.recyclerviewClinics.setAdapter(clinicAdapter);
 
         // Listen for changes to options

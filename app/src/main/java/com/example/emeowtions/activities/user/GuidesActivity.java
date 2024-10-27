@@ -1,5 +1,6 @@
 package com.example.emeowtions.activities.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -10,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.emeowtions.R;
+import com.example.emeowtions.adapters.CarouselDiscoverItemAdapter;
 import com.example.emeowtions.databinding.ActivityGuidesBinding;
 import com.example.emeowtions.fragments.user.GuideBodyLanguageFragment;
 import com.example.emeowtions.fragments.user.GuideEmotionAnalysisFragment;
@@ -33,9 +35,17 @@ public class GuidesActivity extends AppCompatActivity {
     private GuideRecommendationsFragment reccFragment;
     private Fragment selectedFragment;
 
+    private int selectedTabPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get intent data
+        Intent passedIntent = getIntent();
+        if (passedIntent != null) {
+            selectedTabPosition = passedIntent.getIntExtra(CarouselDiscoverItemAdapter.KEY_POSITION, 0);
+        }
 
         // Initialize Firebase service instances
         firebaseAuthUtils = new FirebaseAuthUtils();
@@ -57,6 +67,8 @@ public class GuidesActivity extends AppCompatActivity {
         setupUi();
         loadData();
         bindListeners();
+
+        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(selectedTabPosition));
     }
 
     @Override

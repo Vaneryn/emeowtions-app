@@ -35,15 +35,20 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
 
     private static final String TAG = "VeterinaryClinicAdapter";
 
+    public static final int VIEW_TYPE_NORMAL = 0;
+    public static final int VIEW_TYPE_TOP = 1;
+
     // Public variables
     public static final String KEY_CLINIC_ID = "clinicId";
 
     // Private variables
     private Context context;
+    private int viewType;
 
-    public VeterinaryClinicAdapter(FirestoreRecyclerOptions<VeterinaryClinic> options, Context context) {
+    public VeterinaryClinicAdapter(FirestoreRecyclerOptions<VeterinaryClinic> options, Context context, int viewType) {
         super(options);
         this.context = context;
+        this.viewType = viewType;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
                 .load(model.getLogoUrl())
                 .into(holder.imgClinicLogo);
         holder.txtName.setText(model.getName());
+        holder.txtRating.setText(String.format("%s", model.getAverageRating()));
         holder.txtAddress.setText(model.getAddress());
 
         // Redirect to UserClinicProfileActivity (User) or AdminClinicProfileActivity (Admin)
@@ -76,8 +82,18 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
     @NonNull
     @Override
     public VeterinaryClinicAdapter.VeterinaryClinicHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.holder_clinic, parent, false);
+        View view;
+
+        // Check the type of holder
+        if (viewType == VIEW_TYPE_NORMAL) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_clinic, parent, false);
+        } else if (viewType == VIEW_TYPE_TOP) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_top_clinic, parent, false);
+        } else {
+            // Default
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_clinic, parent, false);
+        }
+
         return new VeterinaryClinicHolder(view);
     }
 
@@ -93,6 +109,18 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
         Log.e(TAG, e.getMessage());
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (this.viewType == VIEW_TYPE_NORMAL) {
+            return VIEW_TYPE_NORMAL;
+        } else if (this.viewType == VIEW_TYPE_TOP) {
+            return VIEW_TYPE_TOP;
+        }
+
+        // Default
+        return VIEW_TYPE_NORMAL;
+    }
+
     private void loadImage(Drawable icon, ImageView imageView) {
         Glide.with(context)
                 .load(icon)
@@ -103,6 +131,7 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
         MaterialCardView clinicHolderBody;
         ImageView imgClinicLogo;
         TextView txtName;
+        TextView txtRating;
         TextView txtAddress;
 
         public VeterinaryClinicHolder(@NonNull View itemView) {
@@ -110,6 +139,7 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
             clinicHolderBody = itemView.findViewById(R.id.clinic_holder_body);
             imgClinicLogo = itemView.findViewById(R.id.img_clinic_logo);
             txtName = itemView.findViewById(R.id.txt_name);
+            txtRating = itemView.findViewById(R.id.txt_rating);
             txtAddress = itemView.findViewById(R.id.txt_address);
         }
     }

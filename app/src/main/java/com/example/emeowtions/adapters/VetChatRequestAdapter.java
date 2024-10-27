@@ -26,25 +26,18 @@ import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
-public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, ChatRequestAdapter.ChatRequestHolder> {
+public class VetChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, VetChatRequestAdapter.VetChatRequestHolder> {
 
     private static final String TAG = "ChatRequestAdapter";
     public static final String KEY_CHAT_ID = "chatId";
@@ -57,7 +50,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
     private CollectionReference chatRequestsRef;
     private CollectionReference chatsRef;
 
-    public ChatRequestAdapter(FirestoreRecyclerOptions<ChatRequest> options, Context context) {
+    public VetChatRequestAdapter(FirestoreRecyclerOptions<ChatRequest> options, Context context) {
         super(options);
         this.context = context;
         this.firebaseAuthUtils = new FirebaseAuthUtils();
@@ -68,7 +61,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ChatRequestHolder holder, int position, @NonNull ChatRequest model) {
+    protected void onBindViewHolder(@NonNull VetChatRequestHolder holder, int position, @NonNull ChatRequest model) {
         SimpleDateFormat sdfDate = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
         SimpleDateFormat sdfDatetime = new SimpleDateFormat("d MMM yyyy, h:mm a", Locale.getDefault());
 
@@ -98,7 +91,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
         // When chat request is clicked
         holder.body.setOnClickListener(view -> {
             // Open details dialog
-            View chatRequestDialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_chat_request, null);
+            View chatRequestDialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_vet_chat_request, null);
             TextView txtDisplayName = chatRequestDialogLayout.findViewById(R.id.txt_display_name);
             TextView txtEmail = chatRequestDialogLayout.findViewById(R.id.txt_email);
             TextView txtSubmittedDate = chatRequestDialogLayout.findViewById(R.id.txt_submitted_date);
@@ -137,9 +130,9 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
 
     @NonNull
     @Override
-    public ChatRequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_chat_request, parent, false);
-        return new ChatRequestHolder(view);
+    public VetChatRequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_vet_chat_request, parent, false);
+        return new VetChatRequestHolder(view);
     }
 
     @Override
@@ -294,7 +287,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
                 .into(imageView);
     }
 
-    protected class ChatRequestHolder extends RecyclerView.ViewHolder {
+    protected class VetChatRequestHolder extends RecyclerView.ViewHolder {
         MaterialCardView body;
         ImageView imgPfp;
         TextView txtDisplayName;
@@ -302,7 +295,7 @@ public class ChatRequestAdapter extends FirestoreRecyclerAdapter<ChatRequest, Ch
         TextView txtSubmittedDate;
         TextView txtAcceptedDate;
 
-        public ChatRequestHolder(@NonNull View itemView) {
+        public VetChatRequestHolder(@NonNull View itemView) {
             super(itemView);
             body = itemView.findViewById(R.id.body);
             imgPfp = itemView.findViewById(R.id.img_pfp);

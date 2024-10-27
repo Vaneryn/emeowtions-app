@@ -64,7 +64,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/padding_screen_edge"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="100dp"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_medium_1"
             android:textAlignment="center"
-            android:text="No existing chats.\nCheck pending consultation requests?" />
+            android:text="@string/no_existing_chats_user_message" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_view_consultation_requests"

@@ -14,14 +14,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/padding_screen_edge">
+            android:orientation="vertical">
 
             <!-- Discover -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:layout_marginBottom="@dimen/margin_large"
                 android:orientation="vertical">
 
                 <TextView
@@ -30,23 +29,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_1"
-                    android:text="@string/discover" />
+                    android:paddingHorizontal="@dimen/padding_screen_edge"
+                    android:text="@string/discover"
+                    android:textSize="@dimen/text_medium_3" />
 
-                <com.google.android.material.carousel.MaskableFrameLayout
-                    android:id="@+id/carousel_discover"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_carousel"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
-
-                    <ImageView
-                        android:id="@+id/img_discover"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop" />
-
-                </com.google.android.material.carousel.MaskableFrameLayout>
+                    android:layout_height="150dp"
+                    android:layout_marginHorizontal="@dimen/margin_medium_1"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager" />
 
             </LinearLayout>
 
@@ -54,7 +48,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_medium_1"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:paddingHorizontal="@dimen/padding_screen_edge"
                 android:orientation="vertical">
 
                 <TextView
@@ -63,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small_1"
-                    android:text="@string/features" />
+                    android:text="@string/features"
+                    android:textSize="@dimen/text_medium_3" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -83,6 +79,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_2"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -103,9 +101,10 @@
                             <TextView
                                 style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingVertical="@dimen/padding_medium_1"
                                 android:text="@string/emotions" />
 
                         </LinearLayout>
@@ -120,6 +119,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_small_1"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -140,9 +141,10 @@
                             <TextView
                                 style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingVertical="@dimen/padding_medium_1"
                                 android:text="@string/clinics" />
 
                         </LinearLayout>
@@ -168,6 +170,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_2"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -188,9 +192,10 @@
                             <TextView
                                 style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingVertical="@dimen/padding_medium_1"
                                 android:text="@string/chat" />
 
                         </LinearLayout>
@@ -205,6 +210,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_small_1"
                         android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -225,9 +232,10 @@
                             <TextView
                                 style="@style/BodyText1.Medium"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingVertical="@dimen/padding_medium_1"
                                 android:text="@string/my_cats" />
 
                         </LinearLayout>
@@ -242,31 +250,45 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_medium_1"
+                android:layout_marginBottom="@dimen/margin_large"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txt_hdr_top_clinics"
-                    style="@style/HeadingText2.SemiBold"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/top_clinics" />
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/padding_screen_edge">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txt_hdr_top_clinics"
+                        style="@style/HeadingText2.SemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/top_clinics"
+                        android:textSize="@dimen/text_medium_3" />
 
-            <!-- Messages -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/margin_medium_1"
-                android:orientation="vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_go_to_clinics"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="46dp"
+                        android:layout_height="30dp"
+                        app:icon="@drawable/baseline_arrow_forward_ios_24"
+                        app:iconSize="16dp"/>
 
-                <TextView
-                    android:id="@+id/txt_hdr_messages"
-                    style="@style/HeadingText2.SemiBold"
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_top_clinics"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/messages" />
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/padding_screen_edge"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </LinearLayout>
 

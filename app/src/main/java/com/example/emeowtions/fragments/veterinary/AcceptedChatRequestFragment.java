@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.emeowtions.R;
-import com.example.emeowtions.adapters.ChatRequestAdapter;
+import com.example.emeowtions.adapters.VetChatRequestAdapter;
 import com.example.emeowtions.databinding.FragmentAcceptedChatRequestBinding;
 import com.example.emeowtions.models.ChatRequest;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -41,7 +41,7 @@ public class AcceptedChatRequestFragment extends Fragment {
     // Private variables
     private String veterinaryClinicId;
     private FirestoreRecyclerOptions<ChatRequest> options;
-    private ChatRequestAdapter adapter;
+    private VetChatRequestAdapter adapter;
     private boolean isInitialLoad;
 
     public AcceptedChatRequestFragment() {
@@ -98,7 +98,7 @@ public class AcceptedChatRequestFragment extends Fragment {
                 .setLifecycleOwner(this)
                 .build();
 
-        adapter = new ChatRequestAdapter(options, getContext());
+        adapter = new VetChatRequestAdapter(options, getContext());
 
         binding.recyclerviewChatRequests.setAdapter(adapter);
 
