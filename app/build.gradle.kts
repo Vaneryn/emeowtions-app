@@ -71,6 +71,8 @@ dependencies {
 
     implementation(libs.opencsv)
 
+    implementation(libs.mpandroidchart)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

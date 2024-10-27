@@ -148,7 +148,6 @@
                         android:enabled="false"
                         android:hint="@string/name"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="100"
                         app:endIconMode="clear_text">
 
@@ -226,7 +225,6 @@
                         android:enabled="false"
                         android:hint="@string/address"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="200"
                         app:endIconMode="clear_text">
 
@@ -258,7 +256,6 @@
                         android:enabled="false"
                         android:hint="@string/description"
                         android:textColorHint="@color/gray_400"
-                        app:counterEnabled="true"
                         app:counterMaxLength="300"
                         app:endIconMode="clear_text">
 

@@ -318,4 +318,12 @@
     <string name="no_consult_request_results_message">No consultation requests found.\nTry different clinic names or search settings.</string>
     <string name="request_description">Request Description</string>
     <string name="no_existing_chats_user_message">No existing chats.\nRequest consultation from clinics to start a chat.</string>
+    <string name="welcome">Welcome,</string>
+    <string name="shortcuts">Shortcuts</string>
+    <string name="clinic_overview">Clinic Overview</string>
+    <string name="unread_chats">Unread Chats</string>
+    <string name="pending_requests">Pending Requests</string>
+    <string name="overview">Overview</string>
+    <string name="unread_reviews">Unread Reviews</string>
+    <string name="staff_members">Staff Members</string>
 </resources>

@@ -131,7 +131,6 @@ public class VetClinicProfileFragment extends Fragment {
 
         //region Load Data
         isLogoChanged = false;
-        toggleEditMode(false);
 
         clinicsRef.document(veterinaryClinicId)
                 .addSnapshotListener((value, error) -> {
