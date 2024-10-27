@@ -287,7 +287,7 @@
     <string name="review_details">Review Details</string>
     <string name="request_consultation">Request Consultation</string>
     <string name="request_consultation_instruction">Briefly describe your cat\'s condition or concerns so the clinic can prepare for your consultation. Include any relevant issues or questions you have.</string>
-    <string name="request_consultation_duplicate_confirmation">You have already requested consultation from this clinic. Request again?</string>
+    <string name="request_consultation_duplicate">You have already requested consultation from this clinic. Please check if it is pending or accepted.</string>
     <string name="no_consultation_requests">No Consultation Requests</string>
     <string name="no_chat_requests_message">No consultation requests found.\nTry different usernames, content, or search settings.</string>
     <string name="accepted">Accepted</string>
@@ -326,4 +326,7 @@
     <string name="overview">Overview</string>
     <string name="unread_reviews">Unread Reviews</string>
     <string name="staff_members">Staff Members</string>
+    <string name="analytics">Analytics</string>
+    <string name="requests">Requests</string>
+    <string name="clinic_ratings">Clinic Ratings</string>
 </resources>
