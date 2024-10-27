@@ -317,4 +317,5 @@
     <string name="attach_an_analysis_report_of_your_cat">Attach an analysis report of your cat.</string>
     <string name="no_consult_request_results_message">No consultation requests found.\nTry different clinic names or search settings.</string>
     <string name="request_description">Request Description</string>
+    <string name="no_existing_chats_user_message">No existing chats.\nRequest consultation from clinics to start a chat.</string>
 </resources>

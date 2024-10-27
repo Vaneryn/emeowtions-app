@@ -34,6 +34,7 @@ import com.example.emeowtions.fragments.user.UserHomeFragment;
 import com.example.emeowtions.fragments.user.UserMyCatsFragment;
 import com.example.emeowtions.models.User;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -398,5 +399,9 @@ public class UserMainActivity extends AppCompatActivity {
                     .load(profilePictureUrl)
                     .into(imageView);
         }
+    }
+
+    public BottomNavigationView getBottomNavigationView() {
+        return userMainBinding.userBottomNavigation;
     }
 }

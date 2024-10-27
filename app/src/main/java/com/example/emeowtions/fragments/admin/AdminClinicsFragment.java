@@ -88,7 +88,7 @@ public class AdminClinicsFragment extends Fragment {
                         .build();
 
         // Create and set adapter
-        clinicAdapter = new VeterinaryClinicAdapter(options, getContext());
+        clinicAdapter = new VeterinaryClinicAdapter(options, getContext(), VeterinaryClinicAdapter.VIEW_TYPE_NORMAL);
         binding.recyclerviewClinics.setAdapter(clinicAdapter);
 
         // Listen for changes to options
