@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,7 @@ import com.example.emeowtions.adapters.CatAdapter;
 import com.example.emeowtions.databinding.ActivityCatProfileBinding;
 import com.example.emeowtions.fragments.user.UserMyCatsFragment;
 import com.example.emeowtions.models.Cat;
+import com.example.emeowtions.utils.BreedUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class CatProfileActivity extends AppCompatActivity {
@@ -146,6 +149,13 @@ public class CatProfileActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                             discardChanges();
                         });
+
+        // Load breed dropdown menu options
+        BreedUtils breedUtils = new BreedUtils(this);
+        List<String> breedList = breedUtils.getBreedNames();
+        breedList.add(getString(R.string.unspecified));
+        ArrayAdapter<String> breedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, breedList);
+        catProfileBinding.edmBreed.setAdapter(breedAdapter);
         //endregion
 
         //region Load data

@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import com.example.emeowtions.activities.user.EmotionAnalysisActivity;
 import com.example.emeowtions.models.Cat;
 import com.example.emeowtions.utils.BoundingBox;
 import com.example.emeowtions.utils.EmotionClassifier;
+import com.example.emeowtions.utils.EmotionUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.example.emeowtions.utils.ObjectDetector;
 import com.example.emeowtions.R;
@@ -228,6 +230,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             isCatDetected = false;
 
             toggleDetectionText(false);
+            toggleEmotionText(false);
             binding.uploadOverlay.clear();
             binding.uploadOverlay.invalidate();
             binding.imgUploadView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -422,6 +425,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     public void onEmptyDetect() {
         getActivity().runOnUiThread(() -> {
             toggleDetectionText(true);
+            toggleEmotionText(false);
             isCatDetected = false;
             binding.btnGenerateAnalysis.setEnabled(false);
 
@@ -437,6 +441,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
         getActivity().runOnUiThread(() -> {
             toggleDetectionText( false);
+            toggleEmotionText(true);
 
             if (isUploadMode) {
                 // Set detection results in overlay
@@ -452,6 +457,13 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                         Bitmap croppedBitmap = cropBitmap(sourceImage, boundingBox);
                         predictedLabels = emotionClassifier.predict(croppedBitmap);
                     }
+                }
+
+                // Set emotion classification result in overlay
+                Pair<String, Float> detectedEmotion = EmotionUtils.getTrueEmotion(predictedLabels);
+                if (detectedEmotion != null && detectedEmotion.first != null && detectedEmotion.second != null) {
+                    String emotion = detectedEmotion.first;
+                    binding.txtUploadEmotion.setText(String.format("%s", emotion.substring(0, 1).toUpperCase() + emotion.substring(1)));
                 }
             } else if (isCameraMode) {
                 // Set detection results in overlay
@@ -469,9 +481,19 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                         predictedLabels = emotionClassifier.predict(croppedBitmap);
                     }
                 }
+
+                // Set emotion classification result in overlay
+                Pair<String, Float> detectedEmotion = EmotionUtils.getTrueEmotion(predictedLabels);
+                if (detectedEmotion != null && detectedEmotion.first != null && detectedEmotion.second != null) {
+                    String emotion = detectedEmotion.first;
+                    binding.txtCameraEmotion.setText(String.format("%s", emotion.substring(0, 1).toUpperCase() + emotion.substring(1)));
+                }
             }
 
+            // Flag to keep track of whether cat is detected
             isCatDetected = true;
+
+            // Enable analysis generation button
             binding.btnGenerateAnalysis.setEnabled(true);
         });
     }
@@ -539,6 +561,23 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
             } else {
                 binding.inferenceTime.setVisibility(View.GONE);
                 binding.txtCameraDetection.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    // Toggles emotion overlay text
+    private void toggleEmotionText(boolean enabled) {
+        if (isUploadMode) {
+            if (enabled) {
+                binding.txtUploadEmotion.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtUploadEmotion.setVisibility(View.GONE);
+            }
+        } else if (isCameraMode) {
+            if (enabled) {
+                binding.txtCameraEmotion.setVisibility(View.VISIBLE);
+            } else {
+                binding.txtCameraEmotion.setVisibility(View.GONE);
             }
         }
     }

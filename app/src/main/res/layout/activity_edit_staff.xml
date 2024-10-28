@@ -289,7 +289,7 @@
                                 android:textColor="@color/gray_400"
                                 android:textSize="@dimen/text_medium_1"
                                 app:boxBackgroundColor="@android:color/transparent"
-                                app:simpleItems="@array/role_items_admin"
+                                app:simpleItems="@array/role_items_vetstaff"
                                 tools:text="Veterinarian" />
 
                         </com.google.android.material.textfield.TextInputLayout>

@@ -336,4 +336,83 @@
     <string name="analysis_feedback_ratings">Analysis Feedback Ratings</string>
     <string name="unread_general_feedback">Unread General Feedback</string>
     <string name="unread_analysis_feedback">Unread Analysis Feedback</string>
+    <string name="modes">Modes</string>
+    <string name="camera">Camera</string>
+    <string name="one">1.</string>
+    <string name="two">2.</string>
+    <string name="three">3.</string>
+    <string name="four">4.</string>
+    <string name="five">5.</string>
+    <string name="guide_upload_step1">Select and upload image from your phone.</string>
+    <string name="guide_upload_step2">The image will be evaluated to check the presence of a cat.</string>
+    <string name="guide_upload_step3">If a cat is detected, press the enabled \"Generate Analysis\" button. If no cat is detected, select another image.</string>
+    <string name="guide_camera_step1">Aim your camera at the cat.</string>
+    <string name="guide_camera_step2">Ensure that the cat is detected.</string>
+    <string name="guide_camera_step3">If a cat is detected, press the enabled \"Generate Analysis\" button. If no cat is detected, ensure the cat is not obstructed or too far away.</string>
+    <string name="categories">Categories</string>
+    <string name="facial_expressions">Facial Expressions</string>
+    <string name="posture">Posture</string>
+    <string name="key_body_parts">Key Body Parts</string>
+    <string name="neutral">Neutral</string>
+    <string name="angry">Angry</string>
+    <string name="scared">Scared</string>
+    <string name="ears_flat">Ears Flat</string>
+    <string name="ears_up">Ears Up</string>
+    <string name="eyes_large_pupils">Large Pupils</string>
+    <string name="eyes_narrowed">Narrowed Eyes</string>
+    <string name="eyes_small_pupils">Small Pupils</string>
+    <string name="mouth_fangs">Mouth Fangs</string>
+    <string name="posture_arched_back">Arched Back</string>
+    <string name="posture_exposed_belly">Exposed Belly</string>
+    <string name="posture_neutral">Neutral Posture</string>
+    <string name="posture_small">Small Posture</string>
+    <string name="posture_stretch">Stretching</string>
+    <string name="tail_neutral">Neutral Tail</string>
+    <string name="tail_tucked">Tail Tucked</string>
+    <string name="tail_up">Tail Up</string>
+
+    <string name="ears_flat_description">When a cat\'s ears are flattened against its head, it often indicates fear, aggression, or irritation. This suggests that the cat feels threatened and may be preparing to defend itself.</string>
+    <string name="ears_up_description">Ears held upright and facing forward signify a relaxed and alert cat. This indicates curiosity and engagement with its surroundings, showing that the cat is comfortable and interested.</string>
+    <string name="eyes_large_pupils_description">Enlarged pupils can signal excitement, fear, or anxiety. In low-light conditions, it may also indicate that the cat is in a playful or hunting mood, ready to pounce on potential prey.</string>
+    <string name="eyes_narrowed_description">A cat that narrows its eyes, often seen in a slow blink, is showing trust and relaxation. This behavior is sometimes referred to as "cat kisses," indicating contentment and comfort with its environment.</string>
+    <string name="eyes_small_pupils_description">Small pupils usually indicate a calm, relaxed, or confident mood in cats, often seen when they feel safe in their environment. It can also suggest focused attention if something has caught their interest.</string>
+    <string name="mouth_fangs_description">When a cat shows its fangs, it may be expressing aggression or fear. This display is often a warning to others, signaling that the cat feels threatened and is prepared to defend itself.</string>
+    <string name="posture_arched_back_description">An arched back is typically associated with fear or aggression. This posture makes the cat appear larger to potential threats and may be a defensive reaction to feeling cornered.</string>
+    <string name="posture_exposed_belly_description">When a cat lies on its back with its belly exposed, it indicates trust and relaxation. This posture shows that the cat feels safe and is comfortable in its environment, though it may not always be an invitation for a belly rub.</string>
+    <string name="posture_neutral_description">A neutral posture, where the cat stands or sits comfortably without any signs of stress, indicates a calm and relaxed state. The cat is neither feeling threatened nor overly excited.</string>
+    <string name="posture_small_description">A cat that crouches down and appears smaller is likely feeling scared or threatened. This posture is a defensive mechanism, allowing the cat to minimize its profile to avoid detection by potential threats.</string>
+    <string name="posture_stretch_description">A stretching posture typically indicates relaxation and comfort. Cats often stretch after waking up or when they are content, signaling that they feel safe and at ease.</string>
+    <string name="tail_neutral_description">A tail held in a neutral position (not raised or tucked) indicates a relaxed state. The cat is likely feeling comfortable and content, showing no signs of distress or aggression.</string>
+    <string name="tail_tucked_description">When a cat tucks its tail, it is often a sign of fear, submission, or anxiety. This indicates that the cat is feeling threatened and is trying to make itself smaller and less noticeable.</string>
+    <string name="tail_up_description">A tail held high and upright signifies a confident and happy cat. This posture indicates that the cat is in a good mood and is ready to interact positively with its environment.</string>
+
+    <string name="factors">Factors</string>
+    <string name="age_description">Age affects a cat\'s physical needs, energy levels, and mental health.</string>
+    <string name="gender_description">Gender can influence behaviour, especially if the cat us not neutered (male) or spayed (female).</string>
+    <string name="breed_description">Different breeds have unique characteristics affecting their behaviour, particularly their temperament and activity level.</string>
+    <string name="background_description">The environment a cat originates from can shape its behaviour, social skills, and trust level with humans.</string>
+    <string name="medical_conditions_description">Medical conditions impact a cat\'s physical comfort, mood, and behaviour.</string>
+
+    <string name="age_types">
+        \n <li><b>Kitten</b> (less than 1 yo): High energy and curiosity, requiring play and stimulation to develop coordination and social skills.</li>
+        \n\n <li><b>Adult</b> (between 1 to 11 yo): Generally balanced and predictable behaviour; requires moderate activity and mental stimulation.</li>
+        \n\n <li><b>Senior</b> (11 yo or older): Reduced energy and activity levels, may require special care for health and comfort.</li>
+    </string>
+    <string name="gender_types">
+        \n <li><b>Male</b>: Often more territorial and independent; may roam or mark territory if not neutered.</li>
+        \n\n <li><b>Female</b>: Generally more cautious or affectionate, especially if spayed; unspayed females may go into heat and display restlessness.</li>
+    </string>
+    <string name="breed_types">
+        \n <li><b>Temperament</b>: Different breeds of cats can generally be <i>affectionate</i>, <i>gentle</i>, or <i>playful</i>.</li>
+        \n\n <li><b>Activity Level</b>: Different breeds of cats may have <i>low</i>, <i>moderate</i>, <i>high</i>, or <i>varying</i> activity levels.</li>
+    </string>
+    <string name="background_types">
+        \n <li><b>Domestic</b>: Raised with consistent human interaction; typically social and trusting.</li>
+        \n\n <li><b>Stray</b>: Has been exposed to humans but may be wary; needs gradual socialization.</li>
+        \n\n <li><b>Feral</b>: Born or raised without human interaction; often fearful or defensive around people.</li>
+    </string>
+    <string name="medical_conditions_types">
+        \n <li><b>Yes</b>: Requires special care based on health conditions that may affect mood and energy.</li>
+        \n\n <li><b>No</b>: No known medical conditions.</li>
+    </string>
 </resources>
