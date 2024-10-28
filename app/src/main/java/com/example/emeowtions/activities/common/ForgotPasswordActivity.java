@@ -63,8 +63,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void bindListeners() {
+        bindNavigationListeners();
         bindOnClickListeners();
         bindTextChangeListeners();
+    }
+
+    private void bindNavigationListeners() {
+        binding.appBarForgotPassword.setNavigationOnClickListener(view -> finish());
     }
 
     private void bindOnClickListeners() {
