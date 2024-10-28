@@ -23,6 +23,7 @@ import com.example.emeowtions.activities.veterinary.ClinicReviewsActivity;
 import com.example.emeowtions.activities.veterinary.VetMainActivity;
 import com.example.emeowtions.databinding.FragmentVetDashboardBinding;
 import com.example.emeowtions.enums.Role;
+import com.example.emeowtions.fragments.admin.AdminDashboardFragment;
 import com.example.emeowtions.models.ChatRequest;
 import com.example.emeowtions.models.Review;
 import com.example.emeowtions.models.User;
@@ -39,6 +40,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
@@ -150,7 +152,7 @@ public class VetDashboardFragment extends Fragment {
                 });
         //endregion
 
-        //region Analytics
+        //region Overview and Analytics
         // Staff data
         AtomicInteger vetCount = new AtomicInteger();
         AtomicInteger vetStaffCount = new AtomicInteger();
@@ -158,12 +160,12 @@ public class VetDashboardFragment extends Fragment {
 
         vetsRef.whereEqualTo("veterinaryClinicId", veterinaryClinicId)
                 .addSnapshotListener((value, error) -> {
-                    // Success
+                    // Error
                     if (error != null) {
                         Log.w(TAG, "loadData: Failed to listen on Veterinarian changes", error);
                         return;
                     }
-                    // Error
+                    // Success
                     if (value != null) {
                         // Get vet count and increment staff count
                         vetCount.set(value.size());
@@ -333,6 +335,7 @@ public class VetDashboardFragment extends Fragment {
 
         // Setup chart data
         BarData data = new BarData(barDataSet);
+        barDataSet.setValueFormatter(new NoDecimalValueFormatter());
         data.setBarWidth(0.5f);
 
         // Description
@@ -418,43 +421,45 @@ public class VetDashboardFragment extends Fragment {
 
     private void renderReviewsChart(int[] ratingCounts) {
         BarChart barChart = binding.barChartClinicRatings;
+        barChart.getDescription().setEnabled(false);
         List<BarEntry> entries = prepareReviewBarChartData(ratingCounts);
 
         BarDataSet barDataSet = new BarDataSet(entries, "Number of Reviews");
+        barDataSet.setValueFormatter(new NoDecimalValueFormatter());
         barDataSet.setColors(
-                ContextCompat.getColor(getContext(), R.color.error_4),
-                ContextCompat.getColor(getContext(), R.color.tertiary_100),
-                ContextCompat.getColor(getContext(), R.color.quaternary_100),
-                ContextCompat.getColor(getContext(), R.color.secondary_200),
-                ContextCompat.getColor(getContext(), R.color.primary_300)
+                ContextCompat.getColor(getContext(), R.color.rating_1star),
+                ContextCompat.getColor(getContext(), R.color.rating_2star),
+                ContextCompat.getColor(getContext(), R.color.rating_3star),
+                ContextCompat.getColor(getContext(), R.color.rating_4star),
+                ContextCompat.getColor(getContext(), R.color.rating_5star)
         );
 
+        // Setup chart data
         BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.5f); // Set bar width
+        barData.setBarWidth(0.5f);
 
-        barChart.setData(barData);
+        // Legend
+        Legend legend = barChart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
 
-        // Configure the X-Axis
+        // Configure axes
         XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]{"1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"}));
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setCenterAxisLabels(false);
 
         YAxis yAxis = barChart.getAxisLeft();
+        yAxis.setAxisMinimum(0);
         yAxis.setGranularity(1f);
-        yAxis.setGranularityEnabled(true);
         barChart.getAxisRight().setEnabled(false);
 
-        // Hide the description label
-        barChart.getDescription().setEnabled(false);
-
-        // Set legend position if needed
-        Legend legend = barChart.getLegend();
-        legend.setEnabled(false);
-
-        // Refresh the chart
+        barChart.setData(barData);
+        barChart.setFitBars(true);
         barChart.animateY(1000);
         barChart.invalidate(); // Refresh the chart
     }
@@ -481,5 +486,13 @@ public class VetDashboardFragment extends Fragment {
         }
 
         return entries;
+    }
+
+    // Utility classes
+    public class NoDecimalValueFormatter extends ValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.format("%.0f", value); // Shows the value without decimal points
+        }
     }
 }

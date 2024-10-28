@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -180,6 +181,7 @@ public class AdminMainActivity extends AppCompatActivity {
         adminBottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             binding.topAppBar.getMenu().clear();
+            togglePrimaryTheme(false);
 
             // Top app bar scaling
             float scale = getResources().getDisplayMetrics().density;
@@ -190,6 +192,7 @@ public class AdminMainActivity extends AppCompatActivity {
 
             if (itemId == R.id.admin_dashboard_item) {
                 binding.topAppBar.setTitle(R.string.dashboard);
+                togglePrimaryTheme(true);
                 changeFragment(adminDashboardFragment, toReplace);
                 return true;
             } else if (itemId == R.id.admin_clinics_item) {
@@ -338,5 +341,23 @@ public class AdminMainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void togglePrimaryTheme(boolean enabled) {
+        if (enabled) {
+            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_300));
+            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+        } else {
+            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            binding.topAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.gray_700));
+            binding.topAppBar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray_700));
+        }
+    }
+
+    public void selectBottomNavigationMenuItem(int itemId) {
+        binding.adminBottomNavigation.setSelectedItemId(itemId);
     }
 }

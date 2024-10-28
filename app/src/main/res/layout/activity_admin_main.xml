@@ -9,6 +9,7 @@
 
     <LinearLayout
         android:id="@+id/main"
+        android:background="@color/primary_300"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
@@ -22,9 +23,12 @@
                 android:id="@+id/top_app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/primary_300"
                 app:navigationIcon="@drawable/baseline_menu_24"
+                app:navigationIconTint="@color/white"
                 app:title="@string/dashboard"
-                app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance"/>
+                app:titleTextAppearance="@style/CustomToolbarTitleTextAppearance"
+                app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

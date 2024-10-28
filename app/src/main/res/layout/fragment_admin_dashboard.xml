@@ -1,13 +1,812 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.admin.AdminDashboardFragment">
 
-    <TextView
+    <!-- Hero -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Dashboard" />
+        android:layout_height="wrap_content"
+        android:background="@color/primary_300"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/padding_screen_edge"
+        android:paddingBottom="@dimen/padding_small_2">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small_2"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_pfp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="@dimen/margin_small_2"
+                app:shapeAppearance="@style/roundedRectangleImageView"
+                tools:src="@drawable/baseline_account_circle_24"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/BodyText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:text="@string/welcome"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/txt_display_name"
+                    style="@style/BodyText1.SemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="John Smith" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_current_datetime"
+            style="@style/BodyText3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            tools:text="0 Jan 0000, 0:00 am" />
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#f3f4fd">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Shortcuts -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium_2"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/HeadingText2.SemiBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:layout_marginHorizontal="@dimen/margin_medium_2"
+                    android:text="@string/shortcuts" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/padding_screen_edge"
+                        android:paddingHorizontal="@dimen/padding_screen_edge"
+                        android:paddingTop="@dimen/padding_small_1">
+
+                        <!-- Clinics -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_clinics"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:paddingHorizontal="@dimen/padding_small_1"
+                                android:paddingVertical="@dimen/padding_medium_2"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_veterinary_care"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/clinics"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Registrations -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_registrations"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:paddingHorizontal="@dimen/padding_small_1"
+                                android:paddingVertical="@dimen/padding_medium_2"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_assignment_24"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/clinic_registrations"
+                                    android:lines="1"
+                                    android:ellipsize="end"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Users -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_users"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:paddingHorizontal="@dimen/padding_small_1"
+                                android:paddingVertical="@dimen/padding_medium_2"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_people_alt_24"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/users"
+                                    android:lines="1"
+                                    android:ellipsize="end"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- General Feedback -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_general_feedback"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingTop="@dimen/padding_medium_1"
+                                android:paddingBottom="@dimen/padding_small_2">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_feedback_24"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/general_feedback"
+                                    android:textAlignment="center"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Analysis Feedback -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_analysis_feedback"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingTop="@dimen/padding_medium_1"
+                                android:paddingBottom="@dimen/padding_small_2">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_insights_24"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/analysis_feedback"
+                                    android:textAlignment="center"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Recommendation Ratings -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_shortcut_recommendation_reviews"
+                            style="@style/Widget.Material3.CardView.Elevated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/margin_small_2"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="@dimen/padding_small_2"
+                                android:paddingTop="@dimen/padding_medium_1"
+                                android:paddingBottom="@dimen/padding_small_2">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_thumb_up_24"
+                                    android:layout_marginBottom="@dimen/margin_small_1"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Reco...\nRatings"
+                                    android:textAlignment="center"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <!-- Overview -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/HeadingText2.SemiBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:layout_marginHorizontal="@dimen/margin_medium_2"
+                    android:text="@string/overview" />
+
+                <!-- Row 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/padding_screen_edge"
+                    android:paddingVertical="2dp"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_users"/>
+
+                                <TextView
+                                    android:id="@+id/txt_total_user_count"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_people_alt_24"
+                                app:tint="@color/primary_300" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="New Users (Today)"/>
+
+                                <TextView
+                                    android:id="@+id/txt_new_users_today"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_emoji_people_24"
+                                app:tint="@color/primary_300" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/padding_screen_edge"
+                    android:paddingVertical="2dp"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/clinics"/>
+
+                                <TextView
+                                    android:id="@+id/txt_clinic_count"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_veterinary_care"
+                                app:tint="@color/primary_300" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/pending_registrations"/>
+
+                                <TextView
+                                    android:id="@+id/txt_pending_registration_count"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_assignment_24"
+                                app:tint="@color/primary_300" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Row 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/padding_screen_edge"
+                    android:paddingVertical="2dp"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_small_2"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/unread_general_feedback"/>
+
+                                <TextView
+                                    android:id="@+id/txt_general_feedback_count"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_feedback_24"
+                                app:tint="@color/primary_300" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="0.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_medium_1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/BodyText3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/unread_analysis_feedback"/>
+
+                                <TextView
+                                    android:id="@+id/txt_analysis_feedback_count"
+                                    style="@style/BodyText1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="20sp"
+                                    tools:text="69"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_insights_24"
+                                app:tint="@color/primary_300"/>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Analytics -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_medium_2"
+                android:paddingHorizontal="@dimen/padding_screen_edge"
+                android:paddingVertical="2dp"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/HeadingText2.SemiBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_1"
+                    android:text="@string/analytics" />
+
+                <!-- Registration Distribution -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small_2"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="0.5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_medium_1">
+
+                        <TextView
+                            style="@style/BodyText2.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/registrations_by_category"
+                            android:textStyle="bold"/>
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/bar_chart_registrations"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- General Feedback Ratings -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_medium_1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="0.5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_medium_1">
+
+                        <TextView
+                            style="@style/BodyText2.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/general_feedback_ratings"
+                            android:textStyle="bold"/>
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/bar_chart_general_feedback"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Analysis Feedback Ratings -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="0.5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_medium_1">
+
+                        <TextView
+                            style="@style/BodyText2.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/analysis_feedback_ratings"
+                            android:textStyle="bold"/>
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/bar_chart_analysis_feedback"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -250,11 +250,10 @@ public class VetMainActivity extends AppCompatActivity {
         vetBottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            // Reset background
-            binding.main.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
             // Reset top app bar
             binding.topAppBar.getMenu().clear();
             togglePrimaryTheme(false);
+
             // Top app bar scaling
             float scale = getResources().getDisplayMetrics().density;
             binding.topAppBar.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

@@ -69,4 +69,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="sky_blue">#56CAED</color>
     <color name="rating">#FFDF00</color>
+    <color name="rating_1star">#FF4C4C</color>
+    <color name="rating_2star">#FF9900</color>
+    <color name="rating_3star">#FFD700</color>
+    <color name="rating_4star">#9ACD32</color>
+    <color name="rating_5star">#4CAF50</color>
 </resources>

@@ -329,4 +329,11 @@
     <string name="analytics">Analytics</string>
     <string name="requests">Requests</string>
     <string name="clinic_ratings">Clinic Ratings</string>
+    <string name="pending_registrations">Pending Clinic Registrations</string>
+    <string name="total_users">Total Users</string>
+    <string name="registrations_by_category">Clinic Registrations by Category</string>
+    <string name="general_feedback_ratings">General Feedback Ratings</string>
+    <string name="analysis_feedback_ratings">Analysis Feedback Ratings</string>
+    <string name="unread_general_feedback">Unread General Feedback</string>
+    <string name="unread_analysis_feedback">Unread Analysis Feedback</string>
 </resources>

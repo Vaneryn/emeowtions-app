@@ -159,7 +159,8 @@ public class ViewAnalysisFeedbackActivity extends AppCompatActivity {
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                                         Recommendation recommendation = queryDocumentSnapshots.getDocuments().get(0).toObject(Recommendation.class);
-                                        ArrayList<RecommendedBehaviourStrategy> stratList = new ArrayList<>(recommendation.getStrategies());
+                                        ArrayList<RecommendedBehaviourStrategy> stratList =
+                                                new ArrayList<>(recommendation.getStrategies());
 
                                         if (stratList.isEmpty()) {
                                             // No results
