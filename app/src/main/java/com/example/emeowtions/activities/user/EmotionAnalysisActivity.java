@@ -570,7 +570,7 @@ public class EmotionAnalysisActivity extends AppCompatActivity {
         // Create Recommendation
         Recommendation newRecommendation = new Recommendation(
                 analysisId,
-                null,
+                new ArrayList<>(),
                 Timestamp.now(),
                 Timestamp.now()
         );

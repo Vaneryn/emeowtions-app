@@ -32,7 +32,7 @@ public class GuidesActivity extends AppCompatActivity {
     private ActivityGuidesBinding binding;
     private GuideEmotionAnalysisFragment emotionFragment;
     private GuideBodyLanguageFragment blFragment;
-    private GuideRecommendationsFragment reccFragment;
+    private GuideRecommendationsFragment recFragment;
     private Fragment selectedFragment;
 
     private int selectedTabPosition;
@@ -80,11 +80,11 @@ public class GuidesActivity extends AppCompatActivity {
     private void setupUi() {
         emotionFragment = new GuideEmotionAnalysisFragment();
         blFragment = new GuideBodyLanguageFragment();
-        reccFragment = new GuideRecommendationsFragment();
+        recFragment = new GuideRecommendationsFragment();
 
         createFragment(emotionFragment);
         createFragment(blFragment);
-        createFragment(reccFragment);
+        createFragment(recFragment);
 
         selectedFragment = emotionFragment;
         showFragment(selectedFragment);
@@ -115,7 +115,7 @@ public class GuidesActivity extends AppCompatActivity {
                 } else if (tabPosition == 1) {
                     changeFragment(blFragment, toReplace);
                 } else if (tabPosition == 2) {
-                    changeFragment(reccFragment, toReplace);
+                    changeFragment(recFragment, toReplace);
                 }
             }
 
