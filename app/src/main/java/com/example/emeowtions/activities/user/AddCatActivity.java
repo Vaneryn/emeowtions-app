@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.emeowtions.R;
 import com.example.emeowtions.databinding.ActivityAddCatBinding;
 import com.example.emeowtions.models.Cat;
+import com.example.emeowtions.utils.BreedUtils;
 import com.example.emeowtions.utils.FirebaseAuthUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -121,6 +123,13 @@ public class AddCatActivity extends AppCompatActivity {
                             // Return to Add Cat screen
                             finish();
                         });
+
+        // Load breed dropdown menu options
+        BreedUtils breedUtils = new BreedUtils(this);
+        List<String> breedList = breedUtils.getBreedNames();
+        breedList.add(getString(R.string.unspecified));
+        ArrayAdapter<String> breedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, breedList);
+        addCatBinding.edmBreed.setAdapter(breedAdapter);
 
         // Load default dropdown menu selections
         addCatBinding.edmGender.setText(getString(R.string.unspecified), false);
