@@ -73,6 +73,7 @@ public class EditUserActivity extends AppCompatActivity {
     private static final String ADMIN_ROLE = Role.ADMIN.getTitle();
 
     // Firebase variables
+    private FirebaseAuth auth;
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
@@ -118,6 +119,7 @@ public class EditUserActivity extends AppCompatActivity {
         selectedUserRole = passedIntent.getStringExtra(UserAdapter.KEY_ROLE);
 
         // Initialize Firebase service instances
+        auth = FirebaseAuth.getInstance();
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -284,6 +286,29 @@ public class EditUserActivity extends AppCompatActivity {
             selectedDob = null;
             binding.edtDob.getText().clear();
             binding.txtfieldDob.setEndIconVisible(false);
+        });
+
+        // Password reset button
+        binding.btnSendPasswordReset.setOnClickListener(view -> {
+            MaterialAlertDialogBuilder passwordResetDialog =
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle(R.string.password_reset)
+                            .setMessage(String.format("We'll send a the user a link at %s to reset their password. Are you sure?", originalEmail))
+                            .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {})
+                            .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                                // Send password reset email
+                                auth.sendPasswordResetEmail(originalEmail)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(this, String.format("Password reset email has been sent to %s.", originalEmail), Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Log.w(TAG, "sendPasswordResetEmail: Failed to send password reset email", task.getException());
+                                                Toast.makeText(this, "Unable to send password reset email, please try again later.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            });
+
+            passwordResetDialog.show();
         });
 
         // Cancel

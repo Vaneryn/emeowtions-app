@@ -38,6 +38,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -53,8 +54,9 @@ import java.util.Locale;
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
-    private ActivityProfileBinding profileBinding;
 
+    // Firebase variables
+    private FirebaseAuth auth;
     private FirebaseAuthUtils firebaseAuthUtils;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
@@ -62,6 +64,10 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private StorageReference profilePictureRef;
 
+    // Layout variables
+    private ActivityProfileBinding profileBinding;
+
+    // Private variables
     private String originalProfilePictureUrl;
     private String originalDisplayName;
     private String originalGender;
@@ -76,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Initialize Firebase service instances
+        auth = FirebaseAuth.getInstance();
         firebaseAuthUtils = new FirebaseAuthUtils();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -234,6 +241,29 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 discardChanges();
             }
+        });
+
+        // btnSendPasswordResetEmail: send password reset email
+        profileBinding.btnSendPasswordReset.setOnClickListener(view -> {
+            MaterialAlertDialogBuilder passwordResetDialog =
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle(R.string.password_reset)
+                            .setMessage(String.format("We'll send you a link at %s to reset your password. Are you sure?", originalEmail))
+                            .setNegativeButton(getString(R.string.no), (dialogInterface, i) -> {})
+                            .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                                // Send password reset email
+                                auth.sendPasswordResetEmail(originalEmail)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(this, String.format("Password reset email has been sent to %s.", originalEmail), Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Log.w(TAG, "sendPasswordResetEmail: Failed to send password reset email", task.getException());
+                                                Toast.makeText(this, "Unable to send password reset email, please try again later.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            });
+
+            passwordResetDialog.show();
         });
 
         // btnConfirmEditProfile: update profile
@@ -526,6 +556,7 @@ public class ProfileActivity extends AppCompatActivity {
             profileBinding.btnRevertProfilePic.setVisibility(View.VISIBLE);     // Show profile picture action buttons
             profileBinding.btnEditProfilePic.setVisibility(View.VISIBLE);
             profileBinding.txtfieldDateofbirth.setEndIconVisible(originalDateOfBirth != null);  // Show clear date button if dateOfBirth is set
+            profileBinding.btnSendPasswordReset.setVisibility(View.GONE);
             profileBinding.layoutEditProfileButtons.setVisibility(View.VISIBLE);    // Show edit profile action buttons
             // Set selections
             selectedDateOfBirth = originalDateOfBirth == null ? null : originalDateOfBirth.toDate();
@@ -535,6 +566,7 @@ public class ProfileActivity extends AppCompatActivity {
             profileBinding.btnRevertProfilePic.setVisibility(View.GONE);     // Hide profile picture action buttons
             profileBinding.btnEditProfilePic.setVisibility(View.GONE);
             profileBinding.txtfieldDateofbirth.setEndIconVisible(false);    // Hide clear date button
+            profileBinding.btnSendPasswordReset.setVisibility(View.VISIBLE);
             profileBinding.layoutEditProfileButtons.setVisibility(View.GONE);   // Hide edit profile action buttons
             // Clear errors
             profileBinding.txtfieldDisplayName.setErrorEnabled(false);

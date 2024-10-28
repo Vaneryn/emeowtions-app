@@ -82,9 +82,11 @@
                 android:id="@+id/txt_forgot_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="end"
-                android:text="@string/forgot_password"
-                android:textColor="@color/primary_400" />
+                android:text="@string/forgot_password_question"
+                android:textColor="@color/clickable_text" />
 
             <View
                 android:layout_width="0dp"
