@@ -17,6 +17,10 @@
         android:theme="@style/Theme.Emeowtions"
         tools:targetApi="31">
         <activity
+            android:name=".activities.common.ForgotPasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".activities.user.UserChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

@@ -76,6 +76,11 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // onClick listeners
+        // txtForgotPassword: redirect to ForgotPasswordActivity
+        loginBinding.txtForgotPassword.setOnClickListener(view -> {
+           startActivity(new Intent(this, ForgotPasswordActivity.class));
+        });
+
         // btnLogin: redirect to role-based main activity
         loginBinding.btnLogin.setOnClickListener(view -> {
             // Get inputs

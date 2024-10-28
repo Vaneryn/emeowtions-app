@@ -14,7 +14,8 @@
     <string name="confirm_password">Confirm password</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="forgot_password">Forgot password?</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password_question">Forgot password?</string>
     <string name="password">Password</string>
     <string name="home">Home</string>
     <string name="my_cats">My Cats</string>
@@ -415,4 +416,6 @@
         \n <li><b>Yes</b>: Requires special care based on health conditions that may affect mood and energy.</li>
         \n\n <li><b>No</b>: No known medical conditions.</li>
     </string>
+    <string name="forgot_password_instruction">Enter your registered email address, and we\'ll send you a link to reset your password.</string>
+    <string name="email_not_registered_error">This email is not registered</string>
 </resources>
