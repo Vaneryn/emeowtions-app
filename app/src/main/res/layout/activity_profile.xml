@@ -231,7 +231,7 @@
                 style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small_2"
+                android:layout_marginBottom="@dimen/margin_large"
                 android:enabled="false"
                 android:hint="@string/email"
                 android:textColorHint="@color/gray_400">
@@ -249,6 +249,14 @@
                     tools:text="john.smith@gmail.com" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_send_password_reset"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:text="@string/send_password_reset_email" />
 
             <View
                 android:layout_width="0dp"
