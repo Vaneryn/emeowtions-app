@@ -1,4 +1,4 @@
-# emeowtions-app
+# Emeowtions Android Application
 ## Introduction
 This repository contains the codebase for the Android application of the final year project titled "Cat Body Language Recognition using Computer Vision in an Android Application".
 
