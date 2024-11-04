@@ -1,6 +1,8 @@
 package com.example.emeowtions.fragments.veterinary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,22 +26,34 @@ import com.example.emeowtions.enums.Role;
 import com.example.emeowtions.models.User;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VeterinaryStaffManagementFragment extends Fragment {
 
     private static final String TAG = "VeterinaryStaffManagementFragment";
+    private SharedPreferences sharedPreferences;
 
     // Firebase variables
     private FirebaseFirestore db;
     private CollectionReference usersRef;
+    private CollectionReference staffRef;
 
-    // Private variables
+    // Layout variables
     private FragmentVeterinaryStaffManagementBinding binding;
     private UserAdapter userAdapter;
+
+    // Private variables
     private boolean isInitialLoad;
+    private String veterinaryClinicId;
+    private List<String> staffUidList;
+    private FirestoreRecyclerOptions<User> options;
 
     public VeterinaryStaffManagementFragment() {
         super(R.layout.fragment_veterinary_staff_management);
@@ -62,10 +77,15 @@ public class VeterinaryStaffManagementFragment extends Fragment {
 
         LifecycleOwner lifecycleOwner = this;
 
+        // Shared preferences
+        sharedPreferences = getContext().getSharedPreferences("com.emeowtions", Context.MODE_PRIVATE);
+        veterinaryClinicId = sharedPreferences.getString("veterinaryClinicId", null);
+
         // Initialize Firebase service instances
         db = FirebaseFirestore.getInstance();
         // Initialize Firestore references
         usersRef = db.collection("users");
+        staffRef = db.collection("veterinaryStaff");
 
         //region UI Setups
         // Hide no results views
@@ -76,30 +96,48 @@ public class VeterinaryStaffManagementFragment extends Fragment {
         //region Load Data
         isInitialLoad = true;
 
-        // Query options
-        Query usersQuery =
-                usersRef.whereEqualTo("role", Role.VETERINARY_STAFF.getTitle())
-                        .whereEqualTo("deleted", false)
-                        .orderBy("displayName", Query.Direction.ASCENDING);
+        // Query staff collection to get UIDs for the current clinic
+        staffRef.whereEqualTo("veterinaryClinicId", veterinaryClinicId)
+                .whereEqualTo("deleted", false)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Store list of staff UIDs
+                    staffUidList = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        String uid = documentSnapshot.getString("uid");
+                        if (uid != null)
+                            staffUidList.add(uid);
+                    }
 
-        FirestoreRecyclerOptions<User> options =
-                new FirestoreRecyclerOptions.Builder<User>()
-                        .setQuery(usersQuery, User.class)
-                        .setLifecycleOwner(lifecycleOwner)
-                        .build();
+                    // Query Users whose UID match the retrieved staff UIDs
+                    if (!staffUidList.isEmpty()) {
+                        Query usersQuery = usersRef
+                                .whereIn(FieldPath.documentId(), staffUidList)
+                                .whereEqualTo("role", Role.VETERINARY_STAFF.getTitle())
+                                .whereEqualTo("deleted", false)
+                                .orderBy("displayName", Query.Direction.ASCENDING);
 
-        // Create and set adapter
-        userAdapter = new UserAdapter(options, getContext());
-        binding.recyclerviewVetstaff.setAdapter(userAdapter);
+                        options = new FirestoreRecyclerOptions.Builder<User>()
+                                .setQuery(usersQuery, User.class)
+                                .setLifecycleOwner(lifecycleOwner)
+                                .build();
 
-        // Listen for changes to options
-        userAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                updateResultsView(isInitialLoad);
-            }
-        });
+                        // Create and set adapter
+                        userAdapter = new UserAdapter(options, getContext());
+                        binding.recyclerviewVetstaff.setAdapter(userAdapter);
+
+                        // Listen for changes to options
+                        userAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                            @Override
+                            public void onChanged() {
+                                super.onChanged();
+                                updateResultsView(isInitialLoad);
+                            }
+                        });
+                    } else {
+                        updateResultsView(isInitialLoad);
+                    }
+                });
 
         // Dynamic search
         binding.edtSearchbar.addTextChangedListener(new TextWatcher() {
@@ -116,25 +154,30 @@ public class VeterinaryStaffManagementFragment extends Fragment {
                 } else {
                     isInitialLoad = false;
 
-                    Query searchQuery =
-                            usersRef.whereEqualTo("role", Role.VETERINARY_STAFF.getTitle())
-                                    .whereEqualTo("deleted", false)
-                                    .where(Filter.or(
-                                            Filter.equalTo("displayName", queryText),
-                                            Filter.and(
-                                                    Filter.greaterThanOrEqualTo("displayName", queryText),
-                                                    Filter.lessThanOrEqualTo("displayName", queryText + "\uf8ff")
-                                            )
-                                    ))
-                                    .orderBy("displayName", Query.Direction.ASCENDING);
+                    if (!staffUidList.isEmpty()) {
+                        Query searchQuery = usersRef
+                                .whereIn(FieldPath.documentId(), staffUidList)
+                                .whereEqualTo("role", Role.VETERINARY_STAFF.getTitle())
+                                .whereEqualTo("deleted", false)
+                                .where(Filter.or(
+                                        Filter.equalTo("displayName", queryText),
+                                        Filter.and(
+                                                Filter.greaterThanOrEqualTo("displayName", queryText),
+                                                Filter.lessThanOrEqualTo("displayName", queryText + "\uf8ff")
+                                        )
+                                ))
+                                .orderBy("displayName", Query.Direction.ASCENDING);
 
-                    FirestoreRecyclerOptions<User> searchOptions =
-                            new FirestoreRecyclerOptions.Builder<User>()
-                                    .setQuery(searchQuery, User.class)
-                                    .setLifecycleOwner(lifecycleOwner)
-                                    .build();
+                        FirestoreRecyclerOptions<User> searchOptions =
+                                new FirestoreRecyclerOptions.Builder<User>()
+                                        .setQuery(searchQuery, User.class)
+                                        .setLifecycleOwner(lifecycleOwner)
+                                        .build();
 
-                    userAdapter.updateOptions(searchOptions);
+                        userAdapter.updateOptions(searchOptions);
+                    } else {
+                        updateResultsView(isInitialLoad);
+                    }
                 }
             }
 
