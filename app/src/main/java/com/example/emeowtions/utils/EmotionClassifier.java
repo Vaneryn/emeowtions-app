@@ -147,5 +147,5 @@ public class EmotionClassifier {
     private static final int INPUT_SIZE = 224;
     private static final float INPUT_MEAN = 0f;
     private static final float INPUT_STANDARD_DEVIATION = 255f;
-    private static final float THRESHOLD = 0.5f;
+    private static final float THRESHOLD = 0.4f;
 }

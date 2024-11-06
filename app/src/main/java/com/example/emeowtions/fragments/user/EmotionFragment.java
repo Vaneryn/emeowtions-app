@@ -464,6 +464,8 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 if (detectedEmotion != null && detectedEmotion.first != null && detectedEmotion.second != null) {
                     String emotion = detectedEmotion.first;
                     binding.txtUploadEmotion.setText(String.format("%s", emotion.substring(0, 1).toUpperCase() + emotion.substring(1)));
+                } else {
+                    binding.txtUploadEmotion.setText(String.format("%s", "Emotion Undetectable"));
                 }
             } else if (isCameraMode) {
                 // Set detection results in overlay
@@ -487,6 +489,8 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 if (detectedEmotion != null && detectedEmotion.first != null && detectedEmotion.second != null) {
                     String emotion = detectedEmotion.first;
                     binding.txtCameraEmotion.setText(String.format("%s", emotion.substring(0, 1).toUpperCase() + emotion.substring(1)));
+                }  else {
+                    binding.txtUploadEmotion.setText(String.format("%s", "Emotion Undetectable"));
                 }
             }
 
