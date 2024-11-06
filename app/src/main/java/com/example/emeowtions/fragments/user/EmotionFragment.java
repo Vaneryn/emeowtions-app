@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
@@ -101,6 +102,11 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     EmotionClassifier emotionClassifier;
     private HashMap<String, Float> predictedLabels;
     private boolean isCatDetected;
+
+    // Speed test
+    private int totalInferenceCount = 0;
+    private long objectDetectorTotalInferenceTime = 0;
+    private long classifierTotalInferenceTime = 0;
 
     public EmotionFragment() {
         super(R.layout.fragment_emotion);
@@ -440,6 +446,9 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
     @Override
     public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
         getActivity().runOnUiThread(() -> {
+            //totalInferenceCount++;
+            //objectDetectorTotalInferenceTime += inferenceTime;
+
             toggleDetectionText( false);
             toggleEmotionText(true);
 
@@ -448,7 +457,7 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 binding.uploadOverlay.setResults(boundingBoxes);
                 binding.uploadOverlay.invalidate();
 
-                // Classify cat emotion and body langauge
+                // Classify cat emotion and body language
                 for (BoundingBox boundingBox : boundingBoxes) {
                     Bitmap sourceImage = uploadedImage;
                     detectedCatImage = sourceImage;
@@ -473,14 +482,27 @@ public class EmotionFragment extends Fragment implements ObjectDetector.Detector
                 binding.cameraOverlay.setResults(boundingBoxes);
                 binding.cameraOverlay.invalidate();
 
-                // Classify cat emotion and body langauge
+                // Classify cat emotion and body language
                 for (BoundingBox boundingBox : boundingBoxes) {
                     Bitmap sourceImage = binding.viewFinder.getBitmap();
                     detectedCatImage = sourceImage;
 
                     if (sourceImage != null) {
                         Bitmap croppedBitmap = cropBitmap(sourceImage, boundingBox);
+
+                        // TODO: Uncomment code for Speed test
+                        //long classifierInferenceTime = SystemClock.uptimeMillis();
                         predictedLabels = emotionClassifier.predict(croppedBitmap);
+                        //classifierInferenceTime = SystemClock.uptimeMillis() - classifierInferenceTime;
+                        //classifierTotalInferenceTime += classifierInferenceTime;
+//
+//                        Log.d(TAG, "onDetect: totalInferenceCount=" + totalInferenceCount);
+//
+//                        if (totalInferenceCount == 500) {
+//                            long totalInferenceTime = objectDetectorTotalInferenceTime + classifierTotalInferenceTime;
+//                            Toast.makeText(getContext(), "Speed Test Done", Toast.LENGTH_SHORT).show();
+//                            Log.d(TAG, "onDetect: totalInferenceTime=" + totalInferenceTime);
+//                        }
                     }
                 }
 
