@@ -196,7 +196,6 @@ public class AddUserActivity extends AppCompatActivity {
                             clinicIds.add(document.getId());
                             clinicNames.add(clinic.getName());
                         }
-                        Collections.sort(clinicNames);
 
                         ArrayAdapter<String> clinicNamesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, clinicNames);
                         binding.edmClinic.setAdapter(clinicNamesAdapter);
