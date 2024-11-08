@@ -58,7 +58,7 @@ public class VeterinaryClinicAdapter extends FirestoreRecyclerAdapter<Veterinary
                 .load(model.getLogoUrl())
                 .into(holder.imgClinicLogo);
         holder.txtName.setText(model.getName());
-        holder.txtRating.setText(String.format("%s", model.getAverageRating()));
+        holder.txtRating.setText(String.format("%.2f", model.getAverageRating()));
         holder.txtAddress.setText(model.getAddress());
 
         // Redirect to UserClinicProfileActivity (User) or AdminClinicProfileActivity (Admin)

@@ -176,7 +176,7 @@ public class UserClinicProfileActivity extends AppCompatActivity {
                         binding.txtBannerName.setText(clinicName);
                         binding.txtBannerJoinedDate.setText(String.format("Joined %s", sdf.format(clinic.getCreatedAt().toDate())));
                         binding.txtBannerUpdatedDate.setText(String.format("Updated %s", sdf.format(clinic.getUpdatedAt().toDate())));
-                        binding.txtRating.setText(String.format("%s", averageRating));
+                        binding.txtRating.setText(String.format("%.2f", averageRating));
 
                         // Load fields
                         binding.txtEmail.setText(email);
