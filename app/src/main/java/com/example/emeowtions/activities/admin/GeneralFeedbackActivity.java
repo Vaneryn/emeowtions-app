@@ -87,8 +87,8 @@ public class GeneralFeedbackActivity extends AppCompatActivity {
         // Query options
         Query feedbackQuery = feedbackRef
                 .orderBy("read", Query.Direction.ASCENDING)
-                .orderBy("userDisplayName", Query.Direction.ASCENDING)
-                .orderBy("createdAt", Query.Direction.DESCENDING);
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .orderBy("userDisplayName", Query.Direction.ASCENDING);
 
         options = new FirestoreRecyclerOptions.Builder<Feedback>()
                 .setQuery(feedbackQuery, Feedback.class)
